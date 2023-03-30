@@ -24,6 +24,7 @@
 
 #define TIME_LIMIT 10 // seconds
 
+static float F = 0.7;
 static int function_number = 1;
 static int time_limit = 10; // seconds
 static int island_size = 10;
@@ -42,7 +43,7 @@ void print_usage()
 void set_parameters(int argc, char *argv[])
 {
     int opt;
-    while ((opt = getopt(argc, argv, "f:t:i:p:d:l:u:g:m:")) != -1)
+    while ((opt = getopt(argc, argv, "f:F:t:i:p:d:l:u:g:m:")) != -1)
     {
         switch (opt)
         {
@@ -73,6 +74,9 @@ void set_parameters(int argc, char *argv[])
         case 'm':
             mutation_probability = atoi(optarg);
             break;
+        case 'F':
+            F = atof(optarg);
+            break;
         default:
             printf("Invalid option: %c\n", opt);
             print_usage();
@@ -85,7 +89,7 @@ void set_parameters(int argc, char *argv[])
 void print_parameters()
 {
     puts("Parameters:");
-    printf(" function_number: %d,\n time_limit: %d,\n island_size: %d,\n population_size: %d,\n dimension: %d,\n bounds_lower: %d,\n bounds_upper: %d,\n num_generations: %d,\n mutation_probability: %d\n", function_number, time_limit, island_size, population_size, dimension, bounds_lower, bounds_upper, num_generations, mutation_probability);
+    printf(" function_number: %d,\n F: %f,\n time_limit: %d,\n island_size: %d,\n population_size: %d,\n dimension: %d,\n bounds_lower: %d,\n bounds_upper: %d,\n num_generations: %d,\n mutation_probability: %d\n", function_number, F, time_limit, island_size, population_size, dimension, bounds_lower, bounds_upper, num_generations, mutation_probability);
 }
 
 void fitness(individue *individuo, int dimension)
@@ -178,32 +182,38 @@ void select_parents(individue *populacao, int n_populacoes, individue *parents[2
     // printf("Pais: %d e %d\n", pai1, pai2);
 }
 
-individue cruzamento(individue *parents[2], int n_itens, int crossover)
+population* cruzamento(population populacao, int n_itens)
 {
+    individue *nova_populacao = generate_population(populacao.size, n_itens, (domain){BOUNDS_LOWER, BOUNDS_UPPER});
     DEBUG(printf("\ncruzamento\n"););
-    individue parent1 = *parents[0];
-    individue parent2 = *parents[1];
-    individue filho;
-    switch (crossover)
+    for (int i = 0; i < populacao.size - 1; i++)
     {
-    case MEDIA:
-        filho = cruzamento_media(parent1, parent2, n_itens);
-    case METADE:
-        filho = cruzamento_metade(parent1, parent2, n_itens);
-    case PONTO:
-        filho = cruzamento_ponto(parent1, parent2, n_itens);
-    case MEDIA_GEOMETRICA:
-        filho = cruzamento_ponto(parent1, parent2, n_itens);
-    case FLAT:
-        filho = cruzamento_flat(parent1, parent2, n_itens);
-    case BLEND:
-        filho = cruzamento_blend(parent1, parent2, n_itens);
-    default:
-        filho = cruzamento_media(parent1, parent2, n_itens);
-    }
+        individue *parents[2];
+        select_parents(population, population_size, parents);
 
-    fitness(&filho, n_itens);
-    return filho;
+        individue parent1 = *parents[0];
+        individue parent2 = *parents[1];
+        individue *filho = nova_populacao->individues[i];
+        switch (crossover)
+        {
+        case MEDIA:
+            filho = cruzamento_media(parent1, parent2, n_itens);
+        case METADE:
+            filho = cruzamento_metade(parent1, parent2, n_itens);
+        case PONTO:
+            filho = cruzamento_ponto(parent1, parent2, n_itens);
+        case MEDIA_GEOMETRICA:
+            filho = cruzamento_ponto(parent1, parent2, n_itens);
+        case FLAT:
+            filho = cruzamento_flat(parent1, parent2, n_itens);
+        case BLEND:
+            filho = cruzamento_blend(parent1, parent2, n_itens);
+        default:
+            filho = cruzamento_media(parent1, parent2, n_itens);
+        }
+
+        fitness(&filho, n_itens);
+    }
 }
 
 int in_fitness_population(individue *populacao, int n_populacoes, individue individuo)
@@ -235,15 +245,44 @@ individue *generate_population(int n_individuos, int dimension, domain domain_fu
     return population;
 }
 
-individue mutation(individue individuo, int dimension, domain domain_function)
+// individue mutation(individue individuo, int dimension, domain domain_function)
+// {
+//     DEBUG(printf("\nmutation\n"););
+//     int mutation_point = rand() % dimension;
+//     individuo.chromosome[mutation_point] = random_double(domain_function.min, domain_function.max);
+//     // individuo.chromosome[mutation_point] = !individuo.chromosome[mutation_point];
+//     fitness(&individuo, dimension);
+
+//     return individuo;
+// }
+
+void mutation(population populacao, int dimension, domain domain_function)
 {
     DEBUG(printf("\nmutation\n"););
-    int mutation_point = rand() % dimension;
-    individuo.chromosome[mutation_point] = random_double(domain_function.min, domain_function.max);
-    // individuo.chromosome[mutation_point] = !individuo.chromosome[mutation_point];
-    fitness(&individuo, dimension);
 
-    return individuo;
+    for (int i = 0; i < populacao.size - 1; i++)
+    {
+        if (rand() % 100 > mutation_probability)
+            continue;
+
+        int alpha;
+        int beta;
+        int gamma;
+        do
+        {
+            alpha = rand() % populacao.size;
+            beta = rand() % populacao.size;
+            gamma = rand() % populacao.size;
+        } while (alpha == beta || alpha == gamma || beta == gamma);
+
+        for (int j = 0; j < dimension; j++)
+        {
+            populacao.individues[i].chromosome[j] = populacao.individues[alpha].chromosome[j] + F * (populacao.individues[beta].chromosome[j] - populacao.individues[gamma].chromosome[j]);
+        }
+        fitness(&populacao.individues[i], dimension);
+    }
+
+    // individuo.chromosome[mutation_point] = !individuo.chromosome[mutation_point];
 }
 
 individue *get_best_of_population(individue *population, int n_populacoes)
@@ -360,8 +399,8 @@ individue evolution(int island_size, int population_size, int dimension, domain 
             int generation_count = 0;
             while (generation_count < num_generations)
             {
-                selection(population, population_size, dimension);
-
+                selection(population, current_island->size, dimension);
+                mutation(*current_island, dimension, domain_function);
                 for (int i = 0; i < current_island->size - 1; i++)
                 {
 
@@ -377,11 +416,6 @@ individue evolution(int island_size, int population_size, int dimension, domain 
                     DEBUG(printf("Custo do filho: %lf\n", child.fitness););
                     individue *pior_pai = get_pior_pai(parents);
                     *pior_pai = child;
-
-                    if (rand() % 100 < MUTATION_PROBABILITY)
-                    {
-                        population[i] = mutation(population[i], dimension, domain_function);
-                    }
                 }
                 selection(population, population_size, dimension);
                 generation_count++;
@@ -401,7 +435,7 @@ individue evolution(int island_size, int population_size, int dimension, domain 
 int main(int argc, char *argv[])
 {
     set_parameters(argc, argv); // Lê os parâmetros da linha de comando e repassa para as variáveis globais
-    print_parameters();
+    // print_parameters();
 
     time_t semente = time(NULL);
     printf("Semente: %ld\n ", semente);

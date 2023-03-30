@@ -89,7 +89,7 @@ verify_existence() {
 define_command_evol() {
     case $1 in
         "evolucao_mpop")
-            echo "./evol 10 3 300 $function_number $time_limit"
+            echo "./evol -i 10 -p 3 -g 300 -f $function_number -t $time_limit"
             ;;
         "evolucao_simples")
             echo "./evol $function_number $time_limit"
