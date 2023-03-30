@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <getopt.h>
 #include <time.h>
 #include <math.h>
 #include "./libs/funcoes_cec_2015/cec15_test_func.h"
@@ -23,8 +24,69 @@
 
 #define TIME_LIMIT 10 // seconds
 
-static int function_number = FUNCTION_NUMBER;
-static int time_limit = TIME_LIMIT;
+static int function_number = 1;
+static int time_limit = 10; // seconds
+static int island_size = 10;
+static int population_size = 3;
+static int dimension = 10; // 10 or 30
+static int bounds_lower = -100;
+static int bounds_upper = 100;
+static int num_generations = 300;
+static int mutation_probability = 80; // %
+
+void print_usage()
+{
+    printf("Usage: ./evolucao_mpop -f <function_number> -t <time_limit> -i <island_size> -p <population_size> -d <dimension> -l <bounds_lower> -u <bounds_upper> -g <num_generations> -m <mutation_probability>");
+}
+
+void set_parameters(int argc, char *argv[])
+{
+    int opt;
+    while ((opt = getopt(argc, argv, "f:t:i:p:d:l:u:g:m:")) != -1)
+    {
+        switch (opt)
+        {
+        case 'f':
+            function_number = atoi(optarg);
+            break;
+        case 't':
+            time_limit = atoi(optarg);
+            break;
+        case 'i':
+            island_size = atoi(optarg);
+            break;
+        case 'p':
+            population_size = atoi(optarg);
+            break;
+        case 'd':
+            dimension = atoi(optarg);
+            break;
+        case 'l':
+            bounds_lower = atoi(optarg);
+            break;
+        case 'u':
+            bounds_upper = atoi(optarg);
+            break;
+        case 'g':
+            num_generations = atoi(optarg);
+            break;
+        case 'm':
+            mutation_probability = atoi(optarg);
+            break;
+        default:
+            printf("Invalid option: %c\n", opt);
+            print_usage();
+            exit(1);
+            break;
+        }
+    }
+}
+
+void print_parameters()
+{
+    puts("Parameters:");
+    printf(" function_number: %d,\n time_limit: %d,\n island_size: %d,\n population_size: %d,\n dimension: %d,\n bounds_lower: %d,\n bounds_upper: %d,\n num_generations: %d,\n mutation_probability: %d\n", function_number, time_limit, island_size, population_size, dimension, bounds_lower, bounds_upper, num_generations, mutation_probability);
+}
 
 void fitness(individue *individuo, int dimension)
 {
@@ -335,102 +397,20 @@ individue evolution(int island_size, int population_size, int dimension, domain 
     DEBUG(printf("Geração: %d\n", generations_count););
     return bestIndividuo;
 }
-/*Obs:Mudar FUNCTION_NUMBER para variavel
-void otimiza_parametros_grid(int *island_size, int *population_size, int *dimension, double *bounds_lower, double *bounds_upper, double *select_criteria, int *num_generations)
-{
-    int num_valores = 2, sem_melhora = 0, reduz_grid = 3, limite_tentativas = 7, aux = 0;
-    int island_size_aux[] = {20, 15, 10};
-    int population_size_aux[] = {30, 20, 5};
-    int num_generations_aux[] = {300, 200, 150};
-    individue individuo, individuo2, melhor_individuo1, melhor_individuo2;
-    melhor_individuo1.fitness = 100000;
-    melhor_individuo2.fitness = 100000;
-
-    *dimension = 10;
-    *bounds_lower = -100;
-    *bounds_upper = 100;
-    *select_criteria = 0.0001;
-    while (reduz_grid)
-    {
-        for (int i = num_valores; i >= 0; i--)
-            for (int j = num_valores; j >= 0; j--)
-                for (int k = num_valores; k >= 0; k--)
-                {
-                    FUNCTION_NUMBER = 14;
-                    individuo = evolution(island_size_aux[i], population_size_aux[j], *dimension, (domain){*bounds_lower, *bounds_upper}, *select_criteria, num_generations_aux[k]);
-                    FUNCTION_NUMBER = 15;
-                    individuo2 = evolution(island_size_aux[i], population_size_aux[j], *dimension, (domain){*bounds_lower, *bounds_upper}, *select_criteria, num_generations_aux[k]);
-                    printf("\nFitness_1:%lf\n", individuo.fitness);
-                    printf("\nFitness_2:%lf\n", individuo2.fitness);
-                    sem_melhora += 1;
-                    if (individuo.fitness < melhor_individuo1.fitness && individuo2.fitness < melhor_individuo2.fitness)
-                    {
-                        *island_size = island_size_aux[i];
-                        *population_size = population_size_aux[j];
-                        *num_generations = num_generations_aux[k];
-                        melhor_individuo1 = individuo;
-                        melhor_individuo2 = individuo2;
-                        sem_melhora = 0;
-                        aux = 0;
-                        printf("\nparametros:\n Island_size: %d, population_size: %d, num_generations: %d\n", *island_size, *population_size, *num_generations);
-                    }
-                    if (sem_melhora == limite_tentativas)
-                    {
-                        printf("\nSem melhora em %d tentativas\n", limite_tentativas);
-                        i = j = k = -1;
-                        aux += 1;
-                    }
-                }
-        if (aux == 2)
-            limite_tentativas = limite_tentativas * 2;
-        if (aux == 3)
-            reduz_grid = 0;
-        int reduzir;
-        // pegando os melhores parametros para gerar um novo conjunto
-        island_size_aux[0] = *island_size;
-        population_size_aux[0] = *population_size;
-        num_generations_aux[0] = *num_generations;
-        // gerando novo conjunto
-        for (int v = 1; v <= num_valores; v++)
-        {
-            reduzir = island_size_aux[v - 1] - 2 <= 0 ? 0 : 1;
-            island_size_aux[v] = island_size_aux[v - 1] - reduzir;
-
-            reduzir = population_size_aux[v - 1] - 3 <= 0 ? 0 : 2;
-            population_size_aux[v] = population_size_aux[v - 1] - reduzir;
-
-            reduzir = num_generations_aux[v - 1] - 20 <= 0 ? 0 : 20;
-            num_generations_aux[v] = num_generations_aux[v - 1] - reduzir;
-        }
-        reduz_grid--;
-    }
-
-    printf("\nFitness_1: %lf\n", melhor_individuo1.fitness);
-    printf("\nFitness_2: %lf\n", melhor_individuo2.fitness);
-    printf("\nparametros:\n Island_size: %d, population_size: %d, num_generations: %d\n", *island_size, *population_size, *num_generations);
-}
-*/
 
 int main(int argc, char *argv[])
 {
+    set_parameters(argc, argv); // Lê os parâmetros da linha de comando e repassa para as variáveis globais
+    print_parameters();
+
     time_t semente = time(NULL);
     printf("Semente: %ld\n ", semente);
     individue result;
     // Melhor semente até agora: 1676931005 (Funcao 3) - 301.356
     // Melhor semente até agora: 1676935665 (Funcao 8) - 801.1393
     srand(semente);
-    if (argc < 2)
-        result = evolution(ISLAND_SIZE, POPULATION_SIZE, DIMENSION, (domain){BOUNDS_LOWER, BOUNDS_UPPER}, SELECT_CRITERIA, NUM_GENERATIONS);
-    else
-    {
-        int island_size, population_size, num_generations;
-        island_size = atoi(argv[1]);
-        population_size = atoi(argv[2]);
-        num_generations = atoi(argv[3]);
-        function_number = atoi(argv[4]);
-        time_limit = atoi(argv[5]);
-        result = evolution(island_size, population_size, DIMENSION, (domain){BOUNDS_LOWER, BOUNDS_UPPER}, SELECT_CRITERIA, num_generations);
-    }
+    result = evolution(island_size, population_size, dimension, (domain){bounds_lower, bounds_upper}, SELECT_CRITERIA, num_generations);
+
     print_individue(result, DIMENSION);
     return 0;
 }
