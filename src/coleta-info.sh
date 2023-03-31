@@ -4,7 +4,7 @@
 n_execucoes=10 # Default value
 function_number=3 # Default value
 time_limit=10 # Default value
-codename="evolucao_mpop"
+codename="evolucao_simples"
 usage() { echo "Usage: $0 [-n <Numero de execuções>] [-f <Numero da função de teste de 1 a 15>] [-c <Nome do código evolutivo que será executado>] [-t <Tempo máximo de cada execução>]" 1>&2; exit 1; }
 
 while getopts ":n:f:t:c:" o; do

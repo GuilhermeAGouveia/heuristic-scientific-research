@@ -1,4 +1,4 @@
-codname = evolucao_mpop
+codname = evolucao_simples
 
 compil:;
 	gcc -o evol $(codname).c ./libs/statistics.c ./libs/crossover.c ./libs/types.c ./libs/utils.c ./libs/funcoes_cec_2015/cec15_test_func.c ./libs/funcoes_cec_2015/ecr_iml.c ./libs/funcoes_cec_2015/evaluation_count_iml.c ./libs/funcoes_cec_2015/record_result_iml.c ./libs/funcoes_cec_2015/rp_iml.c -lm; \

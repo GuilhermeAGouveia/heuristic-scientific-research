@@ -12,7 +12,7 @@
 #define DEBUG(x)
 
 #define POPULATION_SIZE 100
-#define NUM_GENERATIONS 1000
+#define NUM_GENERATIONS 10
 #define MUTATION_PROBABILITY 80 // %
 #define DIMENSION 10            // 10 or 30
 #define BOUNDS_LOWER -100
@@ -175,14 +175,20 @@ individue *generate_population(int n_populacoes, int dimension, domain domain_fu
     return population;
 }
 
-individue mutation(individue individuo, int dimension, domain domain_function)
+individue mutation(individue *population, individue individuo, int dimension, domain domain_function)
 {
     DEBUG(printf("\nmutation\n"););
-    int mutation_point = rand() % dimension;
-    individuo.chromosome[mutation_point] = random_double(domain_function.min, domain_function.max);
-    // individuo.chromosome[mutation_point] = !individuo.chromosome[mutation_point];
-    fitness(&individuo, dimension);
-
+        int alpha, beta, gamma;
+        do
+        {
+            alpha = rand() % dimension;
+            beta = rand() % dimension;
+            gamma = rand() % dimension;
+        } while (alpha == beta || alpha == gamma || beta == gamma);
+        for (int i = 0; i < dimension; i++)
+        {
+            individuo.chromosome[i] = population[alpha].chromosome[i] + 0.8 * (population[beta].chromosome[i] - population[gamma].chromosome[i]);
+        }
     return individuo;
 }
 
@@ -240,7 +246,6 @@ individue *evolution(int population_size, int dimension, domain domain_function,
         // print_population(population, population_size, dimension);
         for (int i = 0; i < population_size - 1; i++)
         {
-
             DEBUG(printf("\ni-ésimo individuo: %d\n", i););
 
             select_parents(population, population_size, parents);
@@ -248,7 +253,7 @@ individue *evolution(int population_size, int dimension, domain domain_function,
             // O if abaixo garante que nunca haverá dois individuos iguais na população
             if (in_fitness_population(population, population_size, child))
             {
-                child = mutation(child, dimension, domain_function);
+                child = mutation(population, child, dimension, domain_function);
             }
             DEBUG(printf("Custo do filho: %lf\n", child.fitness););
             individue *pior_pai = get_pior_pai(parents);
@@ -256,7 +261,7 @@ individue *evolution(int population_size, int dimension, domain domain_function,
 
             if (rand() % 100 < MUTATION_PROBABILITY)
             {
-                population[i] = mutation(population[i], dimension, domain_function);
+                population[i] = mutation(population, population[i], dimension, domain_function);
             }
         }
         time(&time_now);
