@@ -2,6 +2,7 @@
     "files.associations": {
         "cec15_test_func.h": "c",
         "jkiss.h": "c",
-        "statistics.h": "c"
+        "statistics.h": "c",
+        "utils.h": "c"
     }
 }

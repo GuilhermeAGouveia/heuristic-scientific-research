@@ -376,7 +376,7 @@ individuo evolution(int island_size, int population_size, int dimension, domain 
         {
             DEBUG(printf("\n\ni-ésima ilha: %d\n", i););
             population *current_population = &populations[i];
-            population *cross_population = current_population;
+            population *cross_population;
 
             individuo *population = current_population->individuos;
             int generation_count = 0;
