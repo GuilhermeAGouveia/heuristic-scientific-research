@@ -128,19 +128,19 @@ double get_best_fitness(double fitness[POPULATION_SIZE])
 individue *generate_population2(int n_populacoes, int dimension, domain domain_function)
 {
     //DEBUG(printf("\ngenerate_population\n"););
-    individue *population = malloc(n_populacoes * sizeof(individue));
+    individue *populacao = malloc(n_populacoes * sizeof(individue));
     for (int i = 0; i < n_populacoes; i++)
     {
-        population[i].chromosome = (double *)malloc(dimension * sizeof(double));
+        populacao[i].chromosome = (double *)malloc(dimension * sizeof(double));
         for (int j = 0; j < dimension; j++)
         {
-            population[i].chromosome[j] = random_double(domain_function.min, domain_function.max);
+            populacao[i].chromosome[j] = random_double(domain_function.min, domain_function.max);
         }
-        population[i].fitness = INFINITY;
+        populacao[i].fitness = INFINITY;
     }
 
     // DEBUG(print_population(population, n_populacoes, dimension););
-    return population;
+    return populacao;
 }
 
 int main(int argc, char *argv[])

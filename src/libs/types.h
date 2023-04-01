@@ -14,23 +14,23 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-typedef struct individue_
+typedef struct individuo_
 {
     double *chromosome;
     double fitness;
     float inter_Pai_inicio;
     float inter_Pai_fim;
-} individue;
+} individuo;
 
 
 typedef struct population_
 {
-    individue *individues;
+    individuo *individuos;
     int size;
     struct population_ **neighbours;
     int crossover;
 
-} population;
+} populacao;
 
 typedef struct domain
 {

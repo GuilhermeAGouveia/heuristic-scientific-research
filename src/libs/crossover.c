@@ -7,12 +7,12 @@
 
 
 
-individue cruzamento_media(individue parent1, individue parent2, int n_itens)
+individuo cruzamento_media(individuo parent1, individuo parent2, int n_itens)
 {
     DEBUG(printf("\ncruzamento_media\n"););
 
     double *child_chromosome = (double *)malloc(n_itens * sizeof(double));
-    individue child = {child_chromosome, INFINITY};
+    individuo child = {child_chromosome, INFINITY};
 
     for (int i = 0; i < n_itens; i++)
     {
@@ -21,28 +21,28 @@ individue cruzamento_media(individue parent1, individue parent2, int n_itens)
     return child;
 }
 
-individue cruzamento_flat(individue parent1, individue parent2, int n_itens)
+individuo cruzamento_flat(individuo parent1, individuo parent2, int n_itens)
 {
     DEBUG(printf("\ncruzamento_flat\n"););
 
     double *child_chromosome = (double *)malloc(n_itens * sizeof(double));
-    individue child = {child_chromosome, INFINITY};
+    individuo child = {child_chromosome, INFINITY};
 
     for (int i = 0; i < n_itens; i++)
     {
-        individue pais[2] = {parent1, parent2};
+        individuo pais[2] = {parent1, parent2};
         int menor = parent1.chromosome[i] < parent2.chromosome[i] ? 0 : 1;
         child.chromosome[i] = random_double(pais[menor].chromosome[i], pais[!menor].chromosome[i]);
     }
     return child;
 }
 
-individue cruzamento_blend(individue parent1, individue parent2, int n_itens)
+individuo cruzamento_blend(individuo parent1, individuo parent2, int n_itens)
 {
     DEBUG(printf("\ncruzamento_blend\n"););
 
     double *child_chromosome = (double *)malloc(n_itens * sizeof(double));
-    individue child = {child_chromosome, INFINITY};
+    individuo child = {child_chromosome, INFINITY};
 
     for (int i = 0; i < n_itens; i++)
     {
@@ -52,12 +52,12 @@ individue cruzamento_blend(individue parent1, individue parent2, int n_itens)
     return child;
 }
 
-individue cruzamento_metade(individue parent1, individue parent2, int n_itens)
+individuo cruzamento_metade(individuo parent1, individuo parent2, int n_itens)
 {
     DEBUG(printf("\ncruzamento_metade\n"););
 
     double *child_chromosome = (double *)malloc(n_itens * sizeof(double));
-    individue child = {child_chromosome, INFINITY};
+    individuo child = {child_chromosome, INFINITY};
 
     int crossover_point = n_itens / 2;
     for (int i = 0; i < crossover_point; i++)
@@ -71,12 +71,12 @@ individue cruzamento_metade(individue parent1, individue parent2, int n_itens)
     return child;
 }
 
-individue cruzamento_ponto(individue parent1, individue parent2, int n_itens)
+individuo cruzamento_ponto(individuo parent1, individuo parent2, int n_itens)
 {
     DEBUG(printf("\ncruzamento_metade\n"););
 
     double *child_chromosome = (double *)malloc(n_itens * sizeof(double));
-    individue child = {child_chromosome, INFINITY};
+    individuo child = {child_chromosome, INFINITY};
 
     int crossover_point = rand() % n_itens;
     for (int i = 0; i < crossover_point; i++)

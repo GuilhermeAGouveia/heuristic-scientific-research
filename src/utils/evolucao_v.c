@@ -64,19 +64,19 @@ void calcula_dados(individue *populacao, int TAM_P, int dimensao)
 individue *generate_population(int n_populacoes, int dimension, domain domain_function)
 {
     DEBUG(printf("\ngenerate_population\n"););
-    individue *population = (individue *)malloc((n_populacoes + 1) * sizeof(individue));
+    individue *populacao = (individue *)malloc((n_populacoes + 1) * sizeof(individue));
     for (int i = 0; i < n_populacoes + 1; i++)
     {
-        population[i].chromosome = (double *)malloc(dimension * sizeof(double));
+        populacao[i].chromosome = (double *)malloc(dimension * sizeof(double));
         for (int j = 0; j < dimension; j++)
         {
-            population[i].chromosome[j] = random_double(domain_function.min, domain_function.max);
+            populacao[i].chromosome[j] = random_double(domain_function.min, domain_function.max);
         }
-        population[i].fitness = 100000000;
+        populacao[i].fitness = 100000000;
     }
 
-    DEBUG(print_population(population, n_populacoes, dimension););
-    return population;
+    DEBUG(print_population(populacao, n_populacoes, dimension););
+    return populacao;
 }
 
 // calcula a probabilidade para cada populacao de ser escolhida para cruzamento, guardando o intervalo
