@@ -4,13 +4,14 @@
 #include <getopt.h>
 #include <time.h>
 #include <math.h>
+#define NO_RECORDING
 #include "./libs/funcoes_cec_2015/cec15_test_func.h"
 #include "./libs/statistics.h"
 #include "./libs/types.h"
 #include "./libs/utils.h"
 #include "./libs/crossover.h"
-#define STATISTICS(x) x
-#define DEBUG(x) x
+#define STATISTICS(x) 
+#define DEBUG(x) 
 
 static double F = 0.99;
 static int function_number = 1;
@@ -113,12 +114,12 @@ void print_roleta(int *roleta, int roleta_size, int ball1, int ball2)
 
 int roleta_pais(individuo *populacao, int n_populacoes)
 {
-    //DEBUG(printf("\nroleta\n"););
+    // DEBUG(printf("\nroleta\n"););
     int roulette[100];
     double sum_beneficio = 0.0;
     double sum_beneficio_inv = 0.0;
 
-    //DEBUG(printf("sum_beneficio[init]\n"););
+    // DEBUG(printf("sum_beneficio[init]\n"););
     for (int i = 0; i < n_populacoes; i++)
     {
         sum_beneficio += populacao[i].fitness;
@@ -128,23 +129,23 @@ int roleta_pais(individuo *populacao, int n_populacoes)
     {
         sum_beneficio_inv += sum_beneficio - populacao[i].fitness;
     }
-    //DEBUG(printf("sum_beneficio[end]: %lf\n", sum_beneficio););
+    // DEBUG(printf("sum_beneficio[end]: %lf\n", sum_beneficio););
 
     int base = 0;
     for (int i = 0; i < n_populacoes; i++)
     {
         double individuo_beneficio_inv = sum_beneficio - populacao[i].fitness;
-        //DEBUG(printf("individuo_beneficio: %lf\n", populacao[i].fitness););
+        // DEBUG(printf("individuo_beneficio: %lf\n", populacao[i].fitness););
         int limit = floor((individuo_beneficio_inv / sum_beneficio_inv) * 100.00);
-        //DEBUG(printf("Preenchendo roleta com %d de %d até %d\n", i, base, base + limit););
+        // DEBUG(printf("Preenchendo roleta com %d de %d até %d\n", i, base, base + limit););
         for (int j = base; j < base + limit; j++)
         {
             roulette[j] = i;
         }
         base += limit;
     }
-    //DEBUG(printf("Numero de elementos na rolêta: %d\n", base););
-    //DEBUG(printf("Indice sorteado: %d\n", roulette[rand() % base]););
+    // DEBUG(printf("Numero de elementos na rolêta: %d\n", base););
+    // DEBUG(printf("Indice sorteado: %d\n", roulette[rand() % base]););
     return roulette[rand() % base];
 }
 
@@ -250,9 +251,9 @@ populacao selection(populacao *population_original, populacao *population_crosso
         if (population_crossover->individuos[i].fitness < population_original->individuos[i].fitness)
             population_original->individuos[i] = population_crossover->individuos[i];
     }
+    qsort(population_original->individuos, population_original->size, sizeof(individuo), comparador_individuo);
     DEBUG(printf("População selecionada\n"););
     DEBUG(print_population(population_original->individuos, population_original->size, dimension, 1););
-    qsort(population_original->individuos, population_original->size, sizeof(individuo), comparador_individuo);
     return *population_original;
 }
 
@@ -284,7 +285,7 @@ populacao *generate_island(int island_size, int population_size, int dimension, 
     {
         populations[i].individuos = generate_population(population_size, dimension, domain_function);
         populations[i].size = population_size;
-        populations[i].crossover = PONTO;
+        populations[i].crossover = rand() % 6;
         populations[i].neighbours = calloc(4, sizeof(populacao *));
         populations[i].neighbours[0] = &populations[(i + 1) % island_size]; // talvez isso dê problema
         populations[i].neighbours[1] = &populations[(i + 3) % island_size]; // talvez isso dê problema
@@ -325,7 +326,7 @@ populacao *crossover(populacao *populacao_, int dimension)
         fitness(&filho, dimension);
         nova_populacao->individuos[i] = filho;
     }
-    //nova_populacao->individuos[populacao->size - 1] = populacao->individuos[populacao->size - 1];
+    // nova_populacao->individuos[populacao->size - 1] = populacao->individuos[populacao->size - 1];
     return nova_populacao;
 }
 
@@ -370,26 +371,24 @@ individuo evolution(int island_size, int population_size, int dimension, domain 
     time(&time_init);
     time(&time_now);
     DEBUG(printf("Iniciando evolucao\n"););
-    //while (difftime(time_now, time_init) < time_limit)
+    while (difftime(time_now, time_init) < time_limit)
     {
         for (int i = 0; i < island_size; i++)
         {
             DEBUG(printf("\n\ni-ésima ilha: %d\n", i););
             populacao *current_population = &populations[i];
             populacao *cross_population = current_population;
-
-            individuo *population = current_population->individuos;
             int generation_count = 0;
             while (generation_count < num_generations)
             {
-                mutation_diferencial(current_population, dimension, domain_function);
+                mutation_commom(current_population, dimension, domain_function);
                 cross_population = crossover(current_population, dimension);
                 *current_population = selection(current_population, cross_population, dimension);
 
-                // print_individuo(current_population->individuos[current_population->size - 1], dimension);
+                //print_individuo(current_population->individuos[current_population->size - 1], dimension);
                 generation_count++;
                 STATISTICS(print_coords(&current_population->individuos[current_population->size - 1], 1, generation_count, num_generations););
-                DEBUG(printf("Geração: %d\n", generation_count););
+                DEBUG(printf("\nGeração: %d\n", generation_count););
             }
             individuo *bestCurrent = get_best_of_population(*current_population);
 

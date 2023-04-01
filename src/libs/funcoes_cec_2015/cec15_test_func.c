@@ -232,10 +232,7 @@ void cec15_test_func(double *x, double *f, int nx, int mx,int func_num)
 			discus_func(&x[i*nx],&f[i],nx,OShift,M,1,1);
 			//f[i]+=100*func_num;
 			break;
-		//case 4:	
-		//	rosenbrock_func(&x[i*nx],&f[i],nx,OShift,M,1,1);
-		//	f[i]+=400.0;
-		//	break;
+
 		//case 5:
 		//	ackley_func(&x[i*nx],&f[i],nx,OShift,M,1,1);
 		//	f[i]+=500.0;
@@ -324,8 +321,12 @@ void cec15_test_func(double *x, double *f, int nx, int mx,int func_num)
 		//	cf04(&x[i*nx],&f[i],nx,OShift,M,1);
 		//	f[i]+=2600.0;
 		//	break;
-		case 15:
-			cf05(&x[i*nx],&f[i],nx,OShift,M,1);
+		// case 15:
+		// 	cf05(&x[i*nx],&f[i],nx,OShift,M,1);
+		// 	break;
+		case 15:	
+			rosenbrock_func(&x[i*nx],&f[i],nx,OShift,M,1,1);
+			f[i]+=400.0;
 			break;
 		//case 28:
 		//	cf06(&x[i*nx],&f[i],nx,OShift,M,1);
