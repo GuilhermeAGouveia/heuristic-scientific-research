@@ -16,8 +16,8 @@
 #define UTILS_H
 #define DEBUG(x) 
 
-void print_individue(individue individuo, int dimension);
-void print_population(individue *pop, int n_populacoes, int dimension);
+void print_individuo(individuo individuo, int dimension);
+void print_population(individuo *pop, int n_populacoes, int dimension, int only_fitness);
 double random_double(double min, double max);
 
 #endif /* UTILS_H */

@@ -3,10 +3,10 @@
 #include <stdlib.h>
 #include "utils.h"
 
-void print_individue(individue individuo, int dimension)
+void print_individuo(individuo individuo, int dimension)
 {
-    DEBUG(printf("\nprint_individue\n"););
-    printf("Individue: ");
+    DEBUG(printf("\nprint_individuo\n"););
+    printf("individuo: ");
     for (int j = 0; j < dimension; j++)
     {
         printf("%lf ", individuo.chromosome[j]);
@@ -14,13 +14,14 @@ void print_individue(individue individuo, int dimension)
     printf("\nFitness: %lf\n", individuo.fitness);
 }
 
-void print_population(individue *pop, int n_populacoes, int dimension)
+void print_population(individuo *pop, int n_populacoes, int dimension, int only_fitness)
 {
     DEBUG(printf("\nprint_population\n"););
     for (int i = 0; i < n_populacoes; i++)
     {
-        print_individue(pop[i], dimension);
+        only_fitness ? printf("%lf ", pop[i].fitness) : print_individuo(pop[i], dimension);
     }
+    printf("\n");
 }
 
 

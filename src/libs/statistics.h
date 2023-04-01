@@ -15,6 +15,6 @@
 #define TYPES_H
 
 
-int print_coords(individue *population, int n_populacoes, int generation, int generation_max);
+int print_coords(individuo *population, int n_populacoes, int generation, int generation_max);
 
 #endif /* TYPES_H */

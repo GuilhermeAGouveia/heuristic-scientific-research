@@ -241,24 +241,10 @@ individue *evolution(int population_size, int dimension, domain domain_function,
         for (int i = 0; i < population_size - 1; i++)
         {
 
-            DEBUG(printf("\ni-ésimo individuo: %d\n", i););
-
-            select_parents(population, population_size, parents);
-            individue child = cruzamento(parents, dimension);
-            // O if abaixo garante que nunca haverá dois individuos iguais na população
-            if (in_fitness_population(population, population_size, child))
-            {
-                child = mutation(child, dimension, domain_function);
-            }
-            DEBUG(printf("Custo do filho: %lf\n", child.fitness););
-            individue *pior_pai = get_pior_pai(parents);
-            *pior_pai = child;
-
-            if (rand() % 100 < MUTATION_PROBABILITY)
-            {
-                population[i] = mutation(population[i], dimension, domain_function);
-            }
-        }
+                mutation_diferencial(current_population, dimension, domain_function);
+                cross_population = crossover(current_population, dimension);
+                *current_population = selection(current_population, cross_population, dimension);
+                
         time(&time_now);
         generations_count++;
         STATISTICS(print_coords(population, population_size, generations_count, num_generations););
