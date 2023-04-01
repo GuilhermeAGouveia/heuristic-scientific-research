@@ -292,19 +292,19 @@ populacao *generate_island(int island_size, int population_size, int dimension, 
     return populations;
 }
 
-populacao *crossover(populacao *populacao, int dimension)
+populacao *crossover(populacao *populacao_, int dimension)
 {
-    populacao *nova_populacao = generate_island(1, populacao->size, dimension, (domain){bounds_lower, bounds_upper});
+    populacao *nova_populacao = generate_island(1, populacao_->size, dimension, (domain){bounds_lower, bounds_upper});
     DEBUG(printf("\ncruzamento\n"););
-    for (int i = 0; i < populacao->size; i++)
+    for (int i = 0; i < populacao_->size; i++)
     {
         individuo *parents[2];
-        select_parents(*populacao, parents);
+        select_parents(*populacao_, parents);
 
         individuo parent1 = *parents[0];
         individuo parent2 = *parents[1];
         individuo filho;
-        switch (populacao->crossover)
+        switch (populacao_->crossover)
         {
         case MEDIA:
             filho = cruzamento_media(parent1, parent2, dimension);

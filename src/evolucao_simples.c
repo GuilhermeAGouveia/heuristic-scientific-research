@@ -160,19 +160,19 @@ int in_fitness_population(individuo *populacao, int n_populacoes, individuo indi
 individuo *generate_population(int n_populacoes, int dimension, domain domain_function)
 {
     DEBUG(printf("\ngenerate_population\n"););
-    individuo *populacao = malloc(n_populacoes * sizeof(individuo));
+    individuo *population = malloc(n_populacoes * sizeof(individuo));
     for (int i = 0; i < n_populacoes; i++)
     {
-        populacao[i].chromosome = (double *)malloc(dimension * sizeof(double));
+        population[i].chromosome = (double *)malloc(dimension * sizeof(double));
         for (int j = 0; j < dimension; j++)
         {
-            populacao[i].chromosome[j] = random_double(domain_function.min, domain_function.max);
+            population[i].chromosome[j] = random_double(domain_function.min, domain_function.max);
         }
-        populacao[i].fitness = INFINITY;
+        population[i].fitness = INFINITY;
     }
 
     // DEBUG(print_population(population, n_populacoes, dimension););
-    return populacao;
+    return population;
 }
 
 individuo mutation(individuo *population, individuo individuo, int dimension, domain domain_function)
@@ -234,7 +234,7 @@ individuo *evolution(int population_size, int dimension, domain domain_function,
 {
     DEBUG(printf("\nevolution\n"););
     individuo *parents[2];
-    individuo *populacao = generate_population(population_size, dimension, domain_function);
+    individuo *population = generate_population(population_size, dimension, domain_function);
     // int generations_count = 0;
     time_t time_init, time_now;
     int generations_count = 0;
@@ -242,18 +242,18 @@ individuo *evolution(int population_size, int dimension, domain domain_function,
     do
     {
         // printf("\ni-ésima geração: %d\n", generations_count);
-        selection(populacao, population_size, dimension);
+        selection(population, population_size, dimension);
         // print_population(population, population_size, dimension);
         for (int i = 0; i < population_size - 1; i++)
         {
             DEBUG(printf("\ni-ésimo individuo: %d\n", i););
 
-            select_parents(populacao, population_size, parents);
+            select_parents(population, population_size, parents);
             individuo child = cruzamento(parents, dimension);
             // O if abaixo garante que nunca haverá dois individuos iguais na população
-            if (in_fitness_population(populacao, population_size, child))
+            if (in_fitness_population(population, population_size, child))
             {
-                child = mutation(populacao, child, dimension, domain_function);
+                child = mutation(population, child, dimension, domain_function);
             }
             DEBUG(printf("Custo do filho: %lf\n", child.fitness););
             individuo *pior_pai = get_pior_pai(parents);
@@ -261,17 +261,17 @@ individuo *evolution(int population_size, int dimension, domain domain_function,
 
             if (rand() % 100 < MUTATION_PROBABILITY)
             {
-                populacao[i] = mutation(populacao, populacao[i], dimension, domain_function);
+                population[i] = mutation(population, population[i], dimension, domain_function);
             }
         }
         time(&time_now);
         generations_count++;
-        STATISTICS(print_coords(populacao, population_size, generations_count, num_generations););
+        STATISTICS(print_coords(population, population_size, generations_count, num_generations););
 
         // printf("Geração: %d\n", generations_count);
-    } while (!avaliar(populacao, population_size, select_criteria) && difftime(time_now, time_init) < time_limit && generations_count < num_generations);
+    } while (!avaliar(population, population_size, select_criteria) && difftime(time_now, time_init) < time_limit && generations_count < num_generations);
 
-    return get_best_of_population(populacao, population_size);
+    return get_best_of_population(population, population_size);
 }
 
 int main(int argc, char *argv[])
