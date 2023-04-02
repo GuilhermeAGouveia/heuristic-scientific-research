@@ -22,7 +22,8 @@ static int dimension = 10; // 10 or 30
 static int bounds_lower = -100;
 static int bounds_upper = 100;
 static int num_generations = 300;
-static int mutation_probability = 100; // %
+static int mutation_rate = 100; // %
+static int crossover_rate = 100; // %
 
 void print_usage()
 {
@@ -32,7 +33,7 @@ void print_usage()
 void set_parameters(int argc, char *argv[])
 {
     int opt;
-    while ((opt = getopt(argc, argv, "f:F:t:i:p:d:l:u:g:m:")) != -1)
+    while ((opt = getopt(argc, argv, "f:F:t:i:p:d:l:u:g:m:c:")) != -1)
     {
         switch (opt)
         {
@@ -61,7 +62,10 @@ void set_parameters(int argc, char *argv[])
             num_generations = atoi(optarg);
             break;
         case 'm':
-            mutation_probability = atoi(optarg);
+            mutation_rate = atoi(optarg);
+            break;
+        case 'c':
+            crossover_rate = atoi(optarg);
             break;
         case 'F':
             F = atof(optarg);
@@ -78,7 +82,7 @@ void set_parameters(int argc, char *argv[])
 void print_parameters()
 {
     puts("Parameters:");
-    printf(" function_number: %d,\n F: %f,\n time_limit: %d,\n island_size: %d,\n population_size: %d,\n dimension: %d,\n bounds_lower: %d,\n bounds_upper: %d,\n num_generations: %d,\n mutation_probability: %d\n", function_number, F, time_limit, island_size, population_size, dimension, bounds_lower, bounds_upper, num_generations, mutation_probability);
+    printf(" function_number: %d,\n F: %f,\n time_limit: %d,\n island_size: %d,\n population_size: %d,\n dimension: %d,\n bounds_lower: %d,\n bounds_upper: %d,\n num_generations: %d,\n mutation_probability: %d\n", function_number, F, time_limit, island_size, population_size, dimension, bounds_lower, bounds_upper, num_generations, mutation_rate);
 }
 
 void fitness(individuo *individuo, int dimension)
@@ -198,7 +202,7 @@ populacao mutation_diferencial(populacao *populacao, int dimension, domain domai
     {
 
         DEBUG(printf("\nIndividuo %d\n", i); print_individuo(populacao->individuos[i], dimension);)
-        if (rand() % 100 > mutation_probability)
+        if (rand() % 100 > mutation_rate)
         {
             DEBUG(printf("individuo %d não sofreu mutação\n", i););
             continue;
@@ -381,7 +385,7 @@ individuo evolution(int island_size, int population_size, int dimension, domain 
             int generation_count = 0;
             while (generation_count < num_generations)
             {
-                mutation_commom(current_population, dimension, domain_function);
+                mutation_diferencial(current_population, dimension, domain_function);
                 cross_population = crossover(current_population, dimension);
                 *current_population = selection(current_population, cross_population, dimension);
 
