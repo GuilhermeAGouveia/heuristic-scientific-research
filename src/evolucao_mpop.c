@@ -183,6 +183,24 @@ individuo *generate_population(int n_individuos, int dimension, domain domain_fu
     return population;
 }
 
+populacao *generate_island(int island_size, int population_size, int dimension, domain domain_function)
+{
+    DEBUG(printf("\ngenerate_island\n"););
+    populacao *populations = malloc(island_size * sizeof(populacao));
+    populacao **neighbours = calloc(4, sizeof(populacao *));
+    for (int i = 0; i < island_size; i++)
+    {
+        populations[i].individuos = generate_population(population_size, dimension, domain_function);
+        populations[i].size = population_size;
+        populations[i].crossover = rand() % 6;
+        populations[i].neighbours = calloc(4, sizeof(populacao *));
+        populations[i].neighbours[0] = &populations[(i + 1) % island_size]; // talvez isso dê problema
+        populations[i].neighbours[1] = &populations[(i + 3) % island_size]; // talvez isso dê problema
+    }
+    return populations;
+}
+
+
 void mutation_commom(populacao *populacao, int dimension, domain domain_function)
 {
     DEBUG(printf("\nmutation\n"););
@@ -194,14 +212,15 @@ void mutation_commom(populacao *populacao, int dimension, domain domain_function
     }
 }
 
-populacao mutation_diferencial(populacao *populacao, int dimension, domain domain_function)
+populacao * mutation_diferencial(populacao *populacao_original, int dimension, domain domain_function)
 {
     DEBUG(printf("\nMutation\n"););
+    populacao *populacao_mutada = generate_island(1, populacao_original->size, dimension, domain_function);
 
-    for (int i = 0; i < populacao->size - 1; i++)
+    for (int i = 0; i < populacao_original->size; i++)
     {
 
-        DEBUG(printf("\nIndividuo %d\n", i); print_individuo(populacao->individuos[i], dimension);)
+        DEBUG(printf("\nIndividuo %d\n", i); print_individuo(populacao_original->individuos[i], dimension);)
         if (rand() % 100 > mutation_rate)
         {
             DEBUG(printf("individuo %d não sofreu mutação\n", i););
@@ -213,21 +232,21 @@ populacao mutation_diferencial(populacao *populacao, int dimension, domain domai
 
         do
         {
-            alpha = rand() % populacao->size;
-            beta = rand() % populacao->size;
-            gamma = rand() % populacao->size;
+            alpha = rand() % populacao_original->size;
+            beta = rand() % populacao_original->size;
+            gamma = rand() % populacao_original->size;
         } while (alpha == beta || alpha == gamma || beta == gamma);
 
         for (int j = 0; j < dimension; j++)
         {
             // double result = rand();
-            double result = populacao->individuos[alpha].chromosome[j] + F * (fabs(populacao->individuos[beta].chromosome[j]) - fabs(populacao->individuos[gamma].chromosome[j]));
-            populacao->individuos[i].chromosome[j] = result;
+            double result = populacao_original->individuos[alpha].chromosome[j] + F * (fabs(populacao_original->individuos[beta].chromosome[j]) - fabs(populacao_original->individuos[gamma].chromosome[j]));
+            populacao_mutada->individuos[i].chromosome[j] = result;
         }
-        fitness(&populacao->individuos[i], dimension);
-        DEBUG(printf("Individuo %d\n", i); print_individuo(populacao->individuos[i], dimension);)
+        fitness(&populacao_mutada->individuos[i], dimension);
+        DEBUG(printf("Individuo %d\n", i); print_individuo(populacao_mutada->individuos[i], dimension);)
     }
-    return *populacao;
+    return populacao_mutada;
 }
 
 individuo *get_best_of_population(populacao populacao)
@@ -243,7 +262,7 @@ individuo *get_worst_of_population(individuo *population, int n_populacoes)
     return &population[0];
 }
 
-populacao selection(populacao *population_original, populacao *population_crossover, int dimension)
+void selection(populacao *population_original, populacao *population_crossover, int dimension)
 {
     DEBUG(printf("\nselection\n"););
     DEBUG(printf("População original\n"););
@@ -258,7 +277,6 @@ populacao selection(populacao *population_original, populacao *population_crosso
     qsort(population_original->individuos, population_original->size, sizeof(individuo), comparador_individuo);
     DEBUG(printf("População selecionada\n"););
     DEBUG(print_population(population_original->individuos, population_original->size, dimension, 1););
-    return *population_original;
 }
 
 /**
@@ -280,36 +298,24 @@ individuo *get_pior_pai(individuo *pais[2])
     return pais[0]->fitness < pais[1]->fitness ? pais[1] : pais[0];
 }
 
-populacao *generate_island(int island_size, int population_size, int dimension, domain domain_function)
+populacao *crossover(populacao *populacao_original, populacao *populacao_mutada, int dimension)
 {
-    DEBUG(printf("\ngenerate_island\n"););
-    populacao *populations = malloc(island_size * sizeof(populacao));
-    populacao **neighbours = calloc(4, sizeof(populacao *));
-    for (int i = 0; i < island_size; i++)
-    {
-        populations[i].individuos = generate_population(population_size, dimension, domain_function);
-        populations[i].size = population_size;
-        populations[i].crossover = rand() % 6;
-        populations[i].neighbours = calloc(4, sizeof(populacao *));
-        populations[i].neighbours[0] = &populations[(i + 1) % island_size]; // talvez isso dê problema
-        populations[i].neighbours[1] = &populations[(i + 3) % island_size]; // talvez isso dê problema
-    }
-    return populations;
-}
-
-populacao *crossover(populacao *populacao_, int dimension)
-{
-    populacao *nova_populacao = generate_island(1, populacao_->size, dimension, (domain){bounds_lower, bounds_upper});
+    populacao *nova_populacao = generate_island(1, populacao_original->size, dimension, (domain){bounds_lower, bounds_upper});
     DEBUG(printf("\ncruzamento\n"););
-    for (int i = 0; i < populacao_->size; i++)
+    int i;
+    
+    for (i = 0; i < populacao_original->size; i++)
     {
         individuo *parents[2];
-        select_parents(*populacao_, parents);
+        if (rand() % 100 < crossover_rate)
+            select_parents(*populacao_mutada, parents);
+        else
+            select_parents(*populacao_original, parents);
 
         individuo parent1 = *parents[0];
         individuo parent2 = *parents[1];
         individuo filho;
-        switch (populacao_->crossover)
+        switch (populacao_original->crossover)
         {
         case MEDIA:
             filho = cruzamento_media(parent1, parent2, dimension);
@@ -380,21 +386,22 @@ individuo evolution(int island_size, int population_size, int dimension, domain 
         for (int i = 0; i < island_size; i++)
         {
             DEBUG(printf("\n\ni-ésima ilha: %d\n", i););
-            populacao *current_population = &populations[i];
-            populacao *cross_population = current_population;
+            populacao *original_population = &populations[i];
+            populacao *cross_population;
+            populacao *mutation_population;
             int generation_count = 0;
             while (generation_count < num_generations)
             {
-                mutation_diferencial(current_population, dimension, domain_function);
-                cross_population = crossover(current_population, dimension);
-                *current_population = selection(current_population, cross_population, dimension);
+                mutation_population = mutation_diferencial(original_population, dimension, domain_function);
+                cross_population = crossover(original_population, mutation_population, dimension);
+                selection(original_population, cross_population, dimension);
 
-                //print_individuo(current_population->individuos[current_population->size - 1], dimension);
+                //print_individuo(original_population->individuos[original_population->size - 1], dimension);
                 generation_count++;
-                STATISTICS(print_coords(&current_population->individuos[current_population->size - 1], 1, generation_count, num_generations););
+                STATISTICS(print_coords(&original_population->individuos[original_population->size - 1], 1, generation_count, num_generations););
                 DEBUG(printf("\nGeração: %d\n", generation_count););
             }
-            individuo *bestCurrent = get_best_of_population(*current_population);
+            individuo *bestCurrent = get_best_of_population(*original_population);
 
             // puts("\nMelhor de toda a população:");
             // print_individuo(*bestCurrent, dimension);
