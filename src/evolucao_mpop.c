@@ -10,8 +10,8 @@
 #include "./libs/types.h"
 #include "./libs/utils.h"
 #include "./libs/crossover.h"
-#define STATISTICS(x) 
-#define DEBUG(x) 
+#define STATISTICS(x)
+#define DEBUG(x)
 
 static double F = 0.99;
 static int function_number = 1;
@@ -22,8 +22,9 @@ static int dimension = 10; // 10 or 30
 static int bounds_lower = -100;
 static int bounds_upper = 100;
 static int num_generations = 300;
-static int mutation_rate = 100; // %
+static int mutation_rate = 100;  // %
 static int crossover_rate = 100; // %
+static int num_migrations = 3;
 
 void print_usage()
 {
@@ -33,7 +34,7 @@ void print_usage()
 void set_parameters(int argc, char *argv[])
 {
     int opt;
-    while ((opt = getopt(argc, argv, "f:F:t:i:p:d:l:u:g:m:c:")) != -1)
+    while ((opt = getopt(argc, argv, "f:F:t:i:p:d:l:u:g:m:c:k:")) != -1)
     {
         switch (opt)
         {
@@ -66,6 +67,9 @@ void set_parameters(int argc, char *argv[])
             break;
         case 'c':
             crossover_rate = atoi(optarg);
+            break;
+        case 'k':
+            num_migrations = atoi(optarg);
             break;
         case 'F':
             F = atof(optarg);
@@ -200,7 +204,6 @@ populacao *generate_island(int island_size, int population_size, int dimension, 
     return populations;
 }
 
-
 void mutation_commom(populacao *populacao, int dimension, domain domain_function)
 {
     DEBUG(printf("\nmutation\n"););
@@ -212,7 +215,7 @@ void mutation_commom(populacao *populacao, int dimension, domain domain_function
     }
 }
 
-populacao * mutation_diferencial(populacao *populacao_original, int dimension, domain domain_function)
+populacao *mutation_diferencial(populacao *populacao_original, int dimension, domain domain_function)
 {
     DEBUG(printf("\nMutation\n"););
     populacao *populacao_mutada = generate_island(1, populacao_original->size, dimension, domain_function);
@@ -303,7 +306,7 @@ populacao *crossover(populacao *populacao_original, populacao *populacao_mutada,
     populacao *nova_populacao = generate_island(1, populacao_original->size, dimension, (domain){bounds_lower, bounds_upper});
     DEBUG(printf("\ncruzamento\n"););
     int i;
-    
+
     for (i = 0; i < populacao_original->size; i++)
     {
         individuo *parents[2];
@@ -344,28 +347,32 @@ void migrate(populacao *populations, int island_size, int dimension, domain doma
 {
     DEBUG(printf("\nmigrate\n"););
     populacao *vizinho;
+    // print_population(populations[0].individuos, populations[0].size, dimension, 1);
 
     for (int i = 0; i < island_size; i++)
     {
         DEBUG(printf("Populacao %d\n", i));
         populacao current_island = populations[i];
         individuo *population = current_island.individuos;
-        individuo *melhor_individuo_da_populacao = get_best_of_population(current_island);
-        DEBUG(printf("Melhor individuo da populacao %d: %lf\n", i, melhor_individuo_da_populacao->fitness););
-        for (int j = 0; j < 4; j++)
+        for (int k = 1; k <= num_migrations; k++)
         {
-            vizinho = current_island.neighbours[j];
-            if (vizinho == NULL)
-                continue;
-            individuo *neighbour_population = vizinho->individuos;
-            individuo *pior_indivuduo_do_vizinho = get_worst_of_population(neighbour_population, population_size);
-            if (melhor_individuo_da_populacao->fitness > pior_indivuduo_do_vizinho->fitness)
+            individuo *melhor_individuo_da_populacao = &population[current_island.size - k];
+            DEBUG(printf("Melhor individuo da populacao %d: %lf\n", i, melhor_individuo_da_populacao->fitness););
+            for (int j = 0; j < 4; j++)
             {
-                individuo *new_worst = generate_population(1, dimension, domain_function);
-                *pior_indivuduo_do_vizinho = *new_worst;
+                vizinho = current_island.neighbours[j];
+                if (vizinho == NULL)
+                    continue;
+                individuo *neighbour_population = vizinho->individuos;
+                individuo *pior_indivuduo_do_vizinho = get_worst_of_population(neighbour_population, population_size);
+                if (melhor_individuo_da_populacao->fitness > pior_indivuduo_do_vizinho->fitness)
+                {
+                    individuo *new_worst = generate_population(1, dimension, domain_function);
+                    *pior_indivuduo_do_vizinho = *new_worst;
+                }
+                else
+                    *pior_indivuduo_do_vizinho = *melhor_individuo_da_populacao;
             }
-            else
-                *pior_indivuduo_do_vizinho = *melhor_individuo_da_populacao;
         }
     }
 }
@@ -396,7 +403,7 @@ individuo evolution(int island_size, int population_size, int dimension, domain 
                 cross_population = crossover(original_population, mutation_population, dimension);
                 selection(original_population, cross_population, dimension);
 
-                //print_individuo(original_population->individuos[original_population->size - 1], dimension);
+                // print_individuo(original_population->individuos[original_population->size - 1], dimension);
                 generation_count++;
                 STATISTICS(print_coords(&original_population->individuos[original_population->size - 1], 1, generation_count, num_generations););
                 DEBUG(printf("\nGeração: %d\n", generation_count););
