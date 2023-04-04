@@ -261,7 +261,7 @@ individuo *get_best_of_population(populacao populacao)
 
 individuo *get_worst_of_population(individuo *population, int n_populacoes)
 {
-    // qsort(population, n_populacoes, sizeof(individuo), comparador_individuo);
+    qsort(population, n_populacoes, sizeof(individuo), comparador_individuo);
     return &population[0];
 }
 
