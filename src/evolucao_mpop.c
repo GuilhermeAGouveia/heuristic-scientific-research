@@ -120,31 +120,31 @@ void print_roleta(int *roleta, int roleta_size, int ball1, int ball2)
     printf("\n\n");
 }
 
-int roleta_pais(individuo *populacao, int n_populacoes)
+int roleta_pais(individuo *populacao, int num_individuos)
 {
     // DEBUG(printf("\nroleta\n"););
-    int roulette[100];
+    int roulette[num_individuos + 100];
     double sum_beneficio = 0.0;
     double sum_beneficio_inv = 0.0;
 
     // DEBUG(printf("sum_beneficio[init]\n"););
-    for (int i = 0; i < n_populacoes; i++)
+    for (int i = 0; i < num_individuos; i++)
     {
         sum_beneficio += populacao[i].fitness;
     }
 
-    for (int i = 0; i < n_populacoes; i++)
+    for (int i = 0; i < num_individuos; i++)
     {
         sum_beneficio_inv += sum_beneficio - populacao[i].fitness;
     }
     // DEBUG(printf("sum_beneficio[end]: %lf\n", sum_beneficio););
 
     int base = 0;
-    for (int i = 0; i < n_populacoes; i++)
+    for (int i = 0; i < num_individuos; i++)
     {
         double individuo_beneficio_inv = sum_beneficio - populacao[i].fitness;
         // DEBUG(printf("individuo_beneficio: %lf\n", populacao[i].fitness););
-        int limit = floor((individuo_beneficio_inv / sum_beneficio_inv) * 100.00);
+        int limit = ceil((individuo_beneficio_inv / sum_beneficio_inv) * 100.00);
         // DEBUG(printf("Preenchendo roleta com %d de %d até %d\n", i, base, base + limit););
         for (int j = base; j < base + limit; j++)
         {
@@ -223,7 +223,7 @@ populacao *mutation_diferencial(populacao *populacao_original, int dimension, do
     for (int i = 0; i < populacao_original->size; i++)
     {
 
-        DEBUG(printf("\nIndividuo %d\n", i); print_individuo(populacao_original->individuos[i], dimension);)
+        DEBUG(printf("\nIndividuo %d\n", i); print_individuo(populacao_original->individuos[i], dimension, i);)
         if (rand() % 100 > mutation_rate)
         {
             DEBUG(printf("individuo %d não sofreu mutação\n", i););
@@ -247,7 +247,7 @@ populacao *mutation_diferencial(populacao *populacao_original, int dimension, do
             populacao_mutada->individuos[i].chromosome[j] = result;
         }
         fitness(&populacao_mutada->individuos[i], dimension);
-        DEBUG(printf("Individuo %d\n", i); print_individuo(populacao_mutada->individuos[i], dimension);)
+        DEBUG(printf("Individuo %d\n", i); print_individuo(populacao_mutada->individuos[i], dimension, i);)
     }
     return populacao_mutada;
 }
@@ -435,6 +435,6 @@ int main(int argc, char *argv[])
     srand(semente);
     result = evolution(island_size, population_size, dimension, (domain){bounds_lower, bounds_upper}, num_generations);
 
-    print_individuo(result, dimension);
+    print_individuo(result, dimension, 0);
     return 0;
 }
