@@ -288,6 +288,6 @@ int main(int argc, char *argv[])
         time_limit = atoi(argv[2]);
         result = evolution(POPULATION_SIZE, DIMENSION, (domain){BOUNDS_LOWER, BOUNDS_UPPER}, SELECT_CRITERIA, NUM_GENERATIONS);
     }
-    print_individuo(*result, 10);
+    print_individuo(*result, 10, 1);
     return 0;
 }
