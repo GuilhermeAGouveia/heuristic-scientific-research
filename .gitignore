@@ -54,3 +54,4 @@ dkms.conf
 # Speciefic from project
 
 src/statistics/coords.dat
+src/log/*
