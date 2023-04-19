@@ -395,7 +395,7 @@ individuo evolution(int island_size, int population_size, int dimension, domain 
         printf("Epoca: %d\n", epoca_count);
         for (int i = 0; i < island_size; i++)
         {
-            DEBUG(printf("\n\ni-ésima ilha: %d\n", i););
+            LOG(printf("\n\ni-ésima ilha: %d\n", i););
             populacao *original_population = &populations[i];
             populacao *cross_population;
             populacao *mutation_population;

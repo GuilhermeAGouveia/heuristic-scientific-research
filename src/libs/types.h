@@ -18,8 +18,7 @@ typedef struct individuo_
 {
     double *chromosome;
     double fitness;
-    float inter_Pai_inicio;
-    float inter_Pai_fim;
+    double *velocidade;
 } individuo;
 
 
