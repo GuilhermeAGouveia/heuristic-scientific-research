@@ -17,7 +17,7 @@
 #define DEBUG(x) 
 
 void print_individuo(individuo individuo, int dimension, int id);
-void print_population(individuo *pop, int n_populacoes, int dimension, int only_fitness);
+void print_population(individuo *pop, int tamanho_populacao, int dimension, int only_fitness);
 double random_double(double min, double max);
 
 #endif /* UTILS_H */
