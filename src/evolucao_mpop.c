@@ -379,6 +379,49 @@ void migrate(populacao *populations, int island_size, int dimension, domain doma
     }
 }
 
+
+void swap_individuo(individuo *a, individuo *b) {
+    individuo temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void shuffle(individuo *pool, int size_pool) {
+    for(int i = 0; i < size_pool; i++)
+        swap_individuo(&pool[rand()%size_pool], &pool[rand()%size_pool]);
+    
+}
+
+void random_random_migrate(populacao *populations, int island_size, int dimension, domain domain_function) {
+    DEBUG(printf("\nrandom random migrate\n"););
+    individuo *pool = generate_population(parameters.num_migrations * island_size, dimension, domain_function);
+    int positions[island_size][parameters.num_migrations];
+    for (int i = 0; i < island_size; i++) {
+        DEBUG(printf("população %d\n", i););
+        for (int j = 0; j < parameters.num_migrations; j++) {
+            int rand_index = rand() % parameters.population_size;
+            DEBUG(printf("posição sorteada %d\n", rand_index););
+            if (!populations[i].individuos[rand_index].chromosome) { //se for nulo que dizer que o elemento já foi sorteado
+                j--;
+                DEBUG(printf("posição já foi sorteada\n"););
+                continue;
+            }
+
+            pool[i * parameters.num_migrations + j] = populations[i].individuos[rand_index]; //corre o risco de sortear o mesmo individuo
+            populations[i].individuos[rand_index] = (individuo) {NULL, INFINITY, NULL};
+            positions[i][j] = rand_index;
+        }
+    }
+
+    shuffle(pool, parameters.num_migrations * island_size);
+
+    for (int i = 0; i < island_size; i++) {
+        for (int j = 0; j < parameters.num_migrations; j++) {
+            populations[i].individuos[positions[i][j]] = pool[i * parameters.num_migrations + j];
+        }
+    }
+}
+
 individuo evolution(int island_size, int population_size, int dimension, domain domain_function, int num_generations)
 {
     DEBUG(printf("\nevolution\n"););
