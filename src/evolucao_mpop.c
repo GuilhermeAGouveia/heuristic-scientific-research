@@ -13,7 +13,7 @@
 #include "./libs/log.h"
 #define STATISTICS(x)
 #define DEBUG(x)
-#define LOG(x) 
+#define LOG(x) x
 
 static args parameters;
 
