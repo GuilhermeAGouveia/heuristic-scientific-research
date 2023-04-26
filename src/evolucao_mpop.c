@@ -469,6 +469,7 @@ individuo evolution(int island_size, int population_size, int dimension, domain 
         time(&time_now);
     }
     densityPopulation(populations, island_size);
+    densityWorld(populations, island_size);
     return bestIndividuo;
 }
 
