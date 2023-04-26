@@ -11,6 +11,7 @@
 #include "./libs/utils.h"
 #include "./libs/crossover.h"
 #include "./libs/log.h"
+#include "medidas_geneticas.h"
 #define STATISTICS(x)
 #define DEBUG(x)
 #define LOG(x) x
@@ -467,6 +468,7 @@ individuo evolution(int island_size, int population_size, int dimension, domain 
         epoca_count++;
         time(&time_now);
     }
+    densityPopulation(populations, island_size);
     return bestIndividuo;
 }
 

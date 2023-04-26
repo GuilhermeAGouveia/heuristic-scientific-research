@@ -77,3 +77,7 @@ void densityWorld(populacao *populations,int island_size) {
 	// verificar se esta ideia acima está correta
 	*/
 }
+
+int main(int argc, char *argv[]) {
+	
+}
