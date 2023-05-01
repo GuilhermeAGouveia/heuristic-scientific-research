@@ -3,6 +3,11 @@
         "cec15_test_func.h": "c",
         "jkiss.h": "c",
         "statistics.h": "c",
-        "utils.h": "c"
+        "utils.h": "c",
+        "time.h": "c",
+        "array": "c",
+        "string_view": "c",
+        "initializer_list": "c",
+        "utility": "c"
     }
 }

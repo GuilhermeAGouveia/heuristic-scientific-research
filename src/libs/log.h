@@ -16,6 +16,7 @@ typedef struct args_
     int mutation_rate;
     int num_migrations;
     int num_generations_per_epoca;
+    int num_epocas;
 
 } args;
 

@@ -11,9 +11,10 @@
 #include "./libs/utils.h"
 #include "./libs/crossover.h"
 #include "./libs/log.h"
+#include "medidas_geneticas.h"
 #define STATISTICS(x)
 #define DEBUG(x)
-#define LOG(x) 
+#define LOG(x) x
 
 static args parameters;
 
@@ -429,7 +430,7 @@ individuo evolution(int island_size, int population_size, int dimension, domain 
     individuo bestIndividuo = {.fitness = INFINITY};
     populacao *populations = generate_island(island_size, population_size, dimension, domain_function);
     time_t time_init, time_now;
-    int epoca_count;
+    int epoca_count = 0;
     time(&time_init);
     time(&time_now);
     DEBUG(printf("Iniciando evolucao\n"););
@@ -465,6 +466,7 @@ individuo evolution(int island_size, int population_size, int dimension, domain 
         }
         migrate(populations, island_size, dimension, domain_function);
         epoca_count++;
+        parameters.num_epocas = epoca_count;
         time(&time_now);
     }
     return bestIndividuo;
