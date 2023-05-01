@@ -14,7 +14,7 @@
 #include <dirent.h>
 #include <string.h>
 
-#define DEBUG(x) 
+#define DEBUG(x)
 
 static args parameters;
 
@@ -240,7 +240,7 @@ double *densityPopulation(populacao *populations, int island_size)
 
 // implements the same diversity metric of the density population
 // extends it to the entire "world"
-void densityWorld(populacao *populations, int island_size)
+double densityWorld(populacao *populations, int island_size)
 {
     double total;
     double sum[island_size][island_size];
@@ -285,8 +285,8 @@ void densityWorld(populacao *populations, int island_size)
     sd /= island_size;
     sd = sqrt(sd);*/
 
-    printf("\nDensityWord\n");
-    printf("%lf;\n", total);
+    // printf("\nDensityWord\n");
+    // printf("%lf;\n", total);
     /*
     //cout << total << ";" << endl;
 
@@ -295,6 +295,7 @@ void densityWorld(populacao *populations, int island_size)
     // de uma execução com outra. Então, é somar tudo e retornar
     // verificar se esta ideia acima está correta
     */
+    return total;
 }
 /*
 Parameters:
@@ -310,6 +311,13 @@ Parameters:
  crossover_rate: 100,
  num_migrations: 3
  */
+
+void clean_metric_dir()
+{
+    DEBUG(printf("\nclean_log_dir\n"););
+
+    system("rm -rf log/metricas/*");
+}
 
 void read_parameters_file(char *parameters_filename)
 {
@@ -344,61 +352,48 @@ void read_parameters_file(char *parameters_filename)
     }
 }
 
-int main()
+void write_metrics_for_each_files()
 {
-    read_parameters_file("./log/_parametros.dat");
+    read_parameters_file("./log/data/_parametros.dat");
+    clean_metric_dir();
     printf("population_size: %d\n", parameters.population_size);
     printf("num_epocas: %d\n", parameters.num_epocas);
     printf("num_generations_per_epoca: %d\n", parameters.num_generations_per_epoca);
 
+    FILE *output_metric;
     files_list all_files = list_all_files_in_dir("./log");
-
+    char cmd[1024];
     for (int i = 0; i < parameters.num_epocas; i++)
     {
-        printf("Epoca %d\n", i);
+        sprintf(cmd, "mkdir -p log/metricas/epoca_%d/", i);
+        system(cmd);
+        char filename[1024];
+        sprintf(filename, "log/metricas/epoca_%d/metrics_for_each_generation.dat", i);
+        output_metric = fopen(filename, "w");
+
         for (int j = 0; j < parameters.num_generations_per_epoca; j++)
         {
-            printf("Generation %d\n", j);
             files_list filtered_files = filter_file_list_by(all_files, i, j);
             DEBUG(print_string_vector(filtered_files.files, filtered_files.num_files););
             populacao *populations = mount_populations(filtered_files);
             double *densityPopulationResult = densityPopulation(populations, filtered_files.num_files);
-            printf("Density Population Average: %lf\n", densityPopulationResult[0]);
-            printf("Density Population SD: %lf\n", densityPopulationResult[1]);
-        }
-    }
+            double densityWorldResult = densityWorld(populations, filtered_files.num_files);
+            // Criar pasta
 
-    // print_string_vector(filtered_files.files, filtered_files.num_files);
-    return 0;
+            if (output_metric == NULL)
+            {
+                printf("Error opening file!\n");
+                exit(1);
+            }
+            fprintf(output_metric, "%lf ", densityPopulationResult[0]);
+            fprintf(output_metric, "%lf ", densityPopulationResult[1]);
+            fprintf(output_metric, "%lf\n", densityWorldResult);
+        }
+        fclose(output_metric);
+    }
 }
 
-// TODO: Essa função tem que processar cada arquivos em files_list encontrado pela função list_all_files_in_dir,
-// calcular as metricas para esse arquivo, e depois salvar isso em
-// outro arquivo de mesmo nome na pasta metrics.
-
-// void write_metrics_for_each_files(files_list files_list) {
-//     for (int i = 0; i < files_list.num_files; i++) {
-//         char *file = files_list.files[i];
-//         char *file_name = get_file_name(file);
-//         char *dir_name = get_dir_name(file);
-//         char *new_file_name = (char *) malloc(100 * sizeof(char));
-//         sprintf(new_file_name, "%s/%s", dir_name, file_name);
-//         printf("file: %s\n", new_file_name);
-//         write_metrics_for_each_file(new_file_name);
-//     }
-// }
-/*
-Parameters:
- function_number: 1,
- F: 0.990000,
- time_limit: 10,
- island_size: 5,
- population_size: 10,
- dimension: 10,
- domain function interval: [-100.000000, 100.000000],
- num_generations: 300,
- mutation_rate: 100,
- crossover_rate: 100,
- num_migrations: 3,
- num_epocas: 2
-*/
+int main()
+{
+    write_metrics_for_each_files();
+}
