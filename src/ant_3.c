@@ -18,8 +18,8 @@
 
 #define DEBUG(x)
 
-#define N_ANT 5
-#define N_ITER 2
+#define N_ANT 200
+#define N_ITER 1000
 #define ALPHA 2.0
 #define BETA 1.0
 #define RHO 0.5
@@ -42,7 +42,7 @@ void aco(int d);
 
 int main()
 {
-    srand(time(NULL));
+    srand(10);
     int d = 10;
     aco(d);
     return 0;
@@ -75,53 +75,23 @@ void initialize(Ant *ants, int n, int d)
 void update_pheromones(double **pheromones, Ant *ants, int n, int d, int best)
 {
     DEBUG(printf("update_pheromones\n");)
-    long double aux, aux2;
 
     for (int i = 0; i < n; i++)
     {
-        // double delta_pheromone = Q / (ants[i].fitness - best + EPSILON);
         for (int j = 0; j < d; j++)
         {
-            aux = sqrt(abs_double(2 * sigma[d] * PI));
-            if(aux == 0)
-              aux = 0.00000001;
-            aux2 = exp(pow((pheromones[best][j] - pheromones[i][j]), 2) / (-2 * pow(sigma[d],2)));
-            pheromones[i][j] = (1 / aux) * aux2;
-            printf("Pheromones_update: aux-%Lf,  aux2-%Lf\n",aux, aux2 );
+            pheromones[i][j] = (1 / sqrt(abs_double(2 * sigma[j] * PI))) * exp(pow((pheromones[best][j] - pheromones[i][j]), 2) / (-2 * pow(sigma[j],2)));
+            if(pheromones[i][j] == 0)
+              pheromones[i][j] = random_double(0.01,0.09);
+            //printf("pheromoneo: %lf\n",pheromones[i][j] );
         }
+        //printf("\n\n");
+
     }
 }
 
 // Select the next ant_chromossome based on the pheromone information
 
-void select_next_position2(double **pheromones, double *ant_chromossome, int d)
-{
-    DEBUG(printf("select_next_position\n");)
-    double total_pheromone = 0.0;
-    for (int i = 0; i < N_ANT; i++)
-    {
-        double ant_pheromone = 0.0;
-        for (int j = 0; j < d; j++)
-        {
-            ant_pheromone += pow(pheromones[i][j], ALPHA) * pow(1.0 / fabs(ant_chromossome[i]), BETA);
-        }
-        total_pheromone += ant_pheromone;
-    }
-
-    for (int i = 0; i < N_ANT; i++)
-    {
-        double ant_pheromone = 0.0;
-        for (int j = 0; j < d; j++)
-        {
-            ant_pheromone += pow(pheromones[i][j], ALPHA) * pow(1.0 / fabs(ant_chromossome[i]), BETA);
-        }
-        double prob = ant_pheromone / total_pheromone;
-        if (((double)rand() / RAND_MAX) < prob)
-        {
-            ant_chromossome[i] += random_double(-1, 1);
-        }
-    }
-}
 
 double sum_pheromone_dimension(double **pheromones, int d)
 {
@@ -142,7 +112,7 @@ void select_next_position(double **pheromones, Ant *ants, int d)
     {
         sum_pheromone[i] = sum_pheromone_dimension(pheromones, i);
     }
-    printf("Select_Sum_Pheromone:%lf\n", sum_pheromone[1]);
+    //printf("Select_Sum_Pheromone:%lf\n", sum_pheromone[1]);
 
     for (int i = 0; i < N_ANT; i++)
     {
@@ -190,6 +160,12 @@ void update_sigma(Ant *ants, int d, int best_ant){
     }
 }
 
+void print_sigma(){
+    for(int i = 0; i < 10; i++){
+        printf("Sigma %d: %lf\n", i, sigma[i]);
+    }
+}
+
 // The main ACO function
 void aco(int d)
 {
@@ -224,10 +200,11 @@ void aco(int d)
     }
     sigma = (double *)malloc(d * sizeof(double));
     update_sigma(ants, d, best_ant);
-    printf("Sigma:%lf\n", sigma[0]);
+   // printf("Sigma:%lf\n", sigma[0]);
 
     // Update the pheromone matrix with the best ant's path
     update_pheromones(pheromones, ants, N_ANT, d, best_ant);
+    //print_sigma();
 
     // Iterate over the specified number of iterations
     for (int iter = 0; iter < N_ITER; iter++)
