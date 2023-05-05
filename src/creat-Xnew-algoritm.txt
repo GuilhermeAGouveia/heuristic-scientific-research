@@ -1,0 +1,11 @@
+Para cada formiga i:
+a. Escolha uma dimensão aleatória j.
+b. Calcule a média dos valores da dimensão j entre todas as formigas (exceto a formiga i). Essa média é representada por m.
+c. Calcule o valor do feromônio τij na posição atual da formiga i na dimensão j usando a fórmula 6.
+d. Calcule a distância dij entre a posição atual da formiga i na dimensão j e o valor m calculado anteriormente.
+e. Calcule o valor de Δij = dij / τij.
+f. Calcule o valor do ponto candidato Cij = Xi,j + Δij * (m - Xi,j).
+g. Gere um valor aleatório r entre 0 e 1. Se r for menor ou igual à probabilidade de exploração ω, defina o ponto candidato Xijnew = Cij. Caso contrário, escolha um valor aleatório dentro do intervalo da dimensão j e defina Xijnew como esse valor.
+Repita o passo 1 para cada dimensão do problema.
+Os valores de Xnew para a formiga i são dados por Xnew,i = {X1new,i, X2new,i, ..., Xnnew,i}, onde Xjnew,i é o valor correspondente na dimensão j gerado no passo anterior.
+Note que a probabilidade de exploração ω é usada para controlar a quantidade de exploração do espaço de solução versus a intensificação da busca em torno das melhores soluções encontradas até agora. Esse valor deve ser definido de acordo com o problema em questão e com o desempenho do algoritmo em relação à convergência e diversidade das soluções encontradas.
