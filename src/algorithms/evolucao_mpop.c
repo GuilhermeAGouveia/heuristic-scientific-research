@@ -5,13 +5,12 @@
 #include <time.h>
 #include <math.h>
 #define NO_RECORDING
-#include "./libs/funcoes_cec_2015/cec15_test_func.h"
-#include "./libs/statistics.h"
-#include "./libs/types.h"
-#include "./libs/utils.h"
-#include "./libs/crossover.h"
-#include "./libs/log.h"
-#include "medidas_geneticas.h"
+#include "../libs/funcoes_cec_2015/cec15_test_func.h"
+#include "../libs/statistics.h"
+#include "../libs/types.h"
+#include "../libs/utils.h"
+#include "../libs/crossover.h"
+#include "../libs/log.h"
 #define STATISTICS(x)
 #define DEBUG(x)
 #define LOG(x) x
@@ -26,7 +25,7 @@ void print_usage()
 
 void set_default_parameters(){
     parameters.F = 0.99;
-    parameters.function_number = 1;
+    parameters.function_number = 3;
     parameters.time_limit = 10; // seconds
     parameters.island_size = 10;
     parameters.population_size = 3;

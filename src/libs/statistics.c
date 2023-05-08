@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "utils.h"
 #include "statistics.h"
-#define STATISTICS_DIR "statistics"
+#define STATISTICS_DIR "../statistics"
 
 
 int print_coords(individuo *population, int n_populacoes, int generation, int generation_max)
