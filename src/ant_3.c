@@ -47,11 +47,11 @@ AntParameters parameters;
 
 void set_default_parameters()
 {
-    parameters.num_ant = 200;
+    parameters.num_ant = 50;
     parameters.num_iter = 500;
     parameters.tax_evaporate = 0.1;
     parameters.num_candidates = 10;
-    parameters.p_exploitation = 0.3;
+    parameters.p_exploitation = 0.1;
     parameters.function_number = 1;
     parameters.time_limit = 10; // in seconds
 }
@@ -168,14 +168,22 @@ void update_pheromones(double **pheromones, Ant *ants, int n, int d)
     {
         for (int j = 0; j < d; j++)
         {
-            pheromones[i][j] = (1 / sqrt(2 * sigma[j] * PI)) * exp(pow((pheromones_best[0][j] - pheromones[i][j]), 2) / (-2 * pow(sigma[j], 2)));
-            // printf("pheromoneo: %lf\n",pheromones[i][j] );
+            pheromones[i][j] = random_double(0,0.3) + (1 / sqrt(2 * sigma[j] * PI)) * exp(pow((pheromones_best[0][j] - pheromones[i][j]), 2) / (-2 * pow(sigma[j], 2)));
+             //printf("pheromoneo: %lf\n",pheromones[i][j] );
         }
-        // printf("\n\n");
+         //printf("\n\n");
     }
 }
 
-// Select the next ant_chromossome based on the pheromone information
+double sum_ant_dimension(Ant *ants, int current_d)
+{
+    double sum = 0.0;
+    for (int i = 0; i < parameters.num_ant; i++)
+    {
+        sum += ants[i].ant_chromossome[current_d];
+    }
+    return sum;
+}
 
 double sum_pheromone_dimension(double **pheromones, int d)
 {
@@ -244,49 +252,83 @@ void saved_chosen(Ant *ants, int id_origin, int id_new, int d)
     }
 }
 
+void candiate_calculator_crossover(Ant *ants, int d, int id_ant, int id_candit)
+{
+    double  current_dimension_value;
+    int ant2 = rand() % parameters.num_ant;
+
+    while (ant2 == id_ant)
+        ant2 = rand() % parameters.num_ant;
+
+    for (int j = 0; j < d; j++)
+    {
+        current_dimension_value = ants[id_ant].ant_chromossome[j];
+
+        candidates[id_candit].ant_chromossome[j] = (current_dimension_value + ants[ant2].ant_chromossome[j])/2;
+         //printf("Original: %lf  ", current_dimension_value);
+         //printf("candidato: %lf\n", candidates[id_candit].ant_chromossome[j]);
+        if (random_double(0, 1) <= parameters.p_exploitation || !(candidates[id_candit].ant_chromossome[j] <= 100 && candidates[id_candit].ant_chromossome[j] >= -100))
+            candidates[id_candit].ant_chromossome[j] = random_double(-100, 100);
+    }
+}
+
+void candiate_calculator(Ant *ants, double **pheromones, double *sum_ant_dimension, int d, int id_ant, int id_candit)
+{
+    double distance, current_pheromone, current_dimension_value, delta, mean;
+    for (int j = 0; j < d; j++)
+    {
+        current_pheromone = pheromones[id_ant][j];
+        current_dimension_value = ants[id_ant].ant_chromossome[j];
+        mean = (sum_ant_dimension[j] - current_dimension_value) / parameters.num_ant - 1;
+        distance = abs_double(mean - current_dimension_value);
+        delta = distance / current_dimension_value;
+        // Cij = Xi,j + Δij * (m - Xi,j).
+        candidates[id_candit].ant_chromossome[j] = current_dimension_value + delta * (mean - current_dimension_value);
+        // printf("Original: %lf  ", current_dimension_value);
+        // printf("candidato: %lf\n", candidates[id_candit].ant_chromossome[j]);
+        if (random_double(0, 1) <= parameters.p_exploitation || !(candidates[id_candit].ant_chromossome[j] <= 100 && candidates[id_candit].ant_chromossome[j] >= -100))
+            candidates[id_candit].ant_chromossome[j] = random_double(-100, 100);
+    }
+}
+
+void chose_new_point(Ant *ants, int id_ant, int d)
+{
+    double chosen_porcent = random_double(0, 1);
+    double probability_porcent = 0.0;
+
+    for (int y = 0; y < parameters.num_candidates; y++)
+    {
+        probability_porcent += sum_pheromone_ant(pheromones_candidates, d, y) / sum_pheromone_ants(pheromones_candidates, d, parameters.num_candidates);
+        if (probability_porcent <= chosen_porcent)
+        {
+            saved_chosen(ants, id_ant, y, d);
+            ants[id_ant].fitness = f(ants[id_ant].ant_chromossome, d);
+            break;
+        }
+    }
+}
+
 void select_next_position(double **pheromones, Ant *ants, int d)
 {
     DEBUG(printf("select_next_position\n");)
-    double sum_pheromone[d], prob, mean = 0.0;
-    double distance, current_pheromone, delta;
+    double sum_dimensions[d], prob;
     double chosen_porcent, probability_porcent = 0.0;
 
     for (int i = 0; i < d; i++)
     {
-        sum_pheromone[i] = sum_pheromone_dimension(pheromones, i);
+        sum_dimensions[i] = sum_ant_dimension(ants, i);
     }
     // Para cada formiga gera N candidatos com base no feromonio
     for (int i = 0; i < parameters.num_ant; i++)
     {
         for (int k = 0; k < parameters.num_candidates; k++)
         {
-            for (int j = 0; j < d; j++)
-            {
-
-                current_pheromone = ants[i].ant_chromossome[j];
-                mean = (sum_pheromone[j] - current_pheromone) / parameters.num_ant - 1;
-                distance = abs_double(mean - current_pheromone);
-                delta = distance / current_pheromone;
-                // Cij = Xi,j + Δij * (m - Xi,j).
-                candidates[k].ant_chromossome[j] = current_pheromone + delta * (mean - current_pheromone);
-                if (random_double(0, 1) <= parameters.p_exploitation)
-                    candidates[k].ant_chromossome[j] = random_double(-100, 100);
-            }
+            candiate_calculator(ants, pheromones, &sum_dimensions[0], d, i, k);
+            //candiate_calculator_crossover(ants, d, i, k);
         }
         update_pheromones(pheromones_candidates, candidates, parameters.num_candidates, d);
         chosen_porcent = random_double(0, 1);
-        // Calcula a probabilidade de cada novo ponto de ser escolhido como novo local para a formiga
-        for (int y = 0; y < parameters.num_candidates; y++)
-        {
-            probability_porcent += sum_pheromone_ant(pheromones_candidates, d, y) / sum_pheromone_ants(pheromones_candidates, d, parameters.num_candidates);
-            if (probability_porcent <= chosen_porcent)
-            {
-                saved_chosen(ants, i, y, d);
-                ants[i].fitness = f(ants[i].ant_chromossome, d);
-                break;
-            }
-        }
-        probability_porcent = 0.0;
+        chose_new_point(ants, i, d);
     }
 }
 
