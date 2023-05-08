@@ -3,11 +3,11 @@
 #include <stdio.h>
 #include <time.h>
 #include <math.h>
-#include "./libs/funcoes_cec_2015/cec15_test_func.h"
-#include "./libs/statistics.h"
-#include "./libs/types.h"
-#include "./libs/utils.h"
-#include "./libs/crossover.h"
+#include "../libs/funcoes_cec_2015/cec15_test_func.h"
+#include "../libs/statistics.h"
+#include "../libs/types.h"
+#include "../libs/utils.h"
+#include "../libs/crossover.h"
 #define STATISTICS(x) x
 #define DEBUG(x)
 

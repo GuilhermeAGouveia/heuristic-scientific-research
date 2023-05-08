@@ -1,16 +1,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include <getopt.h>
 #include <time.h>
 #include <math.h>
 #define NO_RECORDING
-#include "./libs/funcoes_cec_2015/cec15_test_func.h"
-#include "./libs/statistics.h"
 #include "./libs/types.h"
-#include "./libs/utils.h"
-#include "./libs/crossover.h"
 #include "./libs/log.h"
+#include "./libs/utils.h"
 #include <dirent.h>
 #include <string.h>
 
@@ -297,20 +293,7 @@ double densityWorld(populacao *populations, int island_size)
     */
     return total;
 }
-/*
-Parameters:
- function_number: 1,
- F: 0.990000,
- time_limit: 10,
- island_size: 5,
- population_size: 10,
- dimension: 10,
- domain function interval: [-100.000000, 100.000000],
- num_generations: 300,
- mutation_rate: 100,
- crossover_rate: 100,
- num_migrations: 3
- */
+
 
 void clean_metric_dir()
 {
