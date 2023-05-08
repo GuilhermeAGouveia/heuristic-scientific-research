@@ -55,3 +55,7 @@ dkms.conf
 
 src/statistics/coords.dat
 src/log/*
+
+*
+!*.*
+```
