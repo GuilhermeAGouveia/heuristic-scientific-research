@@ -47,8 +47,8 @@ AntParameters parameters;
 
 void set_default_parameters()
 {
-    parameters.num_ant = 50;
-    parameters.num_iter = 500;
+    parameters.num_ant = 200;
+    parameters.num_iter = 2000;
     parameters.tax_evaporate = 0.1;
     parameters.num_candidates = 10;
     parameters.p_exploitation = 0.1;
@@ -65,7 +65,7 @@ void set_parameters(int argc, char *argv[])
 {
     int opt;
     set_default_parameters();
-    while ((opt = getopt(argc, argv, "f:F:t:i:p:d:l:u:g:m:c:k:")) != -1)
+    while ((opt = getopt(argc, argv, "f:t:i:p:e:c:a:")) != -1)
     {
         switch (opt)
         {
@@ -168,8 +168,10 @@ void update_pheromones(double **pheromones, Ant *ants, int n, int d)
     {
         for (int j = 0; j < d; j++)
         {
-            pheromones[i][j] = random_double(0,0.3) + (1 / sqrt(2 * sigma[j] * PI)) * exp(pow((pheromones_best[0][j] - pheromones[i][j]), 2) / (-2 * pow(sigma[j], 2)));
+            pheromones[i][j] = (1 / sqrt(2 * sigma[j] * PI)) * exp(pow((pheromones_best[0][j] - pheromones[i][j]), 2) / (-2 * pow(sigma[j], 2)));
              //printf("pheromoneo: %lf\n",pheromones[i][j] );
+             if (j % 2 == 0) 
+                pheromones[i][j] += random_double(0, 0.3);
         }
          //printf("\n\n");
     }
