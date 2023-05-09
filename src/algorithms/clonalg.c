@@ -11,8 +11,8 @@
 #include "../libs/utils.h"
 #include "../libs/crossover.h"
 #include "../libs/log.h"
-#define STATISTICS(x) x
-#define DEBUG(x) x
+#define STATISTICS(x) 
+#define DEBUG(x) 
 void print_usage()
 {
     printf("Usage: ./evolucao_mpop -f <function_number> -t <time_limit> -i <island_size> -p <population_size> -d <dimension> -l <bounds_lower> -u <bounds_upper> -g <num_generations> -m <mutation_probability>");
@@ -40,13 +40,14 @@ void set_default_parameters()
     parameters.domain_function.min = -100;
     parameters.domain_function.max = 100;
     parameters.num_generations = 300;
+    parameters.clone_number = 10;
 }
 
 void set_parameters(int argc, char *argv[])
 {
     int opt;
     set_default_parameters();
-    while ((opt = getopt(argc, argv, "f:t:p:d:l:u:g:")) != -1)
+    while ((opt = getopt(argc, argv, "f:t:p:d:l:u:g:c:")) != -1)
     {
         switch (opt)
         {
@@ -70,6 +71,9 @@ void set_parameters(int argc, char *argv[])
             break;
         case 'g':
             parameters.num_generations = atoi(optarg);
+            break;
+        case 'c':
+            parameters.clone_number = atoi(optarg);
             break;
         default:
             printf("Invalid option: %c\n", opt);
@@ -155,7 +159,7 @@ void mutation_n_genes(populacao *populacao_clones, int n_genes, int dimension, d
             mutation_positions[mutation_point] = 1;
             populacao_clones->individuos[i].chromosome[mutation_point] = random_double(domain_function.min, domain_function.max);
             fitness(&populacao_clones->individuos[i], dimension);
-            print_individuo(populacao_clones->individuos[i], dimension, 0);
+            DEBUG(print_individuo(populacao_clones->individuos[i], dimension, 0););
         }
         free(mutation_positions);
     }
@@ -246,7 +250,7 @@ individuo clonalg(int population_size, int dimension, domain domain_function, in
 
         printf("Populacao principal na geracao %d:\n", generation_count);
         print_population(population_main->individuos, population_main->size, dimension, 1);
-        populacao_clones = generate_clones(population_main, 10, dimension, domain_function);
+        populacao_clones = generate_clones(population_main, parameters.clone_number, dimension, domain_function);
         populacao_clones_mutated = mutation_clones(populacao_clones, population_size, dimension, domain_function);
         union_populacao_clones_and_main(populacao_clones_mutated, population_main, population_size);
         free(populacao_clones);
