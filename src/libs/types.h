@@ -28,6 +28,7 @@ typedef struct population_
     int size;
     struct population_ **neighbours;
     int crossover;
+    int n_mutations;
 
 } populacao;
 
