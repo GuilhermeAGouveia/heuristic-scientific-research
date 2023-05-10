@@ -19,5 +19,6 @@
 void print_individuo(individuo individuo, int dimension, int id);
 void print_population(individuo *pop, int tamanho_populacao, int dimension, int only_fitness);
 double random_double(double min, double max);
+void free_population(populacao *populations, int n_populations);
 
 #endif /* UTILS_H */

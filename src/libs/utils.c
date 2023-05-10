@@ -3,6 +3,14 @@
 #include <stdlib.h>
 #include "utils.h"
 
+void free_population(populacao *populations, int n_populations) {
+    for (int i = 0; i < n_populations; i++) {
+        free(populations[i].individuos);
+        free(populations[i].neighbours);
+    }
+    free(populations);
+}
+
 void print_individuo(individuo individuo, int dimension, int id)
 {
     DEBUG(printf("\nprint_individuo\n"););
