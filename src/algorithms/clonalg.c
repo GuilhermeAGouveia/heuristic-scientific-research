@@ -11,7 +11,7 @@
 #include "../libs/utils.h"
 #include "../libs/crossover.h"
 #include "../libs/log.h"
-#define STATISTICS(x) 
+#define STATISTICS(x)
 #define DEBUG(x) 
 void print_usage()
 {
@@ -147,20 +147,21 @@ void mutation_n_genes(populacao *populacao_clones, int n_genes, int dimension, d
     int mutation_point;
     DEBUG(printf("Original:\n"););
     DEBUG(print_individuo(populacao_clones->individuos[0], dimension, 0););
-    DEBUG(printf("Mutated:\n"););
+    DEBUG(printf("Mutated %d genes:\n", n_genes););
     for (int i = 0; i < populacao_clones->size; i++)
     {
         int *mutation_positions = calloc(dimension, sizeof(int));
         for (int j = 0; j < n_genes; j++)
         {
             do
+            {
                 mutation_point = rand() % dimension;
-            while (mutation_positions[mutation_point]);
+            } while (mutation_positions[mutation_point]);
             mutation_positions[mutation_point] = 1;
             populacao_clones->individuos[i].chromosome[mutation_point] = random_double(domain_function.min, domain_function.max);
-            fitness(&populacao_clones->individuos[i], dimension);
-            DEBUG(print_individuo(populacao_clones->individuos[i], dimension, 0););
         }
+        fitness(&populacao_clones->individuos[i], dimension);
+        DEBUG(print_individuo(populacao_clones->individuos[i], dimension, i););
         free(mutation_positions);
     }
 }
@@ -168,38 +169,41 @@ void mutation_n_genes(populacao *populacao_clones, int n_genes, int dimension, d
 individuo *get_best_of_population(populacao *populacao)
 {
     DEBUG(printf("\nget_best_of_population\n"););
+    DEBUG(print_population(populacao->individuos, populacao->size, parameters.dimension, 1););
     qsort(populacao->individuos, populacao->size, sizeof(individuo), comparador_individuo);
+    DEBUG(printf("Best: %lf\n", populacao->individuos[populacao->size - 1].fitness););
     return &populacao->individuos[populacao->size - 1];
 }
 
-void clone_double(double *clone, double *original, int dimension)
+void clone_individue(individuo *clone, individuo *original, int dimension)
 {
-    DEBUG(printf("\nclone_double\n"););
     for (int i = 0; i < dimension; i++)
     {
-        clone[i] = original[i];
+        clone->chromosome[i] = original->chromosome[i];
     }
+    clone->fitness = original->fitness;
 }
 
 populacao *generate_clones(populacao *population_main, int clone_number, int dimension, domain domain_function)
 {
     DEBUG(printf("\ngenerate_clones\n"););
     populacao *populacao_clones = generate_island(population_main->size, clone_number, dimension, domain_function);
-    int num_mutations = 1;
+    DEBUG(printf("Original:\n"););
+    DEBUG(print_population(population_main->individuos, population_main->size, dimension, 1););
+    double num_mutations = dimension;
+    double factor_increment = dimension / (population_main->size - 1);
     for (int i = 0; i < population_main->size; i++)
     {
-        int inverted_index = population_main->size - 1 - i;
+        populacao_clones[i].n_mutations = ceil(num_mutations);
+        populacao_clones[i].size = clone_number;
         for (int j = 0; j < clone_number; j++)
         {
-            clone_double(populacao_clones[i].individuos[j].chromosome, population_main->individuos[inverted_index].chromosome, dimension);
-            populacao_clones[i].individuos[j].fitness = population_main->individuos[inverted_index].fitness;
-            populacao_clones[i].n_mutations = num_mutations;
+            clone_individue(&populacao_clones[i].individuos[j], &population_main->individuos[i], dimension);
         }
-
-        if (num_mutations < dimension)
-        {
-            num_mutations++;
-        }
+        DEBUG(printf("Clone %d:\n", i););
+        DEBUG(print_population(populacao_clones[i].individuos, clone_number, dimension, 1););
+        num_mutations -= factor_increment;
+        num_mutations = num_mutations < 1 ? 1 : num_mutations;
     }
     return populacao_clones;
 }
@@ -219,13 +223,14 @@ populacao *mutation_clones(populacao *populacao_clones, int num_population_clone
 void union_populacao_clones_and_main(populacao *populacao_clones, populacao *population_main, int num_population_clones)
 {
     DEBUG(printf("\nunion_populacao_clones_and_main\n"););
+    DEBUG(printf("Original:\n"););
+    DEBUG(print_population(population_main->individuos, population_main->size, parameters.dimension, 1););
     for (int i = 0; i < num_population_clones; i++)
     {
         individuo *best_clone = get_best_of_population(&populacao_clones[i]);
         if (best_clone->fitness < population_main->individuos[i].fitness)
         {
-            clone_double(population_main->individuos[i].chromosome, best_clone->chromosome, parameters.dimension);
-            population_main->individuos[i].fitness = best_clone->fitness;
+            clone_individue(&population_main->individuos[i], best_clone, parameters.dimension);
         }
     }
 }
@@ -234,6 +239,7 @@ individuo clonalg(int population_size, int dimension, domain domain_function, in
 {
     DEBUG(printf("\nevolution\n"););
     populacao *population_main = generate_island(1, population_size, dimension, domain_function);
+    qsort(population_main->individuos, population_main->size, sizeof(individuo), comparador_individuo);
     populacao *populacao_clones;
     populacao *populacao_clones_mutated;
     time_t time_init, time_now;
@@ -243,17 +249,20 @@ individuo clonalg(int population_size, int dimension, domain domain_function, in
     DEBUG(printf("Iniciando evolucao\n"););
     //  while (difftime(time_now, time_init) < parameters.time_limit)
     // {
+
     while (generation_count < num_generations)
     {
-        qsort(population_main->individuos, population_main->size, sizeof(individuo), comparador_individuo);
         STATISTICS(print_coords(&population_main->individuos[population_main->size - 1], 1, generation_count, num_generations););
 
-        printf("Populacao principal na geracao %d:\n", generation_count);
+        DEBUG(printf("Populacao principal na geracao %d:\n", generation_count););
+        DEBUG(print_population(population_main->individuos, population_main->size, dimension, 1););
         print_population(population_main->individuos, population_main->size, dimension, 1);
         populacao_clones = generate_clones(population_main, parameters.clone_number, dimension, domain_function);
         populacao_clones_mutated = mutation_clones(populacao_clones, population_size, dimension, domain_function);
         union_populacao_clones_and_main(populacao_clones_mutated, population_main, population_size);
-        free(populacao_clones);
+        free_population(populacao_clones, population_size);
+ 
+        qsort(population_main->individuos, population_main->size, sizeof(individuo), comparador_individuo);
         generation_count++;
     }
     //}
