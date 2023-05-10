@@ -11,5 +11,5 @@ prepare:;
 
 statistics: compil; \
 	rm -rf ./statistics/*.dat; \
-	./evol -i 1 -f 3 -p 4
+	./evol -f 6 -p 10 -g 500 -c 20
 	./scripts/sh/gerar_todas_estatisticas.sh; \

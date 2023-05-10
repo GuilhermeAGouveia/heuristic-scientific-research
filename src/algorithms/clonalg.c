@@ -11,7 +11,7 @@
 #include "../libs/utils.h"
 #include "../libs/crossover.h"
 #include "../libs/log.h"
-#define STATISTICS(x)
+#define STATISTICS(x) x
 #define DEBUG(x) 
 void print_usage()
 {
