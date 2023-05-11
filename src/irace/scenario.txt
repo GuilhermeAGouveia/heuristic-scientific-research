@@ -36,6 +36,12 @@ digits = 2
 ## more verbose debug messages.
 # debugLevel = 0
 
+## The option parallel allows executing in parallel, within a single
+## computer, the calls to targetRunner, by means of the parallel R package. For example,
+## adding --parallel N to the command line of irace will launch in parallel up to N calls of
+## the target algorithm.
+parallel = 4
+
 ## END of scenario file
 ############################################################################
 
