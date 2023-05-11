@@ -10,6 +10,7 @@
         "initializer_list": "c",
         "utility": "c",
         "cmath": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "utilities.h": "c"
     }
 }
