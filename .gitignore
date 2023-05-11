@@ -63,4 +63,5 @@ src/log/*
 !README*
 *.stderr
 *.stdout
+!target*
 ```
