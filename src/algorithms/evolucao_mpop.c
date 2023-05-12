@@ -36,13 +36,14 @@ void set_default_parameters(){
     parameters.mutation_rate = 100;  // %
     parameters.crossover_rate = 100; // %
     parameters.num_migrations = 3;
+    parameters.seed = time(NULL);
 }
 
 void set_parameters(int argc, char *argv[])
 {
     int opt;
     set_default_parameters();
-    while ((opt = getopt(argc, argv, "f:F:t:i:p:d:l:u:g:m:c:k:")) != -1)
+    while ((opt = getopt(argc, argv, "f:F:t:i:p:d:l:u:g:m:c:k:s:")) != -1)
     {
         switch (opt)
         {
@@ -81,6 +82,9 @@ void set_parameters(int argc, char *argv[])
             break;
         case 'F':
             parameters.F = atof(optarg);
+            break;
+        case 's':
+            parameters.seed = atoi(optarg);
             break;
         default:
             printf("Invalid option: %c\n", opt);
@@ -476,12 +480,10 @@ int main(int argc, char *argv[])
     set_parameters(argc, argv); // Lê os parâmetros da linha de comando e repassa para as variáveis globais
     // print_parameters();
 
-    time_t semente = 90;
-    printf("Semente: %ld\n ", semente);
     individuo result;
     // Melhor semente até agora: 1676931005 (Funcao 3) - 301.356
     // Melhor semente até agora: 1676935665 (Funcao 8) - 801.1393
-    srand(semente);
+    srand(parameters.seed);
     result = evolution(parameters.island_size, parameters.population_size, parameters.dimension, parameters.domain_function, parameters.num_generations_per_epoca);
 
     print_individuo(result, parameters.dimension, 0);
