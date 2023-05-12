@@ -277,12 +277,13 @@ int main(int argc, char *argv[])
     set_parameters(argc, argv); // Lê os parâmetros da linha de comando e repassa para as variáveis globais
     // print_parameters();
 
-    time_t semente = 90;
+    time_t semente = time(NULL);
     printf("Semente: %ld\n ", semente);
     individuo result;
 
     srand(semente);
     result = clonalg(parameters.population_size, parameters.dimension, parameters.domain_function, parameters.num_generations);
-    print_individuo(result, parameters.dimension, 0);
+    //print_individuo(result, parameters.dimension, 0);
+    printf("Best %lf\n", result.fitness);
     return 0;
 }
