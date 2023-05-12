@@ -7,7 +7,7 @@
 
 
 ## File that contains the description of the parameters.
-parameterFile = "./parameters-acotsp.txt"
+parameterFile = "./parameters-clonalg.txt"
 
 ## Directory where the programs will be run.
 execDir = "../"

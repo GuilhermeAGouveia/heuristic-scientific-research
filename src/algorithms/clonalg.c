@@ -12,7 +12,7 @@
 #include "../libs/crossover.h"
 #include "../libs/log.h"
 #define STATISTICS(x) 
-#define DEBUG(x) x
+#define DEBUG(x)
 void print_usage()
 {
     printf("Usage: ./evolucao_mpop -f <function_number> -t <time_limit> -i <island_size> -p <population_size> -d <dimension> -l <bounds_lower> -u <bounds_upper> -g <num_generations> -m <mutation_probability>");

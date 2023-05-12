@@ -64,4 +64,5 @@ src/log/*
 *.stderr
 *.stdout
 !target*
+!src/irace/functions/*
 ```
