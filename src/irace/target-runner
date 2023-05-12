@@ -22,24 +22,25 @@ error() {
 # Path to the ACOTSP executable (this path is relative to the execution directory `execDir` specified in the scenario).
 # EXE="~/bin/acotsp"
 ##EXE="../evol"
-EXE="../evol"
+EXE="./evol"
 
 # Fixed parameters that should be always passed to ACOTSP.
 # The time to be used is always 10 seconds, and we want only one run:
 ##FIXED_PARAMS=" --tries 1 --time 1 --quiet "
 
-P="$1"
-G="$2"
-
-echo "P: $P"
-echo "G: $G"
+CONFIG_ID="$1"
+INSTANCE_ID="$2"
+SEED="$3"
+INSTANCE="$4"
 
 
 # Restante do código...
 
 # All other parameters are the candidate parameters to be passed to program
-##shift 4 || error "Not enough parameters"
+shift 4 || error "Not enough parameters"
 CONFIG_PARAMS=$*
+
+echo "Parametros do algoritmo: $CONFIG_PARAMS"
 
 STDOUT=c${P}-${P}-${G}.stdout
 STDERR=c${P}-${P}-${G}.stderr
@@ -52,7 +53,7 @@ fi
 ##$EXE ${FIXED_PARAMS} -i $INSTANCE --seed $SEED ${CONFIG_PARAMS} 1> $STDOUT 2> $STDERR
 ##$EXE $P $G
 
-$EXE $P $G > "$STDOUT" 2> "$STDERR"
+$EXE $CONFIG_PARAMS > "$STDOUT" 2> "$STDERR"
 
 # Verificar se ocorreram erros durante a execução
 if [ $? -ne 0 ]; then

@@ -1,4 +1,4 @@
 # Parameter file for the ACOTSP software
 # name   switch type values
-p        "-p"   i    (200, 2000)
-g        "-g"   i    (100, 1000)
+p        "-p"   i    (5, 20)
+g        "-g"   i    (5, 20)
