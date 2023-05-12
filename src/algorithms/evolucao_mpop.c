@@ -457,7 +457,8 @@ individuo evolution(int island_size, int population_size, int dimension, domain 
             populacao *cross_population;
             populacao *mutation_population;
             int generation_count = 0;
-            int max_inter = 300;
+            int max_inter_add = 250;
+            int max_inter = max_inter_add;
             int cont_or_stop = 1;
             double aux, best_anter = get_best_of_population(*original_population)->fitness;
             while (cont_or_stop)
@@ -475,12 +476,12 @@ individuo evolution(int island_size, int population_size, int dimension, domain 
                     generation_count++;
                 }
                 aux = get_best_of_population(*original_population)->fitness;
-                if (best_anter == aux)
+                if (doubleEqual(best_anter, aux,4))
                     cont_or_stop = 0;
                 else
                 {
                     best_anter = aux;
-                    max_inter += max_inter;
+                    max_inter += max_inter_add;
                 }
             }
             individuo *bestCurrent = get_best_of_population(*original_population);
@@ -496,7 +497,7 @@ individuo evolution(int island_size, int population_size, int dimension, domain 
         parameters.num_epocas = epoca_count;
         time(&time_now);
         //Verifica se um best_Individuo foi encontrado em relaçao a epoca anterior
-        if(bestIndividuo.fitness == best_ep_ant){
+        if(doubleEqual(bestIndividuo.fitness, best_ep_ant, 4)){
             total_epocs_s_m++;
         }
         else

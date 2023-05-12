@@ -11,8 +11,8 @@
 #define STATISTICS(x) x
 #define DEBUG(x)
 
-#define POPULATION_SIZE 100
-#define NUM_GENERATIONS 10
+#define POPULATION_SIZE 300
+#define NUM_GENERATIONS 5
 #define MUTATION_PROBABILITY 80 // %
 #define DIMENSION 10            // 10 or 30
 #define BOUNDS_LOWER -100
@@ -188,7 +188,10 @@ individuo mutation(individuo *population, individuo individuo, int dimension, do
     for (int i = 0; i < dimension; i++)
     {
         individuo.chromosome[i] = population[alpha].chromosome[i] + 0.8 * (population[beta].chromosome[i] - population[gamma].chromosome[i]);
+        if (individuo.chromosome[i] > 100 || individuo.chromosome[i] < -100)
+            individuo.chromosome[i] = random_double(-100, 100);
     }
+
     return individuo;
 }
 
@@ -230,6 +233,7 @@ individuo *get_pior_pai(individuo *pais[2])
     return pais[0]->fitness < pais[1]->fitness ? pais[1] : pais[0];
 }
 
+
 individuo *evolution(int population_size, int dimension, domain domain_function, double select_criteria, int num_generations)
 {
     DEBUG(printf("\nevolution\n"););
@@ -239,7 +243,8 @@ individuo *evolution(int population_size, int dimension, domain domain_function,
     time_t time_init, time_now;
     int generations_count = 0;
     time(&time_init);
-    int max_inter = 300;
+    int max_inter_add = 300;
+    int max_inter = max_inter_add;
     int cont_or_stop = 1;
     double aux, best_anter = get_best_of_population(population, population_size)->fitness;
     while (cont_or_stop)
@@ -275,8 +280,11 @@ individuo *evolution(int population_size, int dimension, domain domain_function,
 
             // printf("Geração: %d\n", generations_count);
         } while (!avaliar(population, population_size, select_criteria) && difftime(time_now, time_init) < time_limit && generations_count < max_inter);
-        aux = get_best_of_population(population, population_size)->fitness;
-        if (best_anter == aux)
+
+        //double desv = desvio_padrao(population, population_size);
+        //printf("Desvio: %lf\n", desv);
+        //aux = get_best_of_population(population, population_size)->fitness;
+        if (doubleEqual(best_anter, aux, 4))
             cont_or_stop = 0;
         else
             best_anter = aux;

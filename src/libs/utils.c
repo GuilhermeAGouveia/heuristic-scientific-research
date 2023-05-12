@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "utils.h"
+#include <math.h>
 
 void free_population(populacao *populations, int n_populations) {
     for (int i = 0; i < n_populations; i++) {
@@ -37,4 +38,30 @@ double random_double(double min, double max)
 {
     double random = min + (max - min) * (rand() / (double)RAND_MAX);
     return random;
+}
+
+int doubleEqual(double a, double b, int num_casas) {
+    double tolerance = pow(10, -num_casas);
+    return fabs(a - b) < tolerance;
+}
+
+double calc_mean(individuo *population, int population_size)
+{
+    double sum = 0.0;
+    for (int i = 0; i < population_size; i++)
+    {
+        sum += population[i].fitness;
+    }
+    return sum / population_size;
+}
+
+double desvio_padrao(individuo *population, int population_size)
+{
+    double mean = calc_mean(population, population_size);
+    double sum = 0.0;
+    for (int i = 0; i < population_size; i++)
+    {
+        sum += pow(population[i].fitness - mean, 2);
+    }
+    return sqrt(sum / population_size);
 }

@@ -28,7 +28,7 @@ void set_default_parameters()
     parameters.function_number = 1;
     parameters.time_limit = 10; // seconds
     parameters.island_size = 10;
-    parameters.population_size = 3;
+    parameters.population_size = 100;
     parameters.dimension = 10; // 10 or 30
     parameters.domain_function.min = -100;
     parameters.domain_function.max = 100;
@@ -196,33 +196,6 @@ void calcula_componente(double *componente, individuo *individuo_1, individuo *i
     }
 }
 
-double calc_mean(populacao *population, int population_size)
-{
-    double sum = 0.0;
-    for (int i = 0; i < population_size; i++)
-    {
-        sum += population->individuos[i].fitness;
-    }
-    return sum / population_size;
-}
-
-double desvio_padrao(populacao *population, int population_size)
-{
-    double mean = calc_mean(population, population_size);
-    double sum = 0.0;
-    for (int i = 0; i < population_size; i++)
-    {
-        sum += pow(population->individuos[i].fitness - mean, 2);
-    }
-    return sqrt(sum / population_size);
-}
-
-int doubleEqual(double a, double b) {
-    double tolerance = pow(10, -4);
-    return fabs(a - b) < tolerance;
-}
-
-
 individuo pso(int population_size, int dimension, domain domain_function, int num_generations)
 {
     populacao *population = malloc(sizeof(population));
@@ -272,18 +245,15 @@ individuo pso(int population_size, int dimension, domain domain_function, int nu
 
             generation_count++;
         }
-        double desv = desvio_padrao(population, population_size);
-        //printf("Best: %lf\n", individuo_best->fitness * 10000000);
-        //printf("Best_anter: %lf\n", best_anter * 10000000);
+        double desv = desvio_padrao(population->individuos, population_size);
         //printf("Desvio_P: %lf\n", desv);
-        if (doubleEqual(best_anter, individuo_best->fitness) && desv <= 0.001)
+        if (doubleEqual(best_anter, individuo_best->fitness, 4) && desv <= 0.001)
         {
             cont_or_stop = 0;
         }
         else
         {
             max_inter += max_inter_add;
-            printf("\nMax_inter: %d\n", max_inter);
         }
     }
     return *individuo_best;

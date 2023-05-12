@@ -263,7 +263,7 @@ individuo clonalg(int population_size, int dimension, domain domain_function, in
     //  while (difftime(time_now, time_init) < parameters.time_limit)
     // {
 
-    int max_inter = 100;
+    int max_inter = 200;
     int cont_or_stop = 1;
     while (cont_or_stop)
     {
@@ -281,7 +281,10 @@ individuo clonalg(int population_size, int dimension, domain domain_function, in
             qsort(population_main->individuos, population_main->size, sizeof(individuo), comparador_individuo);
             generation_count++;
         }
-        if (best_anter == population_main->individuos[population_main->size - 1].fitness)
+        //double desv = desvio_padrao(population_main->individuos, population_size);
+        //printf("Desvio_P: %lf\n", desv);
+
+        if (doubleEqual(best_anter, population_main->individuos[population_main->size - 1].fitness, 4))
             cont_or_stop = 0;
     }
     return population_main->individuos[population_main->size - 1];

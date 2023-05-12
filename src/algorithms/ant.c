@@ -437,6 +437,27 @@ void catch_best_ant(Ant *ants, Ant *best_antt, double **pheromones, int d)
     }
 }
 
+double calc_mean_ant(Ant *ants, int ants_size)
+{
+    double sum = 0.0;
+    for (int i = 0; i < ants_size; i++)
+    {
+        sum += ants[i].fitness;
+    }
+    return sum / ants_size;
+}
+
+double desvio_padrao_ant(Ant *ants, int ants_size)
+{
+    double mean = calc_mean_ant(ants, ants_size);
+    double sum = 0.0;
+    for (int i = 0; i < ants_size; i++)
+    {
+        sum += pow(ants[i].fitness - mean, 2);
+    }
+    return sqrt(sum / ants_size);
+}
+
 // The main ACO function
 void aco(int d)
 {
@@ -489,9 +510,10 @@ void aco(int d)
     // Update the pheromone matrix with the best ant's path
     update_pheromones(pheromones, ants, parameters.num_ant, d);
     // Iterate over the specified number of iterations
-    int max_inter = 300;
+    int max_inter_add = 300;
+    int max_inter = max_inter_add;
     int cont_or_stop = 1;
-    while(cont_or_stop)
+    while (cont_or_stop)
     {
         double best_anter = best_ant->fitness;
         for (int iter = 0; iter < max_inter; iter++)
@@ -510,8 +532,12 @@ void aco(int d)
             update_pheromones(pheromones, ants, parameters.num_ant, d);
             update_sigma(ants, d, best_ant);
         }
-        if(best_anter == best_ant->fitness)
-           cont_or_stop = 0;
+
+        //double desv = desvio_padrao_ant(ants, parameters.num_ant);
+        //printf("Desvio: %lf\n", desv);
+
+        if (doubleEqual(best_anter, best_ant->fitness, 4))
+            cont_or_stop = 0;
     }
 
     // Print the best solution found
