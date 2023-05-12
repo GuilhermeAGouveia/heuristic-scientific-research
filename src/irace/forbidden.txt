@@ -9,4 +9,5 @@
 ## then the configuration is discarded.
 ##
 ## Examples of valid logical operators are: ==  !=  >=  <=  >  <  &  |  !  %in%
-(alpha == 0.0) & (beta == 0.0)
+(p == 0.0) 
+(g == 0.0) 

@@ -11,5 +11,5 @@
 ## parameter conditions (NA should be used for those parameters that
 ## are not enabled for a given configuration) and, if given, the
 ## constraints that describe forbidden configurations.
-algorithm localsearch alpha beta rho  ants nnls dlb q0 rasrank elitistants
-as        0           1.0   1.0  0.95 10   NA   NA  0  NA      NA
+p    g 
+100 300          
