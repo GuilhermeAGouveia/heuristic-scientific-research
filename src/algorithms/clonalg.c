@@ -12,7 +12,7 @@
 #include "../libs/crossover.h"
 #include "../libs/log.h"
 
-#define STATISTICS(x) 
+#define STATISTICS(x)
 #define DEBUG(x)
 
 void print_usage()
@@ -263,36 +263,43 @@ individuo clonalg(int population_size, int dimension, domain domain_function, in
     //  while (difftime(time_now, time_init) < parameters.time_limit)
     // {
 
-    while (generation_count < num_generations)
+    int max_inter = 100;
+    int cont_or_stop = 1;
+    while (cont_or_stop)
     {
-        STATISTICS(print_coords(&population_main->individuos[population_main->size - 1], 1, generation_count, num_generations););
+        double best_anter = population_main->individuos[population_main->size - 1].fitness;
+        for (int iter = 0; iter < max_inter; iter++)
+        {
+            STATISTICS(print_coords(&population_main->individuos[population_main->size - 1], 1, generation_count, num_generations););
 
-        DEBUG(printf("Populacao principal na geracao %d:\n", generation_count););
-        DEBUG(print_population(population_main->individuos, population_main->size, dimension, 1););
-        populacao_clones = generate_clones(population_main, parameters.clone_number, dimension, domain_function);
-        populacao_clones_mutated = mutation_clones(populacao_clones, population_size, dimension, domain_function);
-        union_populacao_clones_and_main(populacao_clones_mutated, population_main, population_size);
-        free_population(populacao_clones, population_size);
-        qsort(population_main->individuos, population_main->size, sizeof(individuo), comparador_individuo);
-        generation_count++;
+            DEBUG(printf("Populacao principal na geracao %d:\n", generation_count););
+            DEBUG(print_population(population_main->individuos, population_main->size, dimension, 1););
+            populacao_clones = generate_clones(population_main, parameters.clone_number, dimension, domain_function);
+            populacao_clones_mutated = mutation_clones(populacao_clones, population_size, dimension, domain_function);
+            union_populacao_clones_and_main(populacao_clones_mutated, population_main, population_size);
+            free_population(populacao_clones, population_size);
+            qsort(population_main->individuos, population_main->size, sizeof(individuo), comparador_individuo);
+            generation_count++;
+        }
+        if (best_anter == population_main->individuos[population_main->size - 1].fitness)
+            cont_or_stop = 0;
     }
-    //}
     return population_main->individuos[population_main->size - 1];
 }
 
-int main(int argc, char *argv[])
-{
-    set_parameters(argc, argv); // Lê os parâmetros da linha de comando e repassa para as variáveis globais
-    // print_parameters();
+    int main(int argc, char *argv[])
+    {
+        set_parameters(argc, argv); // Lê os parâmetros da linha de comando e repassa para as variáveis globais
+        // print_parameters();
 
-    time_t semente = time(NULL);
-    printf("Semente: %ld\n ", semente);
+        time_t semente = time(NULL);
+        printf("Semente: %ld\n ", semente);
 
-    individuo result;
+        individuo result;
 
-    srand(parameters.seed);
-    result = clonalg(parameters.population_size, parameters.dimension, parameters.domain_function, parameters.num_generations);
-    //print_individuo(result, parameters.dimension, 0);
-    printf("Best %lf\n", result.fitness);
-    return 0;
-}
+        srand(parameters.seed);
+        result = clonalg(parameters.population_size, parameters.dimension, parameters.domain_function, parameters.num_generations);
+        // print_individuo(result, parameters.dimension, 0);
+        printf("Best %lf\n", result.fitness);
+        return 0;
+    }

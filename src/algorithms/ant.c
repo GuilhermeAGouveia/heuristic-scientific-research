@@ -445,6 +445,7 @@ void aco(int d)
     double **pheromones = (double **)malloc(parameters.num_ant * sizeof(double *));
     pheromones_candidates = (double **)malloc(parameters.num_candidates * sizeof(double *));
     pheromones_best = (double **)malloc(1 * sizeof(double *));
+
     for (int i = 0; i < parameters.num_ant; i++)
     {
         pheromones[i] = (double *)malloc(d * sizeof(double));
@@ -487,25 +488,30 @@ void aco(int d)
 
     // Update the pheromone matrix with the best ant's path
     update_pheromones(pheromones, ants, parameters.num_ant, d);
-
     // Iterate over the specified number of iterations
-
-    for (int iter = 0; iter < parameters.num_iter; iter++)
+    int max_inter = 300;
+    int cont_or_stop = 1;
+    while(cont_or_stop)
     {
+        double best_anter = best_ant->fitness;
+        for (int iter = 0; iter < max_inter; iter++)
+        {
+            DEBUG(print_ant(ants, d, best_ant););
+            printf("Best_fitness: %lf\n", best_ant->fitness);
+            // Move each ant to a new ant_chromossome
+            select_next_position(pheromones, ants, d);
+            evaporate_pheromones(pheromones, d);
 
-        DEBUG(print_ant(ants, d, best_ant););
-        printf("Best_fitness: %lf\n", best_ant->fitness);
-        // Move each ant to a new ant_chromossome
-        select_next_position(pheromones, ants, d);
-        evaporate_pheromones(pheromones, d);
-
-        // Update the best ant and its fitness value
-        catch_best_ant(ants, best_ant, pheromones, d);
-        // Verifica se a melhor posição não foi perdida
-        best_ant_check(ants, best_ant, pheromones, d);
-        // Update the pheromone matrix with the best ant's path
-        update_pheromones(pheromones, ants, parameters.num_ant, d);
-        update_sigma(ants, d, best_ant);
+            // Update the best ant and its fitness value
+            catch_best_ant(ants, best_ant, pheromones, d);
+            // Verifica se a melhor posição não foi perdida
+            best_ant_check(ants, best_ant, pheromones, d);
+            // Update the pheromone matrix with the best ant's path
+            update_pheromones(pheromones, ants, parameters.num_ant, d);
+            update_sigma(ants, d, best_ant);
+        }
+        if(best_anter == best_ant->fitness)
+           cont_or_stop = 0;
     }
 
     // Print the best solution found
@@ -517,6 +523,7 @@ void aco(int d)
         printf(" %lf", best_ant->ant_chromossome[i]);
     }
     printf("\n");
+    printf("Best %lf\n", best_ant->fitness);
 
     // Free memory
     for (int i = 0; i < parameters.num_ant; i++)

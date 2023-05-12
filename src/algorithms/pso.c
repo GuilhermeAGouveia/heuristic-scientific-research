@@ -209,35 +209,43 @@ individuo pso(int population_size, int dimension, domain domain_function, int nu
     double *c1 = malloc(dimension * sizeof(double));
     double *c2 = malloc(dimension * sizeof(double));
     int generation_count = 0;
-    while (generation_count < num_generations)
+    int max_inter = 100;
+    int cont_or_stop = 1;
+    while (cont_or_stop)
     {
-        for (int i = 0; i < population_size; i++)
+        double best_anter = individuo_best->fitness;
+        while (generation_count < max_inter)
         {
-            if (population->individuos[i].fitness < population_best_current->individuos[i].fitness)
-                copy_individuo(&population->individuos[i], &population_best_current->individuos[i], dimension);
-            if (population->individuos[i].fitness < individuo_best->fitness)
-                copy_individuo(&population->individuos[i], individuo_best, dimension);
-            double r1 = (double)rand() / RAND_MAX;
-            double r2 = (double)rand() / RAND_MAX;
-            //calcula_componente(c1, &population_best_current->individuos[i], &population->individuos[i], dimension);
-            //calcula_componente(c2, individuo_best, &population->individuos[i], dimension);
-
-            // w(t) = w_max - ((w_max - w_min) * t) / T
-            double w = w_max - ((w_max - w_min) * generation_count) / num_generations;
-            for (int j = 0; j < dimension; j++)
+            for (int i = 0; i < population_size; i++)
             {
-                // v_{i,d}(t+1) = wv_{i,d}(t) + c1r1*(pbest_{i,d}-x_{i,d}(t)) + c2r2(gbest_{d}-x_{i,d}(t))
-                population->individuos[i].velocidade[j] = population->individuos[i].velocidade[j] * w +
-                                                          2 * r1 * (population_best_current->individuos[i].chromosome[j] - population->individuos[i].chromosome[j]) +
-                                                          2 * r2 * (individuo_best->chromosome[j] - population->individuos[i].chromosome[j]);
+                if (population->individuos[i].fitness < population_best_current->individuos[i].fitness)
+                    copy_individuo(&population->individuos[i], &population_best_current->individuos[i], dimension);
+                if (population->individuos[i].fitness < individuo_best->fitness)
+                    copy_individuo(&population->individuos[i], individuo_best, dimension);
+                double r1 = (double)rand() / RAND_MAX;
+                double r2 = (double)rand() / RAND_MAX;
+                // calcula_componente(c1, &population_best_current->individuos[i], &population->individuos[i], dimension);
+                // calcula_componente(c2, individuo_best, &population->individuos[i], dimension);
+
+                // w(t) = w_max - ((w_max - w_min) * t) / T
+                double w = w_max - ((w_max - w_min) * generation_count) / num_generations;
+                for (int j = 0; j < dimension; j++)
+                {
+                    // v_{i,d}(t+1) = wv_{i,d}(t) + c1r1*(pbest_{i,d}-x_{i,d}(t)) + c2r2(gbest_{d}-x_{i,d}(t))
+                    population->individuos[i].velocidade[j] = population->individuos[i].velocidade[j] * w +
+                                                              2 * r1 * (population_best_current->individuos[i].chromosome[j] - population->individuos[i].chromosome[j]) +
+                                                              2 * r2 * (individuo_best->chromosome[j] - population->individuos[i].chromosome[j]);
+                }
+
+                atualiza_posicao(&population->individuos[i], dimension);
+                fitness(&population->individuos[i], dimension);
+                // print_individuo(population->individuos[i], dimension, 0);
             }
 
-            atualiza_posicao(&population->individuos[i], dimension);
-            fitness(&population->individuos[i], dimension);
-            // print_individuo(population->individuos[i], dimension, 0);
+            generation_count++;
         }
-
-        generation_count++;
+        if (best_anter == individuo_best->fitness)
+            cont_or_stop = 0;
     }
     return *individuo_best;
 }

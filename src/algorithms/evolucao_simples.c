@@ -18,7 +18,7 @@
 #define BOUNDS_LOWER -100
 #define BOUNDS_UPPER 100
 #define SELECT_CRITERIA 0.0001
-#define FUNCTION_NUMBER 1 // 1 to 15
+#define FUNCTION_NUMBER 3 // 1 to 15
 
 #define TIME_LIMIT 10 // seconds
 
@@ -178,17 +178,17 @@ individuo *generate_population(int n_populacoes, int dimension, domain domain_fu
 individuo mutation(individuo *population, individuo individuo, int dimension, domain domain_function)
 {
     DEBUG(printf("\nmutation\n"););
-        int alpha, beta, gamma;
-        do
-        {
-            alpha = rand() % dimension;
-            beta = rand() % dimension;
-            gamma = rand() % dimension;
-        } while (alpha == beta || alpha == gamma || beta == gamma);
-        for (int i = 0; i < dimension; i++)
-        {
-            individuo.chromosome[i] = population[alpha].chromosome[i] + 0.8 * (population[beta].chromosome[i] - population[gamma].chromosome[i]);
-        }
+    int alpha, beta, gamma;
+    do
+    {
+        alpha = rand() % dimension;
+        beta = rand() % dimension;
+        gamma = rand() % dimension;
+    } while (alpha == beta || alpha == gamma || beta == gamma);
+    for (int i = 0; i < dimension; i++)
+    {
+        individuo.chromosome[i] = population[alpha].chromosome[i] + 0.8 * (population[beta].chromosome[i] - population[gamma].chromosome[i]);
+    }
     return individuo;
 }
 
@@ -239,37 +239,48 @@ individuo *evolution(int population_size, int dimension, domain domain_function,
     time_t time_init, time_now;
     int generations_count = 0;
     time(&time_init);
-    do
+    int max_inter = 300;
+    int cont_or_stop = 1;
+    double aux, best_anter = get_best_of_population(population, population_size)->fitness;
+    while (cont_or_stop)
     {
-        // printf("\ni-ésima geração: %d\n", generations_count);
-        selection(population, population_size, dimension);
-        // print_population(population, population_size, dimension);
-        for (int i = 0; i < population_size - 1; i++)
+        do
         {
-            DEBUG(printf("\ni-ésimo individuo: %d\n", i););
-
-            select_parents(population, population_size, parents);
-            individuo child = cruzamento(parents, dimension);
-            // O if abaixo garante que nunca haverá dois individuos iguais na população
-            if (in_fitness_population(population, population_size, child))
+            // printf("\ni-ésima geração: %d\n", generations_count);
+            selection(population, population_size, dimension);
+            // print_population(population, population_size, dimension);
+            for (int i = 0; i < population_size - 1; i++)
             {
-                child = mutation(population, child, dimension, domain_function);
-            }
-            DEBUG(printf("Custo do filho: %lf\n", child.fitness););
-            individuo *pior_pai = get_pior_pai(parents);
-            *pior_pai = child;
+                DEBUG(printf("\ni-ésimo individuo: %d\n", i););
 
-            if (rand() % 100 < MUTATION_PROBABILITY)
-            {
-                population[i] = mutation(population, population[i], dimension, domain_function);
-            }
-        }
-        time(&time_now);
-        generations_count++;
-        STATISTICS(print_coords(population, population_size, generations_count, num_generations););
+                select_parents(population, population_size, parents);
+                individuo child = cruzamento(parents, dimension);
+                // O if abaixo garante que nunca haverá dois individuos iguais na população
+                if (in_fitness_population(population, population_size, child))
+                {
+                    child = mutation(population, child, dimension, domain_function);
+                }
+                DEBUG(printf("Custo do filho: %lf\n", child.fitness););
+                individuo *pior_pai = get_pior_pai(parents);
+                *pior_pai = child;
 
-        // printf("Geração: %d\n", generations_count);
-    } while (!avaliar(population, population_size, select_criteria) && difftime(time_now, time_init) < time_limit && generations_count < num_generations);
+                if (rand() % 100 < MUTATION_PROBABILITY)
+                {
+                    population[i] = mutation(population, population[i], dimension, domain_function);
+                }
+            }
+            time(&time_now);
+            generations_count++;
+            STATISTICS(print_coords(population, population_size, generations_count, num_generations););
+
+            // printf("Geração: %d\n", generations_count);
+        } while (!avaliar(population, population_size, select_criteria) && difftime(time_now, time_init) < time_limit && generations_count < max_inter);
+        aux = get_best_of_population(population, population_size)->fitness;
+        if (best_anter == aux)
+            cont_or_stop = 0;
+        else
+            best_anter = aux;
+    }
 
     return get_best_of_population(population, population_size);
 }
