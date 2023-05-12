@@ -15,6 +15,7 @@ execDir = "../"
 ## Directory where tuning instances are located, either absolute path or
 ## relative to current directory.
 # instanceDirectory = ""
+trainInstancesDir = "./functions"
 
 ## The maximum number of runs (invocations of targetRunner) that will be performed. It
 ## determines the (maximum) budget of experiments for the tuning.
