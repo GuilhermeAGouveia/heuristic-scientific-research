@@ -196,6 +196,33 @@ void calcula_componente(double *componente, individuo *individuo_1, individuo *i
     }
 }
 
+double calc_mean(populacao *population, int population_size)
+{
+    double sum = 0.0;
+    for (int i = 0; i < population_size; i++)
+    {
+        sum += population->individuos[i].fitness;
+    }
+    return sum / population_size;
+}
+
+double desvio_padrao(populacao *population, int population_size)
+{
+    double mean = calc_mean(population, population_size);
+    double sum = 0.0;
+    for (int i = 0; i < population_size; i++)
+    {
+        sum += pow(population->individuos[i].fitness - mean, 2);
+    }
+    return sqrt(sum / population_size);
+}
+
+int doubleEqual(double a, double b) {
+    double tolerance = pow(10, -4);
+    return fabs(a - b) < tolerance;
+}
+
+
 individuo pso(int population_size, int dimension, domain domain_function, int num_generations)
 {
     populacao *population = malloc(sizeof(population));
@@ -209,7 +236,8 @@ individuo pso(int population_size, int dimension, domain domain_function, int nu
     double *c1 = malloc(dimension * sizeof(double));
     double *c2 = malloc(dimension * sizeof(double));
     int generation_count = 0;
-    int max_inter = 100;
+    int max_inter_add = 100;
+    int max_inter = max_inter_add;
     int cont_or_stop = 1;
     while (cont_or_stop)
     {
@@ -228,7 +256,7 @@ individuo pso(int population_size, int dimension, domain domain_function, int nu
                 // calcula_componente(c2, individuo_best, &population->individuos[i], dimension);
 
                 // w(t) = w_max - ((w_max - w_min) * t) / T
-                double w = w_max - ((w_max - w_min) * generation_count) / num_generations;
+                double w = w_max - ((w_max - w_min) * generation_count) / max_inter;
                 for (int j = 0; j < dimension; j++)
                 {
                     // v_{i,d}(t+1) = wv_{i,d}(t) + c1r1*(pbest_{i,d}-x_{i,d}(t)) + c2r2(gbest_{d}-x_{i,d}(t))
@@ -244,8 +272,19 @@ individuo pso(int population_size, int dimension, domain domain_function, int nu
 
             generation_count++;
         }
-        if (best_anter == individuo_best->fitness)
+        double desv = desvio_padrao(population, population_size);
+        //printf("Best: %lf\n", individuo_best->fitness * 10000000);
+        //printf("Best_anter: %lf\n", best_anter * 10000000);
+        //printf("Desvio_P: %lf\n", desv);
+        if (doubleEqual(best_anter, individuo_best->fitness) && desv <= 0.001)
+        {
             cont_or_stop = 0;
+        }
+        else
+        {
+            max_inter += max_inter_add;
+            printf("\nMax_inter: %d\n", max_inter);
+        }
     }
     return *individuo_best;
 }
@@ -263,5 +302,6 @@ int main(int argc, char *argv[])
     result = pso(parameters.population_size, parameters.dimension, parameters.domain_function, parameters.num_generations_per_epoca);
 
     print_individuo(result, parameters.dimension, 0);
+    printf("Best %lf\n", result.fitness);
     return 0;
 }
