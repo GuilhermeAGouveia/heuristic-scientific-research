@@ -11,7 +11,7 @@
 #include "../libs/utils.h"
 #include "../libs/crossover.h"
 #include "../libs/log.h"
-#define STATISTICS(x) 
+#define STATISTICS(x)
 #define DEBUG(x) x
 void print_usage()
 {
@@ -27,6 +27,7 @@ typedef struct ClonalgArgs_
     int time_limit;
     int num_generations;
     domain domain_function;
+    int seed;
 } ClonalgArgs;
 
 static ClonalgArgs parameters;
@@ -41,13 +42,14 @@ void set_default_parameters()
     parameters.domain_function.max = 100;
     parameters.num_generations = 300;
     parameters.clone_number = 10;
+    parameters.seed = time(NULL);
 }
 
 void set_parameters(int argc, char *argv[])
 {
     int opt;
     set_default_parameters();
-    while ((opt = getopt(argc, argv, "f:t:p:d:l:u:g:c:")) != -1)
+    while ((opt = getopt(argc, argv, "f:t:p:d:l:u:g:c:s:")) != -1)
     {
         switch (opt)
         {
@@ -75,6 +77,10 @@ void set_parameters(int argc, char *argv[])
         case 'c':
             parameters.clone_number = atoi(optarg);
             break;
+        case 's':
+            parameters.seed = atoi(optarg);
+            break;
+
         default:
             printf("Invalid option: %c\n", opt);
             print_usage();
@@ -187,7 +193,8 @@ void clone_individue(individuo *clone, individuo *original, int dimension)
 // log_scale: [c, d] -> [a, b]
 // log_scale(c) = a
 // log_scale(d) = b
-double log_scale(double x, double a, double b, double c, double d) {
+double log_scale(double x, double a, double b, double c, double d)
+{
     double result = a + (b - a) * (log(x) - log(c)) / (log(d) - log(c));
     return result;
 }
@@ -208,7 +215,6 @@ populacao *generate_clones(populacao *population_main, int clone_number, int dim
         }
         DEBUG(printf("Clone %d:\n", i););
         DEBUG(print_population(populacao_clones[i].individuos, clone_number, dimension, 1););
-
     }
     return populacao_clones;
 }
@@ -277,11 +283,9 @@ int main(int argc, char *argv[])
     set_parameters(argc, argv); // Lê os parâmetros da linha de comando e repassa para as variáveis globais
     // print_parameters();
 
-    time_t semente = 90;
-    printf("Semente: %ld\n ", semente);
     individuo result;
 
-    srand(semente);
+    srand(parameters.seed);
     result = clonalg(parameters.population_size, parameters.dimension, parameters.domain_function, parameters.num_generations);
     print_individuo(result, parameters.dimension, 0);
     return 0;

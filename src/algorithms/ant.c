@@ -34,6 +34,7 @@ typedef struct ant_parameters
     double p_exploitation;
     int function_number;
     int time_limit;
+    int seed;
 } AntParameters;
 
 double abs_double(double x);
@@ -54,6 +55,7 @@ void set_default_parameters()
     parameters.p_exploitation = 0.1;
     parameters.function_number = 1;
     parameters.time_limit = 10; // in seconds
+    parameters.seed = time(NULL);
 }
 
 void print_usage()
@@ -65,7 +67,7 @@ void set_parameters(int argc, char *argv[])
 {
     int opt;
     set_default_parameters();
-    while ((opt = getopt(argc, argv, "f:t:i:p:e:c:a:")) != -1)
+    while ((opt = getopt(argc, argv, "f:t:i:p:e:c:a:s:")) != -1)
     {
         switch (opt)
         {
@@ -90,6 +92,11 @@ void set_parameters(int argc, char *argv[])
         case 'a':
             parameters.num_ant = atoi(optarg);
             break;
+        case 's':
+            parameters.seed = atoi(optarg);
+            if (parameters.seed == 0)
+                parameters.seed = time(NULL);
+            break;
         default:
             printf("Invalid option: %c\n", opt);
             print_usage();
@@ -102,7 +109,7 @@ void set_parameters(int argc, char *argv[])
 int main(int argc, char *argv[])
 {
     set_parameters(argc, argv);
-    srand(time(NULL));
+    srand(parameters.seed);
     int d = 10;
     aco(d);
     return 0;
@@ -169,11 +176,11 @@ void update_pheromones(double **pheromones, Ant *ants, int n, int d)
         for (int j = 0; j < d; j++)
         {
             pheromones[i][j] = (1 / sqrt(2 * sigma[j] * PI)) * exp(pow((pheromones_best[0][j] - pheromones[i][j]), 2) / (-2 * pow(sigma[j], 2)));
-             //printf("pheromoneo: %lf\n",pheromones[i][j] );
-             if (j % 2 == 0) 
+            // printf("pheromoneo: %lf\n",pheromones[i][j] );
+            if (j % 2 == 0)
                 pheromones[i][j] += random_double(0, 0.3);
         }
-         //printf("\n\n");
+        // printf("\n\n");
     }
 }
 
@@ -256,7 +263,7 @@ void saved_chosen(Ant *ants, int id_origin, int id_new, int d)
 
 void candiate_calculator_crossover(Ant *ants, int d, int id_ant, int id_candit)
 {
-    double  current_dimension_value;
+    double current_dimension_value;
     int ant2 = rand() % parameters.num_ant;
 
     while (ant2 == id_ant)
@@ -266,9 +273,9 @@ void candiate_calculator_crossover(Ant *ants, int d, int id_ant, int id_candit)
     {
         current_dimension_value = ants[id_ant].ant_chromossome[j];
 
-        candidates[id_candit].ant_chromossome[j] = (current_dimension_value + ants[ant2].ant_chromossome[j])/2;
-         //printf("Original: %lf  ", current_dimension_value);
-         //printf("candidato: %lf\n", candidates[id_candit].ant_chromossome[j]);
+        candidates[id_candit].ant_chromossome[j] = (current_dimension_value + ants[ant2].ant_chromossome[j]) / 2;
+        // printf("Original: %lf  ", current_dimension_value);
+        // printf("candidato: %lf\n", candidates[id_candit].ant_chromossome[j]);
         if (random_double(0, 1) <= parameters.p_exploitation || !(candidates[id_candit].ant_chromossome[j] <= 100 && candidates[id_candit].ant_chromossome[j] >= -100))
             candidates[id_candit].ant_chromossome[j] = random_double(-100, 100);
     }
@@ -326,7 +333,7 @@ void select_next_position(double **pheromones, Ant *ants, int d)
         for (int k = 0; k < parameters.num_candidates; k++)
         {
             candiate_calculator(ants, pheromones, &sum_dimensions[0], d, i, k);
-            //candiate_calculator_crossover(ants, d, i, k);
+            // candiate_calculator_crossover(ants, d, i, k);
         }
         update_pheromones(pheromones_candidates, candidates, parameters.num_candidates, d);
         chosen_porcent = random_double(0, 1);
