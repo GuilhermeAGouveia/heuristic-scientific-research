@@ -2,7 +2,7 @@
 # name            switch   type   values
 population_size           "-p"      i    (20,300)
 mutation_probability "-i" r     (0,1)
-num_migrations   "-k" i    (1,10)
+
 
 
 
