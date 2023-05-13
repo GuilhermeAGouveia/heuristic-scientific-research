@@ -10,4 +10,4 @@
 ##
 ## Examples of valid logical operators are: ==  !=  >=  <=  >  <  &  |  !  %in%
 (p == 0.0) 
-(g == 0.0) 
+(c == 0.0) 

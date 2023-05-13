@@ -7,7 +7,11 @@
 
 
 ## File that contains the description of the parameters.
-parameterFile = "./parameters-clonalg.txt"
+##parameterFile = "./parameters-clonalg.txt"
+##parameterFile = "./parameters-pso.txt"
+##parameterFile = "./parameters-evol_mpop.txt"
+##parameterFile = "./parameters-evol_simples.txt"
+parameterFile = "./parameters-ant.txt"
 
 ## Directory where the programs will be run.
 execDir = "../"
@@ -42,7 +46,7 @@ digits = 2
 ## computer, the calls to targetRunner, by means of the parallel R package. For example,
 ## adding --parallel N to the command line of irace will launch in parallel up to N calls of
 ## the target algorithm.
-parallel = 0
+parallel = 8
 
 ## END of scenario file
 ############################################################################

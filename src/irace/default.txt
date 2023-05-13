@@ -12,4 +12,4 @@
 ## are not enabled for a given configuration) and, if given, the
 ## constraints that describe forbidden configurations.
 p    g 
-100 300          
+100 30          

@@ -1,3 +1,5 @@
 # Parameter file for the ACOTSP software
-# name   switch type values
+# name            switch   type   values
+# population_size   "-p"      c   (20,500)
+population_size   "-p"      i    (30, 400) 
 
