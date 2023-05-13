@@ -245,9 +245,9 @@ individuo pso(int population_size, int dimension, domain domain_function, int nu
 
             generation_count++;
         }
-        double desv = desvio_padrao(population->individuos, population_size);
+        //double desv = desvio_padrao(population->individuos, population_size);
         //printf("Desvio_P: %lf\n", desv);
-        if (doubleEqual(best_anter, individuo_best->fitness, 4) && desv <= 0.001)
+        if (doubleEqual(best_anter, individuo_best->fitness, 4))
         {
             cont_or_stop = 0;
         }

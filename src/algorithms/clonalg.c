@@ -38,7 +38,7 @@ void set_default_parameters()
 {
     parameters.function_number = 3;
     parameters.time_limit = 10; // seconds
-    parameters.population_size = 3;
+    parameters.population_size = 20;
     parameters.dimension = 10; // 10 or 30
     parameters.domain_function.min = -100;
     parameters.domain_function.max = 100;
@@ -263,9 +263,9 @@ individuo clonalg(int population_size, int dimension, domain domain_function, in
     //  while (difftime(time_now, time_init) < parameters.time_limit)
     // {
 
-    int max_inter = 200;
+    int max_inter = 100;
     int cont_or_stop = 1;
-    while (cont_or_stop)
+    while (cont_or_stop && difftime(time_now, time_init) < parameters.time_limit)
     {
         double best_anter = population_main->individuos[population_main->size - 1].fitness;
         for (int iter = 0; iter < max_inter; iter++)
@@ -283,9 +283,11 @@ individuo clonalg(int population_size, int dimension, domain domain_function, in
         }
         //double desv = desvio_padrao(population_main->individuos, population_size);
         //printf("Desvio_P: %lf\n", desv);
+        printf("Anterior: %lf, Atual_best:%lf\n", best_anter, population_main->individuos[population_main->size - 1].fitness);
 
         if (doubleEqual(best_anter, population_main->individuos[population_main->size - 1].fitness, 4))
             cont_or_stop = 0;
+        time(&time_now);
     }
     return population_main->individuos[population_main->size - 1];
 }

@@ -25,8 +25,8 @@ void print_usage()
 void set_default_parameters()
 {
     parameters.F = 0.99;
-    parameters.function_number = 3;
-    parameters.time_limit = 20; // seconds
+    parameters.function_number = 2;
+    parameters.time_limit = 15; // seconds
     parameters.island_size = 10;
     parameters.population_size = 3;
     parameters.dimension = 10; // 10 or 30
@@ -432,6 +432,7 @@ void random_random_migrate(populacao *populations, int island_size, int dimensio
     }
 }
 
+
 individuo evolution(int island_size, int population_size, int dimension, domain domain_function, int num_generations)
 {
     DEBUG(printf("\nevolution\n"););
@@ -457,8 +458,8 @@ individuo evolution(int island_size, int population_size, int dimension, domain 
             populacao *cross_population;
             populacao *mutation_population;
             int generation_count = 0;
-            int max_inter_add = 250;
-            int max_inter = max_inter_add;
+            int max_inter_add = 100, max_generations = (3000/parameters.island_size);
+            int max_inter = 200;
             int cont_or_stop = 1;
             double aux, best_anter = get_best_of_population(*original_population)->fitness;
             while (cont_or_stop)
@@ -476,7 +477,7 @@ individuo evolution(int island_size, int population_size, int dimension, domain 
                     generation_count++;
                 }
                 aux = get_best_of_population(*original_population)->fitness;
-                if (doubleEqual(best_anter, aux,4))
+                if (doubleEqual(best_anter, aux,2) || generation_count >= max_generations)
                     cont_or_stop = 0;
                 else
                 {

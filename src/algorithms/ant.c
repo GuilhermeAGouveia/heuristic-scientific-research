@@ -52,7 +52,7 @@ void set_default_parameters()
     parameters.num_iter = 2000;
     parameters.tax_evaporate = 0.1;
     parameters.num_candidates = 10;
-    parameters.p_exploitation = 0.1;
+    parameters.p_exploitation = 0.25;
     parameters.function_number = 1;
     parameters.time_limit = 10; // in seconds
     parameters.seed = time(NULL);
@@ -519,7 +519,7 @@ void aco(int d)
         for (int iter = 0; iter < max_inter; iter++)
         {
             DEBUG(print_ant(ants, d, best_ant););
-            printf("Best_fitness: %lf\n", best_ant->fitness);
+            //printf("Best_fitness: %lf\n", best_ant->fitness);
             // Move each ant to a new ant_chromossome
             select_next_position(pheromones, ants, d);
             evaporate_pheromones(pheromones, d);
