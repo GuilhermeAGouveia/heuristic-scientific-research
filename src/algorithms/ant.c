@@ -510,7 +510,7 @@ void aco(int d)
     // Update the pheromone matrix with the best ant's path
     update_pheromones(pheromones, ants, parameters.num_ant, d);
     // Iterate over the specified number of iterations
-    int max_inter_add = 300;
+    int max_inter_add = 250;
     int max_inter = max_inter_add;
     int cont_or_stop = 1;
     while (cont_or_stop)
@@ -536,7 +536,7 @@ void aco(int d)
         //double desv = desvio_padrao_ant(ants, parameters.num_ant);
         //printf("Desvio: %lf\n", desv);
 
-        if (doubleEqual(best_anter, best_ant->fitness, 4))
+        if (doubleEqual(best_anter, best_ant->fitness, 2))
             cont_or_stop = 0;
     }
 

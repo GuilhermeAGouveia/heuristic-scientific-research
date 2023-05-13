@@ -37,13 +37,15 @@ void set_default_parameters()
     parameters.crossover_rate = 100; // %
     parameters.num_migrations = 3;
     parameters.seed = time(NULL);
+    parameters.c1 = 2;
+    parameters.c2 = 2;
 }
 
 void set_parameters(int argc, char *argv[])
 {
     int opt;
     set_default_parameters();
-    while ((opt = getopt(argc, argv, "f:F:t:i:p:d:l:u:g:m:c:k:s:")) != -1)
+    while ((opt = getopt(argc, argv, "f:F:t:i:p:d:l:u:g:m:c:k:s:v:z:")) != -1)
     {
         switch (opt)
         {
@@ -85,6 +87,12 @@ void set_parameters(int argc, char *argv[])
             break;
         case 's':
             parameters.seed = atoi(optarg);
+            break;
+        case 'v':
+            parameters.c1 = atof(optarg);
+            break;
+        case 'z':
+            parameters.c2 = atof(optarg);
             break;
         default:
             printf("Invalid option: %c\n", opt);
@@ -234,8 +242,8 @@ individuo pso(int population_size, int dimension, domain domain_function, int nu
                 {
                     // v_{i,d}(t+1) = wv_{i,d}(t) + c1r1*(pbest_{i,d}-x_{i,d}(t)) + c2r2(gbest_{d}-x_{i,d}(t))
                     population->individuos[i].velocidade[j] = population->individuos[i].velocidade[j] * w +
-                                                              2 * r1 * (population_best_current->individuos[i].chromosome[j] - population->individuos[i].chromosome[j]) +
-                                                              2 * r2 * (individuo_best->chromosome[j] - population->individuos[i].chromosome[j]);
+                                                              parameters.c1 * r1 * (population_best_current->individuos[i].chromosome[j] - population->individuos[i].chromosome[j]) +
+                                                              parameters.c2 * r2 * (individuo_best->chromosome[j] - population->individuos[i].chromosome[j]);
                 }
 
                 atualiza_posicao(&population->individuos[i], dimension);
@@ -245,8 +253,8 @@ individuo pso(int population_size, int dimension, domain domain_function, int nu
 
             generation_count++;
         }
-        //double desv = desvio_padrao(population->individuos, population_size);
-        //printf("Desvio_P: %lf\n", desv);
+        // double desv = desvio_padrao(population->individuos, population_size);
+        // printf("Desvio_P: %lf\n", desv);
         if (doubleEqual(best_anter, individuo_best->fitness, 4))
         {
             cont_or_stop = 0;

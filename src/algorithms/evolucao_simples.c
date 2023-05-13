@@ -284,7 +284,7 @@ individuo *evolution(int population_size, int dimension, domain domain_function,
         //double desv = desvio_padrao(population, population_size);
         //printf("Desvio: %lf\n", desv);
         //aux = get_best_of_population(population, population_size)->fitness;
-        if (doubleEqual(best_anter, aux, 4))
+        if (doubleEqual(best_anter, aux, 2))
             cont_or_stop = 0;
         else
             best_anter = aux;

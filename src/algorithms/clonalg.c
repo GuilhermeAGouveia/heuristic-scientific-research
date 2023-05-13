@@ -38,12 +38,12 @@ void set_default_parameters()
 {
     parameters.function_number = 3;
     parameters.time_limit = 10; // seconds
-    parameters.population_size = 20;
+    parameters.population_size = 100;
     parameters.dimension = 10; // 10 or 30
     parameters.domain_function.min = -100;
     parameters.domain_function.max = 100;
     parameters.num_generations = 300;
-    parameters.clone_number = 10;
+    parameters.clone_number = 20;
     parameters.seed = time(NULL);
 }
 
@@ -263,12 +263,13 @@ individuo clonalg(int population_size, int dimension, domain domain_function, in
     //  while (difftime(time_now, time_init) < parameters.time_limit)
     // {
 
+    int max_inter_add = 50, max_generations = (2000 / parameters.clone_number);
     int max_inter = 100;
     int cont_or_stop = 1;
-    while (cont_or_stop && difftime(time_now, time_init) < parameters.time_limit)
+    while (cont_or_stop)
     {
         double best_anter = population_main->individuos[population_main->size - 1].fitness;
-        for (int iter = 0; iter < max_inter; iter++)
+        while (generation_count < max_inter)
         {
             STATISTICS(print_coords(&population_main->individuos[population_main->size - 1], 1, generation_count, num_generations););
 
@@ -281,30 +282,35 @@ individuo clonalg(int population_size, int dimension, domain domain_function, in
             qsort(population_main->individuos, population_main->size, sizeof(individuo), comparador_individuo);
             generation_count++;
         }
-        //double desv = desvio_padrao(population_main->individuos, population_size);
-        //printf("Desvio_P: %lf\n", desv);
-        printf("Anterior: %lf, Atual_best:%lf\n", best_anter, population_main->individuos[population_main->size - 1].fitness);
+        // double desv = desvio_padrao(population_main->individuos, population_size);
+        // printf("Desvio_P: %lf\n", desv);
+        // printf("Anterior: %lf, Atual_best:%lf\n", best_anter, population_main->individuos[population_main->size - 1].fitness);
 
-        if (doubleEqual(best_anter, population_main->individuos[population_main->size - 1].fitness, 4))
+        if (doubleEqual(best_anter, population_main->individuos[population_main->size - 1].fitness, 2) || generation_count >= max_generations){
             cont_or_stop = 0;
-        time(&time_now);
+        }
+            
+        else
+        {
+            max_inter += max_inter_add;
+        }
     }
     return population_main->individuos[population_main->size - 1];
 }
 
-    int main(int argc, char *argv[])
-    {
-        set_parameters(argc, argv); // Lê os parâmetros da linha de comando e repassa para as variáveis globais
-        // print_parameters();
+int main(int argc, char *argv[])
+{
+    set_parameters(argc, argv); // Lê os parâmetros da linha de comando e repassa para as variáveis globais
+    // print_parameters();
 
-        time_t semente = time(NULL);
-        printf("Semente: %ld\n ", semente);
+    time_t semente = time(NULL);
+    printf("Semente: %ld\n ", semente);
 
-        individuo result;
+    individuo result;
 
-        srand(parameters.seed);
-        result = clonalg(parameters.population_size, parameters.dimension, parameters.domain_function, parameters.num_generations);
-        // print_individuo(result, parameters.dimension, 0);
-        printf("Best %lf\n", result.fitness);
-        return 0;
-    }
+    srand(parameters.seed);
+    result = clonalg(parameters.population_size, parameters.dimension, parameters.domain_function, parameters.num_generations);
+    // print_individuo(result, parameters.dimension, 0);
+    printf("Best %lf\n", result.fitness);
+    return 0;
+}
