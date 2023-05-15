@@ -466,6 +466,9 @@ void aco(int d)
     double **pheromones = (double **)malloc(parameters.num_ant * sizeof(double *));
     pheromones_candidates = (double **)malloc(parameters.num_candidates * sizeof(double *));
     pheromones_best = (double **)malloc(1 * sizeof(double *));
+    time_t time_init, time_now;
+    time(&time_init);
+    time(&time_now);
 
     for (int i = 0; i < parameters.num_ant; i++)
     {
@@ -513,7 +516,7 @@ void aco(int d)
     int max_inter_add = 250;
     int max_inter = max_inter_add;
     int cont_or_stop = 1;
-    while (cont_or_stop)
+    while (cont_or_stop || difftime(time_now, time_init) < parameters.time_limit)
     {
         double best_anter = best_ant->fitness;
         for (int iter = 0; iter < max_inter; iter++)
@@ -538,6 +541,7 @@ void aco(int d)
 
         if (doubleEqual(best_anter, best_ant->fitness, 2))
             cont_or_stop = 0;
+        time(&time_now);
     }
 
     // Print the best solution found

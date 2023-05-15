@@ -324,7 +324,7 @@ individuo *evolution(int population_size, int dimension, domain domain_function,
             // printf("\ni-ésima geração: %d\n", generations_count);
             selection(population, population_size, dimension);
             // print_population(population, population_size, dimension);
-            for (int i = 0; i < population_size - 1; i++)
+            for (int i = 0; i < population_size - 1 || difftime(time_now, time_init) < parameters.time_limit; i++)
             {
                 DEBUG(printf("\ni-ésimo individuo: %d\n", i););
 
