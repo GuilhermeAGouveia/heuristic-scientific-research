@@ -513,13 +513,13 @@ void aco(int d)
     // Update the pheromone matrix with the best ant's path
     update_pheromones(pheromones, ants, parameters.num_ant, d);
     // Iterate over the specified number of iterations
-    int max_inter_add = 250;
-    int max_inter = max_inter_add;
+    int max_inter_add = 100;
+    int max_inter = 150;
     int cont_or_stop = 1;
-    while (cont_or_stop || difftime(time_now, time_init) < parameters.time_limit)
+    while (cont_or_stop && difftime(time_now, time_init) < parameters.time_limit)
     {
         double best_anter = best_ant->fitness;
-        for (int iter = 0; iter < max_inter; iter++)
+        for (int iter = 0; iter < max_inter && difftime(time_now, time_init) < parameters.time_limit; iter++)
         {
             DEBUG(print_ant(ants, d, best_ant););
             //printf("Best_fitness: %lf\n", best_ant->fitness);
@@ -534,6 +534,7 @@ void aco(int d)
             // Update the pheromone matrix with the best ant's path
             update_pheromones(pheromones, ants, parameters.num_ant, d);
             update_sigma(ants, d, best_ant);
+            time(&time_now);
         }
 
         //double desv = desvio_padrao_ant(ants, parameters.num_ant);
@@ -541,7 +542,6 @@ void aco(int d)
 
         if (doubleEqual(best_anter, best_ant->fitness, 2))
             cont_or_stop = 0;
-        time(&time_now);
     }
 
     // Print the best solution found

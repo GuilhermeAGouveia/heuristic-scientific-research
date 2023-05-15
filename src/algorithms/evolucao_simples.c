@@ -26,7 +26,7 @@ void set_default_parameters()
 {
     parameters.F = 0.99;
     parameters.function_number = 2;
-    parameters.time_limit = 15; // seconds
+    parameters.time_limit = 10; // seconds
     parameters.island_size = 10;
     parameters.population_size = 300;
     parameters.dimension = 10; // 10 or 30
@@ -317,14 +317,14 @@ individuo *evolution(int population_size, int dimension, domain domain_function,
     int max_inter = max_inter_add;
     int cont_or_stop = 1;
     double aux, best_anter = get_best_of_population(population, population_size)->fitness;
-    while (cont_or_stop)
+    while (cont_or_stop && difftime(time_now, time_init) < parameters.time_limit)
     {
         do
         {
             // printf("\ni-ésima geração: %d\n", generations_count);
             selection(population, population_size, dimension);
             // print_population(population, population_size, dimension);
-            for (int i = 0; i < population_size - 1 || difftime(time_now, time_init) < parameters.time_limit; i++)
+            for (int i = 0; i < population_size - 1; i++)
             {
                 DEBUG(printf("\ni-ésimo individuo: %d\n", i););
 
@@ -370,5 +370,6 @@ int main(int argc, char *argv[])
     srand(parameters.seed);
     result = evolution(parameters.population_size, parameters.dimension, parameters.domain_function, SELECT_CRITERIA, parameters.num_generations_per_epoca);
     print_individuo(*result, 10, 1);
+    printf("Best %lf\n", result->fitness);
     return 0;
 }
