@@ -211,6 +211,9 @@ individuo pso(int population_size, int dimension, domain domain_function, int nu
     population->individuos = generate_population(population_size, dimension, domain_function);
     population_best_current->individuos = generate_population(population_size, dimension, domain_function);
     population->size = population_size;
+    time_t time_init, time_now;
+    time(&time_init);
+    time(&time_now);
 
     individuo *individuo_best = generate_population(1, dimension, domain_function);
     double w_max = 1, w_min = 0;
@@ -220,10 +223,10 @@ individuo pso(int population_size, int dimension, domain domain_function, int nu
     int max_inter_add = 100;
     int max_inter = max_inter_add;
     int cont_or_stop = 1;
-    while (cont_or_stop)
+    while (cont_or_stop && difftime(time_now, time_init) < parameters.time_limit)
     {
         double best_anter = individuo_best->fitness;
-        while (generation_count < max_inter)
+        while (generation_count < max_inter && difftime(time_now, time_init) < parameters.time_limit)
         {
             for (int i = 0; i < population_size; i++)
             {
@@ -250,6 +253,7 @@ individuo pso(int population_size, int dimension, domain domain_function, int nu
                 fitness(&population->individuos[i], dimension);
                 // print_individuo(population->individuos[i], dimension, 0);
             }
+            time(&time_now);
 
             generation_count++;
         }

@@ -458,11 +458,11 @@ individuo evolution(int island_size, int population_size, int dimension, domain 
             populacao *cross_population;
             populacao *mutation_population;
             int generation_count = 0;
-            int max_inter_add = 100, max_generations = (3000/parameters.island_size);
+            int max_inter_add = 100;
             int max_inter = 200;
             int cont_or_stop = 1;
             double aux, best_anter = get_best_of_population(*original_population)->fitness;
-            while (cont_or_stop)
+            while (cont_or_stop && difftime(time_now, time_init) < parameters.time_limit)
             {
                 while (generation_count < max_inter)
                 {
@@ -477,13 +477,14 @@ individuo evolution(int island_size, int population_size, int dimension, domain 
                     generation_count++;
                 }
                 aux = get_best_of_population(*original_population)->fitness;
-                if (doubleEqual(best_anter, aux,2) || generation_count >= max_generations)
+                if (doubleEqual(best_anter, aux,2))
                     cont_or_stop = 0;
                 else
                 {
                     best_anter = aux;
                     max_inter += max_inter_add;
                 }
+                time(&time_now);
             }
             individuo *bestCurrent = get_best_of_population(*original_population);
 
@@ -496,7 +497,6 @@ individuo evolution(int island_size, int population_size, int dimension, domain 
         migrate(populations, island_size, dimension, domain_function);
         epoca_count++;
         parameters.num_epocas = epoca_count;
-        time(&time_now);
         //Verifica se um best_Individuo foi encontrado em relaçao a epoca anterior
         if(doubleEqual(bestIndividuo.fitness, best_ep_ant, 4)){
             total_epocs_s_m++;
@@ -523,5 +523,6 @@ int main(int argc, char *argv[])
     result = evolution(parameters.island_size, parameters.population_size, parameters.dimension, parameters.domain_function, parameters.num_generations_per_epoca);
 
     print_individuo(result, parameters.dimension, 0);
+    printf("Best %lf\n", result.fitness);
     return 0;
 }
