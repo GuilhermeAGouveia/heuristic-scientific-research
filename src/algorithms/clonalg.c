@@ -303,9 +303,6 @@ int main(int argc, char *argv[])
     set_parameters(argc, argv); // Lê os parâmetros da linha de comando e repassa para as variáveis globais
     // print_parameters();
 
-    time_t semente = time(NULL);
-    printf("Semente: %ld\n ", semente);
-
     individuo result;
 
     srand(parameters.seed);
