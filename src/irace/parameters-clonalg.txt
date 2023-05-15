@@ -1,4 +1,4 @@
 # Parameter file for the ACOTSP software
 # name                 switch type values
-population_size        "-p"   i    (5,200)
+population_size        "-p"   i    (50,1000)
 clones                 "-c"   i    (2,15)
