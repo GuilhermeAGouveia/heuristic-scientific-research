@@ -26,12 +26,12 @@ void set_default_parameters()
 {
     parameters.function_number = 2;
     parameters.time_limit = 10; // seconds
-    parameters.population_size = 300;
+    parameters.population_size = 976;
     parameters.dimension = 10; // 10 or 30
     parameters.domain_function.min = -100;
     parameters.domain_function.max = 100;
     parameters.num_generations_per_epoca = 5;
-    parameters.mutation_rate = 80;  // %
+    parameters.mutation_rate = 79;  // %
     parameters.seed = time(NULL);
 }
 

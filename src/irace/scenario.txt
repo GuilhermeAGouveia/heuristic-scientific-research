@@ -8,9 +8,9 @@
 
 ## File that contains the description of the parameters.
 ##parameterFile = "./parameters-clonalg.txt"
-parameterFile = "./parameters-pso.txt"
+##parameterFile = "./parameters-pso.txt"
 ##parameterFile = "./parameters-evol_mpop.txt"
-##parameterFile = "./parameters-evol_simples.txt"
+parameterFile = "./parameters-evol_simples.txt"
 ##parameterFile = "./parameters-ant.txt"
 
 ## Directory where the programs will be run.

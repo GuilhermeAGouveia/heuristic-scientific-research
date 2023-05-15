@@ -28,7 +28,7 @@ void set_default_parameters()
     parameters.function_number = 1;
     parameters.time_limit = 10; // seconds
     parameters.island_size = 10;
-    parameters.population_size = 100;
+    parameters.population_size = 2250;
     parameters.dimension = 10; // 10 or 30
     parameters.domain_function.min = -100;
     parameters.domain_function.max = 100;
@@ -37,8 +37,8 @@ void set_default_parameters()
     parameters.crossover_rate = 100; // %
     parameters.num_migrations = 3;
     parameters.seed = time(NULL);
-    parameters.c1 = 2;
-    parameters.c2 = 2;
+    parameters.c1 = 0.35769;
+    parameters.c2 = 1.7784;
 }
 
 void set_parameters(int argc, char *argv[])
