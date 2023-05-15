@@ -7,8 +7,8 @@
 
 
 ## File that contains the description of the parameters.
-##parameterFile = "./parameters-clonalg.txt"
-parameterFile = "./parameters-pso.txt"
+parameterFile = "./parameters-clonalg.txt"
+##parameterFile = "./parameters-pso.txt"
 ##parameterFile = "./parameters-evol_mpop.txt"
 ##parameterFile = "./parameters-evol_simples.txt"
 ##parameterFile = "./parameters-ant.txt"
@@ -40,7 +40,7 @@ digits = 5
 
 ## A value of 0 silences all debug messages. Higher values provide
 ## more verbose debug messages.
-# debugLevel = 0
+debugLevel = 0
 
 ## The option parallel allows executing in parallel, within a single
 ## computer, the calls to targetRunner, by means of the parallel R package. For example,

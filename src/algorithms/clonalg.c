@@ -263,10 +263,10 @@ individuo clonalg(int population_size, int dimension, domain domain_function, in
     //  while (difftime(time_now, time_init) < parameters.time_limit)
     // {
 
-    int max_inter_add = 50, max_generations = (2000 / parameters.clone_number);
+    int max_inter_add = 50;
     int max_inter = 100;
     int cont_or_stop = 1;
-    while (cont_or_stop)
+    while (cont_or_stop || difftime(time_now, time_init) < parameters.time_limit)
     {
         double best_anter = population_main->individuos[population_main->size - 1].fitness;
         while (generation_count < max_inter)
@@ -286,7 +286,7 @@ individuo clonalg(int population_size, int dimension, domain domain_function, in
         // printf("Desvio_P: %lf\n", desv);
         // printf("Anterior: %lf, Atual_best:%lf\n", best_anter, population_main->individuos[population_main->size - 1].fitness);
 
-        if (doubleEqual(best_anter, population_main->individuos[population_main->size - 1].fitness, 2) || generation_count >= max_generations){
+        if (doubleEqual(best_anter, population_main->individuos[population_main->size - 1].fitness, 2)){
             cont_or_stop = 0;
         }
             
@@ -294,6 +294,7 @@ individuo clonalg(int population_size, int dimension, domain domain_function, in
         {
             max_inter += max_inter_add;
         }
+        time(&time_now);
     }
     return population_main->individuos[population_main->size - 1];
 }
