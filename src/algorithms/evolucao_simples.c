@@ -3,32 +3,102 @@
 #include <stdio.h>
 #include <time.h>
 #include <math.h>
+#include <getopt.h>
 #include "../libs/funcoes_cec_2015/cec15_test_func.h"
 #include "../libs/statistics.h"
 #include "../libs/types.h"
 #include "../libs/utils.h"
 #include "../libs/crossover.h"
+#include "../libs/log.h"
 #define STATISTICS(x) x
 #define DEBUG(x)
 
-#define POPULATION_SIZE 300
-#define NUM_GENERATIONS 5
-#define MUTATION_PROBABILITY 80 // %
-#define DIMENSION 10            // 10 or 30
-#define BOUNDS_LOWER -100
-#define BOUNDS_UPPER 100
 #define SELECT_CRITERIA 0.0001
-#define FUNCTION_NUMBER 3 // 1 to 15
 
-#define TIME_LIMIT 10 // seconds
+static args parameters;
 
-static int function_number = FUNCTION_NUMBER;
-static int time_limit = TIME_LIMIT;
+void print_usage()
+{
+    printf("Usage: ./evolucao_mpop -f <function_number> -t <time_limit> -i <island_size> -p <population_size> -d <dimension> -l <bounds_lower> -u <bounds_upper> -g <num_generations> -m <mutation_probability>");
+}
+
+void set_default_parameters()
+{
+    parameters.F = 0.99;
+    parameters.function_number = 2;
+    parameters.time_limit = 15; // seconds
+    parameters.island_size = 10;
+    parameters.population_size = 300;
+    parameters.dimension = 10; // 10 or 30
+    parameters.domain_function.min = -100;
+    parameters.domain_function.max = 100;
+    parameters.num_generations_per_epoca = 5;
+    parameters.mutation_rate = 80;  // %
+    parameters.crossover_rate = 100; // %
+    parameters.num_migrations = 3;
+    parameters.seed = time(NULL);
+}
+
+void set_parameters(int argc, char *argv[])
+{
+    int opt;
+    set_default_parameters();
+    while ((opt = getopt(argc, argv, "f:F:t:i:p:d:l:u:g:m:c:k:s:")) != -1)
+    {
+        switch (opt)
+        {
+        case 'f':
+            parameters.function_number = atoi(optarg);
+            break;
+        case 't':
+            parameters.time_limit = atoi(optarg);
+            break;
+        case 'i':
+            parameters.island_size = atoi(optarg);
+            break;
+        case 'p':
+            parameters.population_size = atoi(optarg);
+            break;
+        case 'd':
+            parameters.dimension = atoi(optarg);
+            break;
+        case 'l':
+            parameters.domain_function.min = atoi(optarg);
+            break;
+        case 'u':
+            parameters.domain_function.max = atoi(optarg);
+            break;
+        case 'g':
+            parameters.num_generations_per_epoca = atoi(optarg);
+            break;
+        case 'm':
+            parameters.mutation_rate = atoi(optarg);
+            break;
+        case 'c':
+            parameters.crossover_rate = atoi(optarg);
+            break;
+        case 'k':
+            parameters.num_migrations = atoi(optarg);
+            break;
+        case 'F':
+            parameters.F = atof(optarg);
+            break;
+        case 's':
+            parameters.seed = atoi(optarg);
+            break;
+        default:
+            printf("Invalid option: %c\n", opt);
+            print_usage();
+            exit(1);
+            break;
+        }
+    }
+}
 
 void fitness(individuo *individuo, int dimension)
 {
     // individuo.fitness = real_function(individuo.chromosome, dimension);
-    cec15_test_func(individuo->chromosome, &individuo->fitness, dimension, 1, function_number);
+    cec15_test_func(individuo->chromosome, &individuo->fitness, dimension, 1, parameters.function_number);
     // double x = individuo->chromosome[0];
     // double y = individuo->chromosome[1];
     // individuo->fitness = pow(x, 2) + pow(y, 2) - cos(18 * x) - cos(18 * y);
@@ -269,7 +339,7 @@ individuo *evolution(int population_size, int dimension, domain domain_function,
                 individuo *pior_pai = get_pior_pai(parents);
                 *pior_pai = child;
 
-                if (rand() % 100 < MUTATION_PROBABILITY)
+                if (rand() % 100 < parameters.mutation_rate)
                 {
                     population[i] = mutation(population, population[i], dimension, domain_function);
                 }
@@ -279,7 +349,7 @@ individuo *evolution(int population_size, int dimension, domain domain_function,
             STATISTICS(print_coords(population, population_size, generations_count, num_generations););
 
             // printf("Geração: %d\n", generations_count);
-        } while (!avaliar(population, population_size, select_criteria) && difftime(time_now, time_init) < time_limit && generations_count < max_inter);
+        } while (!avaliar(population, population_size, select_criteria) && difftime(time_now, time_init) < parameters.time_limit && generations_count < max_inter);
 
         //double desv = desvio_padrao(population, population_size);
         //printf("Desvio: %lf\n", desv);
@@ -295,18 +365,10 @@ individuo *evolution(int population_size, int dimension, domain domain_function,
 
 int main(int argc, char *argv[])
 {
+    set_parameters(argc, argv);
     individuo *result = NULL;
-    time_t semente = time(NULL);
-    printf("Semente: %ld\n ", semente);
-    srand(semente);
-    if (argc < 2)
-        result = evolution(POPULATION_SIZE, DIMENSION, (domain){BOUNDS_LOWER, BOUNDS_UPPER}, SELECT_CRITERIA, NUM_GENERATIONS);
-    else
-    {
-        function_number = atoi(argv[1]);
-        time_limit = atoi(argv[2]);
-        result = evolution(POPULATION_SIZE, DIMENSION, (domain){BOUNDS_LOWER, BOUNDS_UPPER}, SELECT_CRITERIA, NUM_GENERATIONS);
-    }
+    srand(parameters.seed);
+    result = evolution(parameters.population_size, parameters.dimension, parameters.domain_function, SELECT_CRITERIA, parameters.num_generations_per_epoca);
     print_individuo(*result, 10, 1);
     return 0;
 }
