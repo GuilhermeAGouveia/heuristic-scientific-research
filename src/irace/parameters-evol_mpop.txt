@@ -3,3 +3,4 @@
 population_size   "-p"      i       (20,300)
 island_size       "-i"      i       (2,20)
 num_migrations    "-k"      i       (1,20)
+crossover_rate    "-c"      i       (0, 100)
