@@ -1,0 +1,53 @@
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|         11|          5|         67|     500.0628350|          5|00:00:09|   NA|  NA|    NA|
+|x|          2|          5|         62|     500.2119020|          7|00:00:08|-0.60|0.20|1.1767|
+|x|          7|          5|         68|     741.5349457|          9|00:00:01|-0.47|0.02|1.0147|
+|x|          6|          5|         65|     863.1309848|         11|00:00:02|-0.22|0.09|0.7747|
+|=|          9|          5|         67|     792.0528356|         13|00:00:06|-0.14|0.09|0.7088|
+|=|          5|          5|         67|     710.1893457|         15|00:00:09|-0.15|0.04|0.8171|
+|=|          3|          5|         67|     784.5805317|         17|00:00:02|-0.13|0.03|0.8832|
+|=|          4|          5|         65|     747.9952368|         19|00:00:08|-0.06|0.07|0.8622|
+|=|         10|          5|         67|     699.2624256|         21|00:00:09|-0.05|0.06|0.8491|
+|=|          1|          5|         67|     659.5749607|         23|00:00:09|-0.06|0.05|0.8322|
+|=|          8|          5|         67|     626.9747205|         25|00:00:09|-0.01|0.08|0.7952|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+Best-so-far configuration:          67    mean value:      626.9747205
+Description of the best-so-far configuration:
+   .ID. population_size      c1     c2 .PARENT.
+67   67            2250 0.35769 1.7784       65
+
+# 2023-05-15 15:05:04 UTC: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+   population_size      c1      c2
+67            2250 0.35769 1.77840
+65            1524 0.23971 1.64982
+50            1009 0.29268 1.62502
+# 2023-05-15 15:05:04 UTC: Stopped because there is not enough budget left to race more than the minimum (3)
+# You may either increase the budget or set 'minNbSurvival' to a lower value
+# Iteration: 5
+# nbIterations: 5
+# experimentsUsedSoFar: 499
+# timeUsed: 0
+# remainingBudget: 1
+# currentBudget: 1
+# number of elites: 3
+# nbConfigurations: 2
+# Total CPU user time: 1165.01, CPU sys time: 8.826, Wall-clock time: 631.737
+# Best configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+   population_size      c1      c2
+67            2250 0.35769 1.77840
+65            1524 0.23971 1.64982
+50            1009 0.29268 1.62502
+# Best configurations as commandlines (first number is the configuration ID; same order as above):
+67  -p2250 -v0.35769 -z1.7784
+65  -p1524 -v0.23971 -z1.64982
+50  -p1009 -v0.29268 -z1.62502
+
+
+# Testing of elite configurations: 1 
+# Testing iteration configurations: FALSE 
+# 2023-05-15 15:05:04 UTC: No test instances, skip testing
+Warning message:
+In readLines(con = file) :
+  incomplete final line found on '/workspaces/heuristic-scientific-research/src/irace/parameters-pso.txt'
