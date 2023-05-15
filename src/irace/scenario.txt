@@ -46,7 +46,7 @@ debugLevel = 0
 ## computer, the calls to targetRunner, by means of the parallel R package. For example,
 ## adding --parallel N to the command line of irace will launch in parallel up to N calls of
 ## the target algorithm.
-parallel = 8
+parallel = 12
 
 ## END of scenario file
 ############################################################################

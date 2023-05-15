@@ -17,20 +17,20 @@
 # installed at: /usr/local/lib/R/site-library/irace
 # called with: 
 == irace == WARNING: A default scenario file '/home/discente/Documentos/heuristic-scientific-research/src/irace/scenario.txt' has been found and will be read.
-# 2023-05-15 10:43:26 -03: Initialization
+# 2023-05-15 11:23:24 -03: Initialization
 # Elitist race
 # Elitist new instances: 1
 # Elitist limit: 2
 # nbIterations: 3
 # minNbSurvival: 3
 # nbParameters: 2
-# seed: 247989367
+# seed: 357613556
 # confidence level: 0.95
 # budget: 500
 # mu: 5
 # deterministic: FALSE
 
-# 2023-05-15 10:43:26 -03: Iteration 1 of 3
+# 2023-05-15 11:23:24 -03: Iteration 1 of 3
 # experimentsUsedSoFar: 0
 # remainingBudget: 500
 # currentBudget: 166
@@ -46,5 +46,114 @@
 +-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
 | |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
 +-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
-|x|          1|         27|          6|     500.4657770|         27|00:00:36|   NA|  NA|    NA|
-|x|          2|         27|         13|     866.3383525|         54|00:00:11|+0.58|0.79|0.2962|
+|x|          1|         27|         19|     302.3351610|         27|00:00:47|   NA|  NA|    NA|
+|x|          2|         27|         19|     766.3325905|         54|00:00:04|+0.16|0.58|0.8774|
+|x|          3|         27|          3|     678.0288060|         81|00:00:15|+0.20|0.47|0.7939|
+|x|          4|         27|          3|     818.5419760|        108|00:00:05|+0.21|0.41|0.7645|
+|-|          5|         16|          3|     715.9378646|        135|00:00:49|-0.01|0.19|0.9127|
+|=|          6|         16|         19|     680.4602577|        151|00:00:09|+0.05|0.21|0.8461|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+Best-so-far configuration:          19    mean value:      680.4602577
+Description of the best-so-far configuration:
+   .ID. population_size clones .PARENT.
+19   19             273      7       NA
+
+# 2023-05-15 11:25:35 -03: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+   population_size clones
+19             273      7
+3              208     19
+10             131     18
+# 2023-05-15 11:25:35 -03: Iteration 2 of 3
+# experimentsUsedSoFar: 151
+# remainingBudget: 349
+# currentBudget: 174
+# nbConfigurations: 27
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . All alive configurations are elite and nothing is discarded
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|          7|         27|         47|     302.3335600|         27|00:01:14|   NA|  NA|    NA|
+|x|          6|         27|         51|     401.4670025|         51|00:00:19|+0.25|0.62|0.6910|
+|x|          5|         27|         51|     368.7235770|         75|00:01:09|+0.19|0.46|0.7475|
+|x|          1|         27|         47|     352.2216775|         99|00:01:07|+0.07|0.30|0.9004|
+|=|          2|         27|         51|     528.2997316|        123|00:00:07|+0.05|0.24|0.9152|
+|=|          3|         27|         51|     523.6696090|        147|00:00:19|+0.07|0.22|0.8929|
+|-|          4|         14|         51|     625.5583593|        171|00:00:06|-0.01|0.13|0.9245|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+Best-so-far configuration:          51    mean value:      625.5583593
+Description of the best-so-far configuration:
+   .ID. population_size clones .PARENT.
+51   51             239      9       19
+
+# 2023-05-15 11:29:59 -03: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+   population_size clones
+51             239      9
+46             246     12
+47             212     19
+# 2023-05-15 11:29:59 -03: Iteration 3 of 3
+# experimentsUsedSoFar: 322
+# remainingBudget: 178
+# currentBudget: 178
+# nbConfigurations: 24
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . All alive configurations are elite and nothing is discarded
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|          8|         24|         62|     500.3706350|         24|00:00:20|   NA|  NA|    NA|
+|x|          2|         24|         62|     863.6688390|         45|00:00:06|+0.31|0.66|0.6579|
+|x|          6|         24|         63|     742.0858620|         66|00:00:17|+0.08|0.39|0.8933|
+|x|          3|         24|         63|     681.7139268|         87|00:00:19|+0.08|0.31|0.8755|
+|=|          4|         24|         51|     793.8394754|        108|00:00:06|-0.00|0.20|0.9510|
+|=|          7|         24|         51|     711.9233890|        129|00:01:06|+0.04|0.20|0.9209|
+|=|          5|         24|         51|     653.5395800|        150|00:01:06|+0.08|0.21|0.8893|
+|=|          1|         24|         51|     609.9473964|        171|00:01:04|+0.05|0.17|0.9096|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+Best-so-far configuration:          51    mean value:      609.9473964
+Description of the best-so-far configuration:
+   .ID. population_size clones .PARENT.
+51   51             239      9       19
+
+# 2023-05-15 11:34:28 -03: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+   population_size clones
+51             239      9
+63             207     19
+55             249     12
+# 2023-05-15 11:34:28 -03: Stopped because there is not enough budget left to race more than the minimum (3)
+# You may either increase the budget or set 'minNbSurvival' to a lower value
+# Iteration: 4
+# nbIterations: 4
+# experimentsUsedSoFar: 493
+# timeUsed: 0
+# remainingBudget: 7
+# currentBudget: 7
+# number of elites: 3
+# nbConfigurations: 3
+# Total CPU user time: 6589.703, CPU sys time: 11.334, Wall-clock time: 664.305
+# Best configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+   population_size clones
+51             239      9
+63             207     19
+55             249     12
+# Best configurations as commandlines (first number is the configuration ID; same order as above):
+51  -p239 -c9
+63  -p207 -c19
+55  -p249 -c12
+
+
+# Testing of elite configurations: 1 
+# Testing iteration configurations: FALSE 
+# 2023-05-15 11:34:28 -03: No test instances, skip testing
