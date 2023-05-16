@@ -52,7 +52,7 @@ void set_default_parameters()
     parameters.num_iter = 2000;
     parameters.tax_evaporate = 0.65963;
     parameters.num_candidates = 14;
-    parameters.p_exploitation = 0.73858;
+    parameters.p_exploitation = 0.25;
     parameters.function_number = 1;
     parameters.time_limit = 10; // in seconds
     parameters.seed = time(NULL);

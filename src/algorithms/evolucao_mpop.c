@@ -27,7 +27,7 @@ void set_default_parameters()
     parameters.F = 0.99;
     parameters.function_number = 2;
     parameters.time_limit = 15; // seconds
-    parameters.island_size = 11;
+    parameters.island_size = 1;
     parameters.population_size = 189;
     parameters.dimension = 10; // 10 or 30
     parameters.domain_function.min = -100;
@@ -210,7 +210,7 @@ populacao *generate_island(int island_size, int population_size, int dimension, 
     return populations;
 }
 
-void mutation_commom(populacao *populacao, int dimension, domain domain_function)
+populacao* mutation_commom(populacao *populacao, int dimension, domain domain_function)
 {
     DEBUG(printf("\nmutation\n"););
     for (int i = 0; i < populacao->size - 1; i++)
@@ -219,6 +219,7 @@ void mutation_commom(populacao *populacao, int dimension, domain domain_function
         populacao->individuos[i].chromosome[mutation_point] = random_double(domain_function.min, domain_function.max);
         fitness(&populacao->individuos[i], dimension);
     }
+    return populacao;
 }
 
 populacao *mutation_diferencial(populacao *populacao_original, int dimension, domain domain_function)
@@ -464,9 +465,10 @@ individuo evolution(int island_size, int population_size, int dimension, domain 
             double aux, best_anter = get_best_of_population(*original_population)->fitness;
             while (cont_or_stop && difftime(time_now, time_init) < parameters.time_limit)
             {
-                while (generation_count < max_inter)
+                while (generation_count < max_inter && difftime(time_now, time_init) < parameters.time_limit)
                 {
-                    mutation_population = mutation_diferencial(original_population, dimension, domain_function);
+                    time(&time_now);
+                    mutation_population = mutation_commom(original_population, dimension, domain_function);
                     cross_population = crossover(original_population, mutation_population, dimension);
                     selection(original_population, cross_population, dimension);
 
@@ -484,7 +486,7 @@ individuo evolution(int island_size, int population_size, int dimension, domain 
                     best_anter = aux;
                     max_inter += max_inter_add;
                 }
-                time(&time_now);
+                
             }
             individuo *bestCurrent = get_best_of_population(*original_population);
 

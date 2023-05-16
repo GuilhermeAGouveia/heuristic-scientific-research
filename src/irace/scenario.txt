@@ -5,6 +5,8 @@
 ## the parameter (comment it out in this file, and do not give any
 ## value on the command line).
 
+## export PATH="$(Rscript -e "cat(paste0(system.file(package='irace', 'bin', mustWork=TRUE), ':'))" 2> /dev/null)${PATH}"
+## irace | tee <algorithm-name>.dat
 
 ## File that contains the description of the parameters.
 ##parameterFile = "./parameters-clonalg.txt"
