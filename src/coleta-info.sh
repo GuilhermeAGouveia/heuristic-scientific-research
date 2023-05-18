@@ -89,7 +89,7 @@ verify_existence() {
 }
 
 define_command_evol() {
-    echo "./evol -f $function_number -t 1" 
+    echo "./evol -f $function_number" 
 }
 
 show_indicator_algorithm() {
