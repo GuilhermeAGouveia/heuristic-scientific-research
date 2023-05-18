@@ -9,7 +9,7 @@ for alg in $all_algorithms; do
     make
     clear
     for func in $(seq 1 15); do
-        ./coleta-info.sh -n 5 -c $alg -f $func -t 1 | tee output-coleta-info.dat
+        ./coleta-info.sh -n 20 -c $alg -f $func | tee output-coleta-info.dat
         result=$(cat output-coleta-info.dat | tail -n 6)
         echo -e $result >> result_$alg.txt
         rm output-coleta-info.dat
