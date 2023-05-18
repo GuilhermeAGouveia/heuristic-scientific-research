@@ -57,6 +57,12 @@ dkms.conf
 !*/
 !*.*
 !makefile*
+!Makefile*
 src/statistics/coords.dat
 src/log/*
+!README*
+*.stderr
+*.stdout
+!target*
+!src/irace/functions/*
 ```

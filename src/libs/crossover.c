@@ -5,8 +5,6 @@
 #include "utils.h"
 #include "types.h"
 
-
-
 individuo cruzamento_media(individuo parent1, individuo parent2, int n_itens)
 {
     DEBUG(printf("\ncruzamento_media\n"););
@@ -48,6 +46,8 @@ individuo cruzamento_blend(individuo parent1, individuo parent2, int n_itens)
     {
         double alpha = random_double(0.0, 1.0);
         child.chromosome[i] = alpha * parent1.chromosome[i] + (1 - alpha) * parent2.chromosome[i];
+        if (child.chromosome[i] > 100 || child.chromosome[i] < -100)
+            child.chromosome[i] = random_double(-100, 100);
     }
     return child;
 }
@@ -73,7 +73,7 @@ individuo cruzamento_metade(individuo parent1, individuo parent2, int n_itens)
 
 individuo cruzamento_ponto(individuo parent1, individuo parent2, int n_itens)
 {
-    DEBUG(printf("\ncruzamento_metade\n"););
+    DEBUG(printf("\ncruzamento_ponto\n"););
 
     double *child_chromosome = (double *)malloc(n_itens * sizeof(double));
     individuo child = {child_chromosome, INFINITY};

@@ -11,8 +11,10 @@
 #include "../libs/utils.h"
 #include "../libs/crossover.h"
 #include "../libs/log.h"
+
 #define STATISTICS(x)
-#define DEBUG(x) x
+#define DEBUG(x)
+
 void print_usage()
 {
     printf("Usage: ./evolucao_mpop -f <function_number> -t <time_limit> -i <island_size> -p <population_size> -d <dimension> -l <bounds_lower> -u <bounds_upper> -g <num_generations> -m <mutation_probability>");
@@ -36,12 +38,12 @@ void set_default_parameters()
 {
     parameters.function_number = 3;
     parameters.time_limit = 10; // seconds
-    parameters.population_size = 3;
+    parameters.population_size = 239;
     parameters.dimension = 10; // 10 or 30
     parameters.domain_function.min = -100;
     parameters.domain_function.max = 100;
     parameters.num_generations = 300;
-    parameters.clone_number = 10;
+    parameters.clone_number = 9;
     parameters.seed = time(NULL);
 }
 
@@ -261,20 +263,39 @@ individuo clonalg(int population_size, int dimension, domain domain_function, in
     //  while (difftime(time_now, time_init) < parameters.time_limit)
     // {
 
-    while (generation_count < num_generations)
+    int max_inter_add = 50;
+    int max_inter = 100;
+    int cont_or_stop = 1;
+    while (cont_or_stop && difftime(time_now, time_init) < parameters.time_limit)
     {
-        STATISTICS(print_coords(&population_main->individuos[population_main->size - 1], 1, generation_count, num_generations););
+        double best_anter = population_main->individuos[population_main->size - 1].fitness;
+        while (generation_count < max_inter && difftime(time_now, time_init) < parameters.time_limit)
+        {
+            STATISTICS(print_coords(&population_main->individuos[population_main->size - 1], 1, generation_count, num_generations););
 
-        DEBUG(printf("Populacao principal na geracao %d:\n", generation_count););
-        DEBUG(print_population(population_main->individuos, population_main->size, dimension, 1););
-        populacao_clones = generate_clones(population_main, parameters.clone_number, dimension, domain_function);
-        populacao_clones_mutated = mutation_clones(populacao_clones, population_size, dimension, domain_function);
-        union_populacao_clones_and_main(populacao_clones_mutated, population_main, population_size);
-        free_population(populacao_clones, population_size);
-        qsort(population_main->individuos, population_main->size, sizeof(individuo), comparador_individuo);
-        generation_count++;
+            DEBUG(printf("Populacao principal na geracao %d:\n", generation_count););
+            DEBUG(print_population(population_main->individuos, population_main->size, dimension, 1););
+            populacao_clones = generate_clones(population_main, parameters.clone_number, dimension, domain_function);
+            populacao_clones_mutated = mutation_clones(populacao_clones, population_size, dimension, domain_function);
+            union_populacao_clones_and_main(populacao_clones_mutated, population_main, population_size);
+            free_population(populacao_clones, population_size);
+            qsort(population_main->individuos, population_main->size, sizeof(individuo), comparador_individuo);
+            generation_count++;
+            time(&time_now);
+        }
+        // double desv = desvio_padrao(population_main->individuos, population_size);
+        // printf("Desvio_P: %lf\n", desv);
+        // printf("Anterior: %lf, Atual_best:%lf\n", best_anter, population_main->individuos[population_main->size - 1].fitness);
+
+        if (doubleEqual(best_anter, population_main->individuos[population_main->size - 1].fitness, 2)){
+            cont_or_stop = 0;
+        }
+            
+        else
+        {
+            max_inter += max_inter_add;
+        }
     }
-    //}
     return population_main->individuos[population_main->size - 1];
 }
 
@@ -287,6 +308,7 @@ int main(int argc, char *argv[])
 
     srand(parameters.seed);
     result = clonalg(parameters.population_size, parameters.dimension, parameters.domain_function, parameters.num_generations);
-    print_individuo(result, parameters.dimension, 0);
+    // print_individuo(result, parameters.dimension, 0);
+    printf("Best %lf\n", result.fitness);
     return 0;
 }

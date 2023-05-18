@@ -1,0 +1,54 @@
+###################################################### -*- mode: r -*- #####
+## Scenario setup for Iterated Race (iRace).
+############################################################################
+## To use the default value of a parameter of iRace, simply do not set
+## the parameter (comment it out in this file, and do not give any
+## value on the command line).
+
+## export PATH="$(Rscript -e "cat(paste0(system.file(package='irace', 'bin', mustWork=TRUE), ':'))" 2> /dev/null)${PATH}"
+## irace | tee <algorithm-name>.dat
+
+## File that contains the description of the parameters.
+##parameterFile = "./parameters-clonalg.txt"
+##parameterFile = "./parameters-pso.txt"
+parameterFile = "./parameters-evol_mpop.txt"
+##parameterFile = "./parameters-evol_simples.txt"
+##parameterFile = "./parameters-ant.txt"
+
+## Directory where the programs will be run.
+execDir = "../"
+
+## Directory where tuning instances are located, either absolute path or
+## relative to current directory.
+# instanceDirectory = ""
+trainInstancesDir = "./functions"
+
+## The maximum number of runs (invocations of targetRunner) that will be performed. It
+## determines the (maximum) budget of experiments for the tuning.
+maxExperiments = 500
+
+## File that contains a set of initial configurations. If empty or NULL,
+## all initial configurations are randomly generated.
+# configurationsFile = ""
+
+## File that contains a list of logical expressions that cannot be TRUE
+## for any evaluated configuration. If empty or NULL, do not use forbidden
+## expressions.
+##forbiddenFile = "forbidden.txt"
+
+## Indicates the number of decimal places to be considered for the
+## real parameters.
+digits = 5
+
+## A value of 0 silences all debug messages. Higher values provide
+## more verbose debug messages.
+debugLevel = 0
+
+## The option parallel allows executing in parallel, within a single
+## computer, the calls to targetRunner, by means of the parallel R package. For example,
+## adding --parallel N to the command line of irace will launch in parallel up to N calls of
+## the target algorithm.
+parallel = 12
+
+## END of scenario file
+############################################################################

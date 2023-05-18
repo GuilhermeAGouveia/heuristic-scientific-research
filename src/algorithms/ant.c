@@ -48,11 +48,11 @@ AntParameters parameters;
 
 void set_default_parameters()
 {
-    parameters.num_ant = 200;
+    parameters.num_ant = 95527;
     parameters.num_iter = 2000;
-    parameters.tax_evaporate = 0.1;
-    parameters.num_candidates = 10;
-    parameters.p_exploitation = 0.1;
+    parameters.tax_evaporate = 0.65963;
+    parameters.num_candidates = 14;
+    parameters.p_exploitation = 0.25;
     parameters.function_number = 1;
     parameters.time_limit = 10; // in seconds
     parameters.seed = time(NULL);
@@ -437,6 +437,27 @@ void catch_best_ant(Ant *ants, Ant *best_antt, double **pheromones, int d)
     }
 }
 
+double calc_mean_ant(Ant *ants, int ants_size)
+{
+    double sum = 0.0;
+    for (int i = 0; i < ants_size; i++)
+    {
+        sum += ants[i].fitness;
+    }
+    return sum / ants_size;
+}
+
+double desvio_padrao_ant(Ant *ants, int ants_size)
+{
+    double mean = calc_mean_ant(ants, ants_size);
+    double sum = 0.0;
+    for (int i = 0; i < ants_size; i++)
+    {
+        sum += pow(ants[i].fitness - mean, 2);
+    }
+    return sqrt(sum / ants_size);
+}
+
 // The main ACO function
 void aco(int d)
 {
@@ -445,6 +466,10 @@ void aco(int d)
     double **pheromones = (double **)malloc(parameters.num_ant * sizeof(double *));
     pheromones_candidates = (double **)malloc(parameters.num_candidates * sizeof(double *));
     pheromones_best = (double **)malloc(1 * sizeof(double *));
+    time_t time_init, time_now;
+    time(&time_init);
+    time(&time_now);
+
     for (int i = 0; i < parameters.num_ant; i++)
     {
         pheromones[i] = (double *)malloc(d * sizeof(double));
@@ -487,25 +512,36 @@ void aco(int d)
 
     // Update the pheromone matrix with the best ant's path
     update_pheromones(pheromones, ants, parameters.num_ant, d);
-
     // Iterate over the specified number of iterations
-
-    for (int iter = 0; iter < parameters.num_iter; iter++)
+    int max_inter_add = 100;
+    int max_inter = 150;
+    int cont_or_stop = 1;
+    while (cont_or_stop && difftime(time_now, time_init) < parameters.time_limit)
     {
+        double best_anter = best_ant->fitness;
+        for (int iter = 0; iter < max_inter && difftime(time_now, time_init) < parameters.time_limit; iter++)
+        {
+            DEBUG(print_ant(ants, d, best_ant););
+            //printf("Best_fitness: %lf\n", best_ant->fitness);
+            // Move each ant to a new ant_chromossome
+            select_next_position(pheromones, ants, d);
+            evaporate_pheromones(pheromones, d);
 
-        DEBUG(print_ant(ants, d, best_ant););
-        printf("Best_fitness: %lf\n", best_ant->fitness);
-        // Move each ant to a new ant_chromossome
-        select_next_position(pheromones, ants, d);
-        evaporate_pheromones(pheromones, d);
+            // Update the best ant and its fitness value
+            catch_best_ant(ants, best_ant, pheromones, d);
+            // Verifica se a melhor posição não foi perdida
+            best_ant_check(ants, best_ant, pheromones, d);
+            // Update the pheromone matrix with the best ant's path
+            update_pheromones(pheromones, ants, parameters.num_ant, d);
+            update_sigma(ants, d, best_ant);
+            time(&time_now);
+        }
 
-        // Update the best ant and its fitness value
-        catch_best_ant(ants, best_ant, pheromones, d);
-        // Verifica se a melhor posição não foi perdida
-        best_ant_check(ants, best_ant, pheromones, d);
-        // Update the pheromone matrix with the best ant's path
-        update_pheromones(pheromones, ants, parameters.num_ant, d);
-        update_sigma(ants, d, best_ant);
+        //double desv = desvio_padrao_ant(ants, parameters.num_ant);
+        //printf("Desvio: %lf\n", desv);
+
+        if (doubleEqual(best_anter, best_ant->fitness, 2))
+            cont_or_stop = 0;
     }
 
     // Print the best solution found
@@ -517,6 +553,7 @@ void aco(int d)
         printf(" %lf", best_ant->ant_chromossome[i]);
     }
     printf("\n");
+    printf("Best %lf\n", best_ant->fitness);
 
     // Free memory
     for (int i = 0; i < parameters.num_ant; i++)
