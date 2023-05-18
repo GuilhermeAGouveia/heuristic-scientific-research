@@ -1,11 +1,15 @@
-gcc -o evol algorithms/evolucao_simples.c ./libs/statistics.c ./libs/log.c ./libs/crossover.c ./libs/types.c ./libs/utils.c ./libs/funcoes_cec_2015/cec15_test_func.c ./libs/funcoes_cec_2015/ecr_iml.c ./libs/funcoes_cec_2015/evaluation_count_iml.c ./libs/funcoes_cec_2015/record_result_iml.c ./libs/funcoes_cec_2015/rp_iml.c -lm; \
-
-[H[2J[3JBuscando em 100 execuções para função 1...
-Código em execução: algorithms/evolucao_simples
-
-[?25l
-
-
-
-
-[31m      __________________________________________________________________________________________________________________________________________| 0%
+Resultado para função 1: Minimo: 4976929233.943509 Maximo: 4976929233.943509 Média: 4976929233.94350900000000000000 Desvio padrão: 0
+Resultado para função 2: Minimo: 34647.865839 Maximo: 34647.865839 Média: 34647.86583900000000000000 Desvio padrão: 0
+Resultado para função 3: Minimo: 310.782835 Maximo: 310.782835 Média: 310.78283500000000000000 Desvio padrão: 0
+Resultado para função 4: Minimo: 2046.782047 Maximo: 2046.782047 Média: 2046.78204700000000000000 Desvio padrão: 0
+Resultado para função 5: Minimo: 501.747127 Maximo: 501.747127 Média: 501.74712700000000000000 Desvio padrão: 0
+Resultado para função 6: Minimo: 603.461615 Maximo: 603.461615 Média: 603.46161500000000000000 Desvio padrão: 0
+Resultado para função 7: Minimo: 725.863028 Maximo: 725.863028 Média: 725.86302800000000000000 Desvio padrão: 0
+Resultado para função 8: Minimo: 2302.174180 Maximo: 2302.174180 Média: 2302.17418000000000000000 Desvio padrão: 0
+Resultado para função 9: Minimo: 904.123796 Maximo: 904.123796 Média: 904.12379600000000000000 Desvio padrão: 0
+Resultado para função 10: Minimo: 170572.699670 Maximo: 170572.699670 Média: 170572.69967000000000000000 Desvio padrão: 0
+Resultado para função 11: Minimo: 1124.253975 Maximo: 1124.253975 Média: 1124.25397500000000000000 Desvio padrão: 0
+Resultado para função 12: Minimo: 1457.217253 Maximo: 1457.217253 Média: 1457.21725300000000000000 Desvio padrão: 0
+Resultado para função 13: Minimo: 1684.401462 Maximo: 1684.401462 Média: 1684.40146200000000000000 Desvio padrão: 0
+Resultado para função 14: Minimo: 1611.593973 Maximo: 1611.593973 Média: 1611.59397300000000000000 Desvio padrão: 0
+Resultado para função 15: Minimo: 2038.709954 Maximo: 2038.709954 Média: 2038.70995400000000000000 Desvio padrão: 0

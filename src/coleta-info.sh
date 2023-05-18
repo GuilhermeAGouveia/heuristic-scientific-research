@@ -29,8 +29,6 @@ while getopts ":n:f:t:c:" o; do
 done
 shift $((OPTIND-1))
 alg_path="algorithms/$alg_name"
-alg_path_seed_command="algorithms\/$alg_name"
-
 
 # Math
 
@@ -91,28 +89,43 @@ verify_existence() {
 }
 
 define_command_evol() {
-    case $1 in
-        "evolucao_mpop")
-            echo "./evol -f $function_number"
-            ;;
-        "evolucao_simples")
-            echo "./evol -f $function_number"
-            ;;
-        *)
-            echo "not found"
-            exit 1
-            ;;
-    esac
+    echo "./evol -f $function_number -t 1" 
+}
+
+show_indicator_algorithm() {
+    all_algorithms=$(ls algorithms/* | cut -d'/' -f 2 | cut -d'.' -f1)
+    string="algoritmos:"
+    find_current_alg=0
+    for alg in $all_algorithms; do
+        if [ $alg == $alg_name ]; then
+            string="$string [$alg]"
+        else
+            string="$string    $alg"
+        fi
+    done;
+    echo -e $string
+
+}
+
+show_indicator_function() {
+    string="funções:"
+    for i in $(seq 1 15); do
+        if [ $i == $function_number ]; then
+            string="$string [$i]"
+        else
+            string="$string    $i"
+        fi
+    done;
+    echo -e $string
 }
 
 main () {
     verify_existence "$alg_path.c"
-    sed "s/<codname>/$alg_path_seed_command/g" makefile_ > makefile
-    make
-    clear
     source libs/progress-bar/progress-bar.sh
-    echo -e "Buscando em ${n_execucoes} execuções para função ${function_number}..."
-    echo -e "Código em execução: $alg_path\n"
+    echo -e "Realizando ${n_execucoes} execuções..."
+    #echo -e "Código em execução: $alg_path\n"
+    show_indicator_function
+    show_indicator_algorithm
     tput civis
 
     resultado=0
@@ -152,7 +165,6 @@ main () {
     tput reset
     tput setaf 2
     echo -e "\nResultado para função $function_number:\n"
-    echo "Semente do menor: $semente"
     echo "Minimo: $minimo"
     echo "Maximo: $maximo"
     echo "Média: $(mean "${array_values[@]}")"
