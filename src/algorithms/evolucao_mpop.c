@@ -468,7 +468,7 @@ individuo evolution(int island_size, int population_size, int dimension, domain 
                 while (generation_count < max_inter && difftime(time_now, time_init) < parameters.time_limit)
                 {
                     time(&time_now);
-                    mutation_population = mutation_commom(original_population, dimension, domain_function);
+                    mutation_population = mutation_diferencial(original_population, dimension, domain_function);
                     cross_population = crossover(original_population, mutation_population, dimension);
                     selection(original_population, cross_population, dimension);
 
