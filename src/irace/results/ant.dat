@@ -14,23 +14,23 @@
 #     race: Racing methods for the selection of the best
 #     Copyright (C) 2003 Mauro Birattari
 #------------------------------------------------------------------------------
-# installed at: /usr/local/lib/R/site-library/irace
+# installed at: /home/vinicius/R/x86_64-pc-linux-gnu-library/4.1/irace
 # called with: 
-== irace == WARNING: A default scenario file '/home/discente/Documentos/heuristic-scientific-research/src/irace/scenario.txt' has been found and will be read.
-# 2023-05-16 15:11:47 -03: Initialization
+== irace == WARNING: A default scenario file '/home/vinicius/Documentos/Iniciação-cientifica/irace/irace_atual_main/heuristic-scientific-research/src/irace/scenario.txt' has been found and will be read.
+# 2023-05-18 11:09:49 -03: Initialization
 # Elitist race
 # Elitist new instances: 1
 # Elitist limit: 2
 # nbIterations: 3
 # minNbSurvival: 3
 # nbParameters: 3
-# seed: 635990411
+# seed: 1806734595
 # confidence level: 0.95
 # budget: 500
 # mu: 5
 # deterministic: FALSE
 
-# 2023-05-16 15:11:47 -03: Iteration 1 of 3
+# 2023-05-18 11:09:49 -03: Iteration 1 of 3
 # experimentsUsedSoFar: 0
 # remainingBudget: 500
 # currentBudget: 166
@@ -46,24 +46,24 @@
 +-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
 | |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
 +-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
-|x|          1|         27|          9|     307.2721040|         27|00:00:31|   NA|  NA|    NA|
-|x|          2|         27|          9|     404.1267400|         54|00:00:31|+0.02|0.51|1.0737|
-|x|          3|         27|         17|     691.2291687|         81|00:00:30|+0.12|0.41|0.9247|
-|x|          4|         27|         17|     595.0970060|        108|00:00:31|+0.16|0.37|0.8631|
-|=|          5|         27|         17|     576.2122826|        135|00:00:30|+0.12|0.30|0.9296|
-|-|          6|         14|         17|     697.7042562|        162|00:00:30|-0.04|0.14|0.9455|
+|x|          1|         27|         24|     1258.193377|         27|00:00:48|   NA|  NA|    NA|
+|x|          2|         27|          2|     801.4194415|         54|00:01:19|+0.26|0.63|0.8900|
+|x|          3|         27|          9|     701.8776493|         81|00:00:51|+0.20|0.46|0.9581|
+|x|          4|         27|          9|     651.6441712|        108|00:00:54|+0.18|0.39|0.8812|
+|=|          5|         27|          9|     786.6485230|        135|00:00:47|+0.11|0.29|0.9393|
+|-|          6|         10|          9|     706.9571085|        162|00:01:26|-0.02|0.15|1.0082|
 +-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
-Best-so-far configuration:          17    mean value:      697.7042562
+Best-so-far configuration:           9    mean value:      706.9571085
 Description of the best-so-far configuration:
-   .ID. num_ant num_candidates tax_evaporate .PARENT.
-17   17   95413             13        0.8247       NA
+  .ID. num_ant num_candidates tax_evaporate .PARENT.
+9    9   89557             20       0.73164       NA
 
-# 2023-05-16 15:14:52 -03: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+# 2023-05-18 11:15:57 -03: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
    num_ant num_candidates tax_evaporate
-17   95413             13       0.82470
-2    77204             15       0.05746
-5    28043             12       0.45786
-# 2023-05-16 15:14:52 -03: Iteration 2 of 3
+9    89557             20       0.73164
+22   84493             30       0.43618
+21    6559             15       0.97964
+# 2023-05-18 11:15:57 -03: Iteration 2 of 3
 # experimentsUsedSoFar: 162
 # remainingBudget: 338
 # currentBudget: 169
@@ -79,29 +79,29 @@ Description of the best-so-far configuration:
 +-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
 | |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
 +-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
-|x|          7|         26|         35|     1249.396994|         26|00:00:30|   NA|  NA|    NA|
-|x|          1|         26|         35|     778.3389450|         49|00:00:26|-0.07|0.47|1.1147|
-|x|          4|         26|          2|     626.7840373|         72|00:00:25|-0.05|0.30|1.0712|
-|x|          6|         26|          2|     785.4141517|         95|00:00:21|+0.05|0.28|0.9875|
-|=|          2|         26|         40|     724.7638552|        118|00:00:23|-0.00|0.20|0.9958|
-|=|          3|         26|          2|     818.4413465|        141|00:00:21|+0.00|0.17|0.9731|
-|=|          5|         26|          2|     773.0459240|        164|00:00:22|+0.01|0.15|0.9565|
+|x|          7|         26|         39|     1285.619789|         26|00:00:51|   NA|  NA|    NA|
+|x|          6|         26|         40|     799.7828595|         49|00:01:37|+0.43|0.72|0.4584|
+|x|          4|         26|          9|     707.7175480|         72|00:00:56|+0.16|0.44|0.7981|
+|x|          1|         26|         31|     854.9210457|         95|00:00:44|+0.09|0.32|0.8106|
+|=|          3|         26|          9|     784.0762570|        118|00:00:58|+0.12|0.29|0.7960|
+|-|          5|         18|          9|     874.5078692|        141|00:00:46|-0.07|0.11|1.0607|
+|=|          2|         18|          9|     793.6359317|        156|00:01:14|-0.04|0.11|1.0215|
 +-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
-Best-so-far configuration:           2    mean value:      773.0459240
+Best-so-far configuration:           9    mean value:      793.6359317
 Description of the best-so-far configuration:
   .ID. num_ant num_candidates tax_evaporate .PARENT.
-2    2   77204             15       0.05746       NA
+9    9   89557             20       0.73164       NA
 
-# 2023-05-16 15:17:44 -03: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+# 2023-05-18 11:23:08 -03: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
    num_ant num_candidates tax_evaporate
-2    77204             15       0.05746
-35   93003             13       0.88700
-17   95413             13       0.82470
-# 2023-05-16 15:17:44 -03: Iteration 3 of 3
-# experimentsUsedSoFar: 326
-# remainingBudget: 174
-# currentBudget: 174
-# nbConfigurations: 24
+9    89557             20       0.73164
+31   94082             27       0.75098
+38   87806             23       0.45547
+# 2023-05-18 11:23:08 -03: Iteration 3 of 3
+# experimentsUsedSoFar: 318
+# remainingBudget: 182
+# currentBudget: 182
+# nbConfigurations: 25
 # Markers:
      x No test is performed.
      c Configurations are discarded only due to capping.
@@ -113,82 +113,50 @@ Description of the best-so-far configuration:
 +-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
 | |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
 +-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
-|x|          8|         24|         51|     500.6018780|         24|00:00:23|   NA|  NA|    NA|
-|x|          5|         24|         51|     500.6376335|         45|00:00:21|+0.00|0.50|0.4792|
-|x|          2|         24|         67|     500.7469453|         66|00:00:21|-0.09|0.27|0.6516|
-|x|          7|         24|         67|     688.7734620|         87|00:00:22|+0.02|0.27|0.6481|
-|=|          3|         24|         57|     809.7364190|        108|00:00:20|+0.07|0.25|0.7328|
-|=|          4|         24|         57|     726.1904147|        129|00:00:25|+0.09|0.24|0.7748|
-|-|          6|         15|         57|     803.0736380|        150|00:00:21|-0.08|0.08|0.8623|
-|=|          1|         15|         67|     741.4670120|        162|00:00:13|-0.04|0.09|0.8290|
+|x|          8|         25|          9|     500.6104490|         25|00:01:24|   NA|  NA|    NA|
+|x|          5|         25|         66|     890.4790070|         47|00:00:53|+0.01|0.50|0.9434|
+|x|          4|         25|         53|     774.3064447|         69|00:01:11|+0.03|0.35|0.8634|
+|x|          2|         25|          9|     659.1561057|         91|00:02:06|-0.06|0.21|0.9896|
+|=|          7|         25|          9|     790.0666588|        113|00:00:54|-0.06|0.15|0.9899|
+|=|          1|         25|         31|     870.7778617|        135|00:00:53|-0.02|0.15|0.9650|
+|=|          6|         25|         31|     790.4702374|        157|00:02:06|-0.01|0.13|0.9920|
+|=|          3|         25|         31|     754.3002084|        179|00:01:12|-0.00|0.12|0.9819|
 +-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
-Best-so-far configuration:          67    mean value:      741.4670120
+Best-so-far configuration:          31    mean value:      754.3002084
 Description of the best-so-far configuration:
    .ID. num_ant num_candidates tax_evaporate .PARENT.
-67   67   80268             16       0.10623        2
+31   31   94082             27       0.75098        9
 
-# 2023-05-16 15:20:33 -03: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+# 2023-05-18 11:33:51 -03: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
    num_ant num_candidates tax_evaporate
-67   80268             16       0.10623
-57   95429             11       0.88454
-2    77204             15       0.05746
-# 2023-05-16 15:20:33 -03: Iteration 4 of 4
-# experimentsUsedSoFar: 488
-# remainingBudget: 12
-# currentBudget: 12
-# nbConfigurations: 4
-# Markers:
-     x No test is performed.
-     c Configurations are discarded only due to capping.
-     - The test is performed and some configurations are discarded.
-     = The test is performed but no configuration is discarded.
-     ! The test is performed and configurations could be discarded but elite configurations are preserved.
-     . All alive configurations are elite and nothing is discarded
-
-+-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
-| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
-+-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
-|x|          9|          4|         67|     307.8174940|          4|00:00:11|   NA|  NA|    NA|
-|x|          2|          4|         67|     404.3462900|          5|00:00:09|-0.80|0.10|1.0585|
-|x|          4|          4|          2|     372.3928270|          6|00:00:10|-0.47|0.02|1.1169|
-|x|          6|          4|         67|     593.8382310|          7|00:00:10|-0.27|0.05|0.9309|
-|=|          8|          4|         67|     575.2090570|          8|00:00:09|-0.08|0.14|0.8128|
-|=|          5|          4|         67|     562.7864457|          9|00:00:10|-0.06|0.11|0.6669|
-|=|          3|          4|          2|     663.9837759|         10|00:00:10|-0.05|0.10|0.6717|
-|=|          1|          4|         67|     623.3375722|         11|00:00:10|+0.02|0.14|0.6273|
-|=|          7|          4|         67|     693.2837322|         12|00:00:10|+0.06|0.17|0.6071|
-+-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
-Best-so-far configuration:          67    mean value:      693.2837322
-Description of the best-so-far configuration:
-   .ID. num_ant num_candidates tax_evaporate .PARENT.
-67   67   80268             16       0.10623        2
-
-# 2023-05-16 15:22:07 -03: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
-   num_ant num_candidates tax_evaporate
-67   80268             16       0.10623
-2    77204             15       0.05746
-57   95429             11       0.88454
-# 2023-05-16 15:22:07 -03: Stopped because budget is exhausted
-# Iteration: 5
+31   94082             27       0.75098
+9    89557             20       0.73164
+67   96775             20       0.68641
+# 2023-05-18 11:33:51 -03: Stopped because there is not enough budget left to race more than the minimum (3)
+# You may either increase the budget or set 'minNbSurvival' to a lower value
+# Iteration: 4
 # nbIterations: 4
-# experimentsUsedSoFar: 500
+# experimentsUsedSoFar: 497
 # timeUsed: 0
-# remainingBudget: 0
-# currentBudget: 12
+# remainingBudget: 3
+# currentBudget: 3
 # number of elites: 3
-# nbConfigurations: 4
-# Total CPU user time: 5253.685, CPU sys time: 14.288, Wall-clock time: 619.659
+# nbConfigurations: 3
+# Total CPU user time: 8704.187, CPU sys time: 46.411, Wall-clock time: 1442.461
 # Best configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
    num_ant num_candidates tax_evaporate
-67   80268             16       0.10623
-2    77204             15       0.05746
-57   95429             11       0.88454
+31   94082             27       0.75098
+9    89557             20       0.73164
+67   96775             20       0.68641
 # Best configurations as commandlines (first number is the configuration ID; same order as above):
-67  -a80268 -c16 -e0.10623
-2   -a77204 -c15 -e0.05746
-57  -a95429 -c11 -e0.88454
+31  -a94082 -c27 -e0.75098
+9   -a89557 -c20 -e0.73164
+67  -a96775 -c20 -e0.68641
 
 
 # Testing of elite configurations: 1 
 # Testing iteration configurations: FALSE 
-# 2023-05-16 15:22:07 -03: No test instances, skip testing
+# 2023-05-18 11:33:51 -03: No test instances, skip testing
+Warning message:
+In readLines(con = file) :
+  linha final incompleta encontrada em '/home/vinicius/Documentos/Iniciação-cientifica/irace/irace_atual_main/heuristic-scientific-research/src/irace/parameters-ant.txt'
