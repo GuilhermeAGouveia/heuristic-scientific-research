@@ -16,7 +16,6 @@
 
 double *sigma;
 double **pheromones_candidates;
-double **pheromones_best;
 
 typedef struct ant
 {
@@ -40,18 +39,18 @@ typedef struct ant_parameters
 double abs_double(double x);
 double f(double *x, int n);
 void initialize(Ant *ants, int n, int d);
-void update_pheromones(double **pheromones, Ant *ants, int n, int d);
-void select_next_position(double **pheromones, Ant *ants, int d);
+void update_pheromones(double **pheromones, Ant *ants, int n, int d, Ant *best_ant);
+void select_next_position(double **pheromones, Ant *ants, int d, Ant *best_ant);
 void aco(int d);
 
 AntParameters parameters;
 
 void set_default_parameters()
 {
-    parameters.num_ant = 95527;
+    parameters.num_ant = 94082;
     parameters.num_iter = 2000;
-    parameters.tax_evaporate = 0.65963;
-    parameters.num_candidates = 14;
+    parameters.tax_evaporate = 0.75098;
+    parameters.num_candidates = 27;
     parameters.p_exploitation = 0.25;
     parameters.function_number = 1;
     parameters.time_limit = 10; // in seconds
@@ -167,7 +166,7 @@ void evaporate_pheromones(double **pheromones, int dimension)
 }
 
 // Update the pheromone information in the positions visited by the ants
-void update_pheromones(double **pheromones, Ant *ants, int n, int d)
+void update_pheromones(double **pheromones, Ant *ants, int n, int d, Ant *best_ant)
 {
     DEBUG(printf("update_pheromones\n");)
 
@@ -175,7 +174,7 @@ void update_pheromones(double **pheromones, Ant *ants, int n, int d)
     {
         for (int j = 0; j < d; j++)
         {
-            pheromones[i][j] = (1 / sqrt(2 * sigma[j] * PI)) * exp(pow((pheromones_best[0][j] - pheromones[i][j]), 2) / (-2 * pow(sigma[j], 2)));
+            pheromones[i][j] = (1 / sqrt(2 * sigma[j] * PI)) * exp(pow((best_ant->ant_chromossome[j] - ants[i].ant_chromossome[j]), 2) / (-2 * pow(sigma[j], 2)));
             // printf("pheromoneo: %lf\n",pheromones[i][j] );
             if (j % 2 == 0)
                 pheromones[i][j] += random_double(0, 0.3);
@@ -317,7 +316,7 @@ void chose_new_point(Ant *ants, int id_ant, int d)
     }
 }
 
-void select_next_position(double **pheromones, Ant *ants, int d)
+void select_next_position(double **pheromones, Ant *ants, int d, Ant *best_ant)
 {
     DEBUG(printf("select_next_position\n");)
     double sum_dimensions[d], prob;
@@ -335,7 +334,7 @@ void select_next_position(double **pheromones, Ant *ants, int d)
             candiate_calculator(ants, pheromones, &sum_dimensions[0], d, i, k);
             // candiate_calculator_crossover(ants, d, i, k);
         }
-        update_pheromones(pheromones_candidates, candidates, parameters.num_candidates, d);
+        update_pheromones(pheromones_candidates, candidates, parameters.num_candidates, d, best_ant);
         chosen_porcent = random_double(0, 1);
         chose_new_point(ants, i, d);
     }
@@ -405,7 +404,6 @@ void best_ant_check(Ant *ants, Ant *best_ant, double **pheromones, int d)
         for (int i = 0; i < d; i++)
         {
             ants[0].ant_chromossome[i] = best_ant->ant_chromossome[i];
-            pheromones[0][i] = pheromones_best[0][i];
         }
         ants[0].fitness = best_ant->fitness;
     }
@@ -431,7 +429,6 @@ void catch_best_ant(Ant *ants, Ant *best_antt, double **pheromones, int d)
         for (int i = 0; i < d; i++)
         {
             best_antt->ant_chromossome[i] = ants[best_ant].ant_chromossome[i];
-            pheromones_best[0][i] = pheromones[best_ant][i];
         }
         best_antt->fitness = ants[best_ant].fitness;
     }
@@ -465,7 +462,6 @@ void aco(int d)
     // Allocate memory for the pheromone matrix
     double **pheromones = (double **)malloc(parameters.num_ant * sizeof(double *));
     pheromones_candidates = (double **)malloc(parameters.num_candidates * sizeof(double *));
-    pheromones_best = (double **)malloc(1 * sizeof(double *));
     time_t time_init, time_now;
     time(&time_init);
     time(&time_now);
@@ -488,11 +484,6 @@ void aco(int d)
         }
     }
 
-    pheromones_best[0] = (double *)malloc(d * sizeof(double));
-    for (int j = 0; j < d; j++)
-    {
-        pheromones_best[0][j] = 1.0 / parameters.num_candidates;
-    }
 
     // Allocate memory for the ants
     Ant *ants = (Ant *)malloc(parameters.num_ant * sizeof(Ant));
@@ -511,7 +502,7 @@ void aco(int d)
     update_sigma(ants, d, best_ant);
 
     // Update the pheromone matrix with the best ant's path
-    update_pheromones(pheromones, ants, parameters.num_ant, d);
+    update_pheromones(pheromones, ants, parameters.num_ant, d, best_ant);
     // Iterate over the specified number of iterations
     int max_inter_add = 100;
     int max_inter = 150;
@@ -524,7 +515,7 @@ void aco(int d)
             DEBUG(print_ant(ants, d, best_ant););
             //printf("Best_fitness: %lf\n", best_ant->fitness);
             // Move each ant to a new ant_chromossome
-            select_next_position(pheromones, ants, d);
+            select_next_position(pheromones, ants, d, best_ant);
             evaporate_pheromones(pheromones, d);
 
             // Update the best ant and its fitness value
@@ -532,7 +523,7 @@ void aco(int d)
             // Verifica se a melhor posição não foi perdida
             best_ant_check(ants, best_ant, pheromones, d);
             // Update the pheromone matrix with the best ant's path
-            update_pheromones(pheromones, ants, parameters.num_ant, d);
+            update_pheromones(pheromones, ants, parameters.num_ant, d, best_ant);
             update_sigma(ants, d, best_ant);
             time(&time_now);
         }
@@ -573,5 +564,4 @@ void aco(int d)
     free(candidates);
     free(sigma);
     free(best_ant);
-    free(pheromones_best[0]);
 }
