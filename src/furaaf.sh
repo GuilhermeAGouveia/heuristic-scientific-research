@@ -1,7 +1,9 @@
 #!/bin/bash
 #FUll Run All Algorithms and Functions - furaaf.sh
 
-all_algorithms=$(ls algorithms/* | cut -d'/' -f 2 | cut -d'.' -f1)
+# Coloque _ no inicio do nome dos algoritmos que não deseja executar
+# Exemplo: _nome_do_algoritmo.sh
+all_algorithms=$(ls algorithms/ | cut -d'/' -f 2 | cut -d'.' -f1 | egrep -e "^[^_].*")
 for alg in $all_algorithms; do
     rm result_$alg.txt
     alg_path_seed_command="algorithms\/$alg"

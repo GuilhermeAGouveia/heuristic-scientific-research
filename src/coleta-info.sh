@@ -93,7 +93,7 @@ define_command_evol() {
 }
 
 show_indicator_algorithm() {
-    all_algorithms=$(ls algorithms/* | cut -d'/' -f 2 | cut -d'.' -f1)
+    all_algorithms=$(ls algorithms/ | cut -d'/' -f 2 | cut -d'.' -f1 | egrep -e "^[^_].*")
     string="algoritmos:"
     find_current_alg=0
     for alg in $all_algorithms; do
