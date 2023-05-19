@@ -24,17 +24,17 @@ void print_usage()
 
 void set_default_parameters()
 {
-    parameters.F = 0.99;
+    parameters.F = 0.82317;
     parameters.function_number = 2;
     parameters.time_limit = 15; // seconds
     parameters.island_size = 1;
-    parameters.population_size = 189;
+    parameters.population_size = 51;
     parameters.dimension = 10; // 10 or 30
     parameters.domain_function.min = -100;
     parameters.domain_function.max = 100;
     parameters.num_generations_per_epoca = 300;
-    parameters.mutation_rate = 100;  // %
-    parameters.crossover_rate = 88; // %
+    parameters.mutation_rate = 46;  // %
+    parameters.crossover_rate = 100; // %
     parameters.num_migrations = 7;
     parameters.seed = time(NULL);
 }
