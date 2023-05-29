@@ -38,12 +38,12 @@ void set_default_parameters()
 {
     parameters.function_number = 3;
     parameters.time_limit = 10; // seconds
-    parameters.population_size = 239;
+    parameters.population_size = 34;
     parameters.dimension = 10; // 10 or 30
     parameters.domain_function.min = -100;
     parameters.domain_function.max = 100;
     parameters.num_generations = 300;
-    parameters.clone_number = 9;
+    parameters.clone_number = 45;
     parameters.seed = time(NULL);
 }
 

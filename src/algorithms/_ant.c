@@ -47,10 +47,10 @@ AntParameters parameters;
 
 void set_default_parameters()
 {
-    parameters.num_ant = 94082;
+    parameters.num_ant = 5252;
     parameters.num_iter = 2000;
-    parameters.tax_evaporate = 0.75098;
-    parameters.num_candidates = 27;
+    parameters.tax_evaporate = 0.31458;
+    parameters.num_candidates = 9;
     parameters.p_exploitation = 0.25;
     parameters.function_number = 1;
     parameters.time_limit = 10; // in seconds
