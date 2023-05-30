@@ -452,6 +452,7 @@ individuo evolution(int island_size, int population_size, int dimension, domain 
     while (difftime(time_now, time_init) < parameters.time_limit && continue_evol)
     {
         printf("Epoca: %d\n", epoca_count);
+        best_ep_ant = bestIndividuo.fitness;
         for (int i = 0; i < island_size; i++)
         {
             LOG(printf("\n\ni-ésima ilha: %d\n", i););

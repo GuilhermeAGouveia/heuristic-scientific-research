@@ -1,0 +1,5 @@
+# Parameter file for the ACOTSP software
+# name            switch    type    values
+num_ilhas   "-i"      i       (1,10)
+num_migrations     "-k"      i       (1,34)
+num_generations    "-g"      i       (10, 10000)

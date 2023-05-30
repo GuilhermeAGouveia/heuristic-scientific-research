@@ -1,0 +1,159 @@
+#------------------------------------------------------------------------------
+# irace: An implementation in R of (Elitist) Iterated Racing
+# Version: 3.5.6863679
+# Copyright (C) 2010-2020
+# Manuel Lopez-Ibanez     <manuel.lopez-ibanez@manchester.ac.uk>
+# Jeremie Dubois-Lacoste  
+# Leslie Perez Caceres    <leslie.perez.caceres@ulb.ac.be>
+#
+# This is free software, and you are welcome to redistribute it under certain
+# conditions.  See the GNU General Public License for details. There is NO
+# WARRANTY; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#
+# irace builds upon previous code from the race package:
+#     race: Racing methods for the selection of the best
+#     Copyright (C) 2003 Mauro Birattari
+#------------------------------------------------------------------------------
+# installed at: /usr/local/lib/R/site-library/irace
+# called with: 
+== irace == WARNING: A default scenario file '/home/discente/Downloads/heuristic-scientific-research/src/irace/scenario.txt' has been found and will be read.
+# 2023-05-30 17:15:25 -03: Initialization
+# Elitist race
+# Elitist new instances: 1
+# Elitist limit: 2
+# nbIterations: 3
+# minNbSurvival: 3
+# nbParameters: 3
+# seed: 1086470137
+# confidence level: 0.95
+# budget: 500
+# mu: 5
+# deterministic: FALSE
+
+# 2023-05-30 17:15:25 -03: Iteration 1 of 3
+# experimentsUsedSoFar: 0
+# remainingBudget: 500
+# currentBudget: 166
+# nbConfigurations: 27
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . All alive configurations are elite and nothing is discarded
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|          1|         27|         26|     1229.154907|         27|00:00:39|   NA|  NA|    NA|
+|x|          2|         27|         26|     864.9371775|         54|00:00:39|+0.11|0.55|0.9159|
+|x|          3|         27|         27|     679.7622683|         81|00:00:39|-0.04|0.30|0.9626|
+|x|          4|         27|         15|     635.2393170|        108|00:00:40|+0.06|0.30|0.8512|
+|=|          5|         27|         27|     755.9907974|        135|00:00:40|+0.04|0.23|0.8997|
+|=|          6|         27|         27|     680.6900538|        162|00:00:39|+0.02|0.19|0.9460|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+Best-so-far configuration:          27    mean value:      680.6900538
+Description of the best-so-far configuration:
+   .ID. num_ilhas num_migrations num_generations .PARENT.
+27   27         8             15            7534       NA
+
+# 2023-05-30 17:19:25 -03: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+   num_ilhas num_migrations num_generations
+27         8             15            7534
+15        10             22            3234
+26         5             14            6877
+# 2023-05-30 17:19:25 -03: Iteration 2 of 3
+# experimentsUsedSoFar: 162
+# remainingBudget: 338
+# currentBudget: 169
+# nbConfigurations: 26
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . All alive configurations are elite and nothing is discarded
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|          7|         26|         35|     500.6223720|         26|00:00:39|   NA|  NA|    NA|
+|x|          6|         26|         31|     402.7433235|         49|00:00:29|-0.04|0.48|0.9746|
+|x|          3|         26|         31|     370.0240827|         72|00:00:29|-0.14|0.24|1.1822|
+|x|          4|         26|         27|     402.6380343|         95|00:00:30|-0.20|0.10|1.1669|
+|=|          2|         26|         27|     422.2542072|        118|00:00:29|-0.05|0.16|1.0184|
+|=|          1|         26|         27|     557.5422235|        141|00:00:30|+0.01|0.18|0.9829|
+|=|          5|         26|         27|     655.0236471|        164|00:00:29|+0.02|0.16|0.9648|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+Best-so-far configuration:          27    mean value:      655.0236471
+Description of the best-so-far configuration:
+   .ID. num_ilhas num_migrations num_generations .PARENT.
+27   27         8             15            7534       NA
+
+# 2023-05-30 17:23:05 -03: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+   num_ilhas num_migrations num_generations
+27         8             15            7534
+26         5             14            6877
+31         8             11            5437
+# 2023-05-30 17:23:05 -03: Iteration 3 of 3
+# experimentsUsedSoFar: 326
+# remainingBudget: 174
+# currentBudget: 174
+# nbConfigurations: 24
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . All alive configurations are elite and nothing is discarded
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|          8|         24|         59|     1228.646584|         24|00:00:29|   NA|  NA|    NA|
+|x|          6|         24|         57|     767.5626900|         45|00:00:29|-0.06|0.47|1.0067|
+|x|          4|         24|         57|     678.6267910|         66|00:00:30|-0.07|0.29|1.0886|
+|x|          3|         24|         27|     587.7626445|         87|00:00:29|-0.00|0.25|0.9986|
+|=|          2|         24|         27|     570.3538954|        108|00:00:30|+0.01|0.20|0.9813|
+|=|          7|         24|         57|     557.1380130|        129|00:00:30|+0.01|0.17|0.9818|
+|=|          1|         24|         27|     655.2538556|        150|00:00:30|-0.00|0.14|0.9955|
+|=|          5|         24|         27|     728.3361472|        171|00:00:29|+0.01|0.13|0.9867|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+Best-so-far configuration:          27    mean value:      728.3361472
+Description of the best-so-far configuration:
+   .ID. num_ilhas num_migrations num_generations .PARENT.
+27   27         8             15            7534       NA
+
+# 2023-05-30 17:27:05 -03: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+   num_ilhas num_migrations num_generations
+27         8             15            7534
+26         5             14            6877
+31         8             11            5437
+# 2023-05-30 17:27:05 -03: Stopped because there is not enough budget left to race more than the minimum (3)
+# You may either increase the budget or set 'minNbSurvival' to a lower value
+# Iteration: 4
+# nbIterations: 4
+# experimentsUsedSoFar: 497
+# timeUsed: 0
+# remainingBudget: 3
+# currentBudget: 3
+# number of elites: 3
+# nbConfigurations: 3
+# Total CPU user time: 4910.911, CPU sys time: 51.017, Wall-clock time: 699.362
+# Best configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+   num_ilhas num_migrations num_generations
+27         8             15            7534
+26         5             14            6877
+31         8             11            5437
+# Best configurations as commandlines (first number is the configuration ID; same order as above):
+27  -i8 -k15 -g7534
+26  -i5 -k14 -g6877
+31  -i8 -k11 -g5437
+
+
+# Testing of elite configurations: 1 
+# Testing iteration configurations: FALSE 
+# 2023-05-30 17:27:05 -03: No test instances, skip testing
