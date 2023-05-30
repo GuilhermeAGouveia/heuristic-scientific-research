@@ -27,12 +27,12 @@ void set_default_parameters()
     parameters.function_number = 2;
     parameters.time_limit = 10; // seconds
     parameters.island_size = 1;
-    parameters.population_size = 74;
+    parameters.population_size = 35;
     parameters.dimension = 10; // 10 or 30
     parameters.domain_function.min = -100;
     parameters.domain_function.max = 100;
-    parameters.mutation_rate = 67;  // %
-    parameters.crossover_rate = 37; // %
+    parameters.mutation_rate = 72;  // %
+    parameters.crossover_rate = 63; // %
     parameters.num_migrations = 0;
     parameters.seed = time(NULL);
 }

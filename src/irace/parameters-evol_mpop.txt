@@ -1,7 +1,0 @@
-# Parameter file for the ACOTSP software
-# name            switch    type    values
-population_size   "-p"      i       (20,3000)
-#island_size       "-i"      i       (2,20)
-#num_migrations    "-k"      i       (1,200)
-crossover_rate    "-c"      i       (0, 100)
-mutation_rate     "-m"      i       (0,100)
