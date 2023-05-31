@@ -25,14 +25,14 @@ void print_usage()
 void set_default_parameters()
 {
     parameters.function_number = 2;
-    parameters.time_limit = 10; // seconds
+    parameters.time_limit = 15; // seconds
     parameters.island_size = 1;
-    parameters.population_size = 35;
+    parameters.population_size = 74;
     parameters.dimension = 10; // 10 or 30
     parameters.domain_function.min = -100;
     parameters.domain_function.max = 100;
-    parameters.mutation_rate = 72;  // %
-    parameters.crossover_rate = 63; // %
+    parameters.mutation_rate = 67;  // %
+    parameters.crossover_rate = 37; // %
     parameters.num_migrations = 0;
     parameters.seed = time(NULL);
 }
@@ -450,7 +450,6 @@ individuo evolution(int island_size, int population_size, int dimension, domain 
     while (difftime(time_now, time_init) < parameters.time_limit && continue_evol)
     {
         printf("Epoca: %d\n", epoca_count);
-        best_ep_ant = bestIndividuo.fitness;
         for (int i = 0; i < island_size; i++)
         {
             LOG(printf("\n\ni-ésima ilha: %d\n", i););

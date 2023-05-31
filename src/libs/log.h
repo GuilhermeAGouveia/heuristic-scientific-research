@@ -17,6 +17,7 @@ typedef struct args_
     int num_migrations;
     int num_generations_per_epoca;
     int num_epocas;
+    int evaluation_limit;
     int seed;
     double c1;
     double c2;
