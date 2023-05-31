@@ -34,8 +34,9 @@ void set_default_parameters()
     parameters.mutation_rate = 72;  // %
     parameters.crossover_rate = 63; // %
     parameters.num_migrations = 15;
-    parameters.num_generations_per_epoca = 7534;
+    parameters.num_generations_per_epoca = 300;
     parameters.evaluation_limit = 10000;
+    parameters.F = 2;
     parameters.seed = time(NULL);
 }
 
