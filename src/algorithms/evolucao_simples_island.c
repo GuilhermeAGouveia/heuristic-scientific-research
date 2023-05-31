@@ -35,7 +35,7 @@ void set_default_parameters()
     parameters.crossover_rate = 63; // %
     parameters.num_migrations = 15;
     parameters.num_generations_per_epoca = 300;
-    parameters.evaluation_limit = 10000;
+    parameters.evaluation_limit = 200000;
     parameters.F = 2;
     parameters.seed = time(NULL);
 }
@@ -449,7 +449,7 @@ individuo evolution(int island_size, int population_size, int dimension, domain 
     // while (continue_evol)
     while (evaluation_count < parameters.evaluation_limit)
     {
-        // printf("Epoca: %d\n", epoca_count);
+        printf("Epoca: %d\n", epoca_count);
         best_ep_ant = bestIndividuo.fitness;
         for (int i = 0; i < island_size; i++)
         {

@@ -34,7 +34,7 @@ void set_default_parameters()
     parameters.mutation_rate = 67;  // %
     parameters.crossover_rate = 37; // %
     parameters.num_migrations = 0;
-    parameters.evaluation_limit = 10000;
+    parameters.evaluation_limit = 200000;
     parameters.seed = time(NULL);
 }
 
