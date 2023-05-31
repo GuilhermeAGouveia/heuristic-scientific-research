@@ -26,16 +26,16 @@ void set_default_parameters()
 {
     parameters.function_number = 2;
     parameters.time_limit = 10; // seconds
-    parameters.island_size = 3;
-    parameters.population_size = 218;
+    parameters.island_size = 6;
+    parameters.population_size = 35;
     parameters.dimension = 10; // 10 or 30
     parameters.domain_function.min = -100;
     parameters.domain_function.max = 100;
-    parameters.mutation_rate = 43;  // %
-    parameters.crossover_rate = 75; // %
+    parameters.mutation_rate = 90;  // %
+    parameters.crossover_rate = 90; // %
     parameters.num_migrations = 11;
     parameters.num_generations_per_epoca = 276;
-    parameters.evaluation_limit = 200000;
+    parameters.evaluation_limit = 1490400;
     parameters.F = 2;
     parameters.seed = time(NULL);
 }
@@ -318,7 +318,7 @@ populacao *crossover(populacao *populacao_original, populacao *populacao_mutada,
     for (i = 0; i < populacao_original->size; i++)
     {
         individuo *parents[2];
-        if (rand() % 100 < parameters.crossover_rate)
+        if (0)
             select_parents(*populacao_mutada, parents);
         else
             select_parents(*populacao_original, parents);
@@ -463,8 +463,8 @@ individuo evolution(int island_size, int population_size, int dimension, domain 
 
             while (generation_count < num_generations && evaluation_count < parameters.evaluation_limit && difftime(time_now, time_init) < parameters.time_limit)
             {
-                mutation_population = mutation_commom(original_population, dimension, domain_function);
                 cross_population = crossover(original_population, mutation_population, dimension);
+                original_population = mutation_commom(original_population, dimension, domain_function);
                 selection(original_population, cross_population, dimension);
 
                 // print_individuo(original_population->individuos[original_population->size - 1], dimension, 1);

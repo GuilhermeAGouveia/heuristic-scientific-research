@@ -2,5 +2,4 @@
 # name            switch    type    values
 population_size   "-p"      i       (30,10000)
 mutation_rate     "-m"      i       (0,100)
-crossover_rate    "-c"      i       (0, 100)
-
+#crossover_rate     "-c"      i       (0, 100)
