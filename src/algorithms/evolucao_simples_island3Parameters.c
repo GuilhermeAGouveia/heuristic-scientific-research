@@ -26,15 +26,17 @@ void set_default_parameters()
 {
     parameters.function_number = 2;
     parameters.time_limit = 10; // seconds
-    parameters.island_size = 1;
-    parameters.population_size = 35;
+    parameters.island_size = 7;
+    parameters.population_size = 4777;
     parameters.dimension = 10; // 10 or 30
     parameters.domain_function.min = -100;
     parameters.domain_function.max = 100;
-    parameters.mutation_rate = 83;  // %
-    parameters.crossover_rate = 62; // %
-    parameters.num_migrations = 0;
+    parameters.mutation_rate = 25;  // %
+    parameters.crossover_rate = 90; // %
+    parameters.num_migrations = 14;
+    parameters.num_generations_per_epoca = 226;
     parameters.evaluation_limit = 1490400;
+    parameters.F = 2;
     parameters.seed = time(NULL);
 }
 
@@ -442,49 +444,57 @@ individuo evolution(int island_size, int population_size, int dimension, domain 
     int evaluation_count = 0;
     int epoca_count = 0;
     double best_ep_ant = bestIndividuo.fitness;
+    DEBUG(printf("Iniciando evolucao\n"););
     time(&time_init);
     time(&time_now);
-    DEBUG(printf("Iniciando evolucao\n"););
 
-    populacao *original_population = &populations[0];
-    populacao *cross_population;
-    populacao *mutation_population;
-    int generation_count = 0;
-
+    // while (continue_evol)
     while (evaluation_count < parameters.evaluation_limit && difftime(time_now, time_init) < parameters.time_limit)
     {
-        
-        cross_population = crossover(original_population, mutation_population, dimension);
-        original_population = mutation_commom(original_population, dimension, domain_function);
-        selection(original_population, cross_population, dimension);
+        printf("Epoca: %d\n", epoca_count);
+        best_ep_ant = bestIndividuo.fitness;
+        for (int i = 0; i < island_size; i++)
+        {
+            LOG(printf("\n\ni-ésima ilha: %d\n", i););
+            populacao *original_population = &populations[i];
+            populacao *cross_population;
+            populacao *mutation_population;
+            int generation_count = 0;
 
-        // print_individuo(original_population->individuos[original_population->size - 1], dimension, 1);
-        LOG(write_population_log(epoca_count, i, generation_count, *original_population, parameters););
-        STATISTICS(print_coords(&original_population->individuos[original_population->size - 1], 1, generation_count, num_generations););
-        DEBUG(printf("\nGeração: %d\n", generation_count););
-        generation_count++;
-        evaluation_count += original_population->size;
-        time(&time_now);
+            while (generation_count < num_generations && evaluation_count < parameters.evaluation_limit && difftime(time_now, time_init) < parameters.time_limit)
+            {
+                cross_population = crossover(original_population, mutation_population, dimension);
+                original_population = mutation_commom(original_population, dimension, domain_function);
+                selection(original_population, cross_population, dimension);
+
+                // print_individuo(original_population->individuos[original_population->size - 1], dimension, 1);
+                LOG(write_population_log(epoca_count, i, generation_count, *original_population, parameters););
+                STATISTICS(print_coords(&original_population->individuos[original_population->size - 1], 1, generation_count, num_generations););
+                DEBUG(printf("\nGeração: %d\n", generation_count););
+                generation_count++;
+                evaluation_count += original_population->size;
+                time(&time_now);
+            }
+            individuo *bestCurrent = get_best_of_population(*original_population);
+            // puts("\nMelhor de toda a população:");
+            // print_individuo(*bestCurrent, dimension);
+            // printf("%lf\n", bestCurrent->fitness);
+            if (bestCurrent->fitness < bestIndividuo.fitness)
+                bestIndividuo = *bestCurrent;
+        }
+        migrate(populations, island_size, dimension, domain_function);
+        epoca_count++;
+        parameters.num_epocas = epoca_count;
+        // Verifica se um best_Individuo foi encontrado em relaçao a epoca anterior
+        //  if(doubleEqual(bestIndividuo.fitness, best_ep_ant, 2)){
+        //      total_epocs_s_m++;
+        //  }
+        //  else
+        //    total_epocs_s_m = 0;
+        //  //Se o limite de epocas sem melhora for atingido é finalizada a evolucao
+        //  if(total_epocs_s_m == limit_epocs)
+        //     continue_evol = 0;
     }
-    individuo *bestCurrent = get_best_of_population(*original_population);
-    // puts("\nMelhor de toda a população:");
-    // print_individuo(*bestCurrent, dimension);
-    // printf("%lf\n", bestCurrent->fitness);
-    if (bestCurrent->fitness < bestIndividuo.fitness)
-        bestIndividuo = *bestCurrent;
-
-    // migrate(populations, island_size, dimension, domain_function);
-
-    // Verifica se um best_Individuo foi encontrado em relaçao a epoca anterior
-    //  if(doubleEqual(bestIndividuo.fitness, best_ep_ant, 2)){
-    //      total_epocs_s_m++;
-    //  }
-    //  else
-    //    total_epocs_s_m = 0;
-    //  //Se o limite de epocas sem melhora for atingido é finalizada a evolucao
-    //  if(total_epocs_s_m == limit_epocs)
-    //     continue_evol = 0;
-
     return bestIndividuo;
 }
 
