@@ -479,7 +479,7 @@ individuo evolution(int island_size, int population_size, int dimension, domain 
     {
         
         cross_population = crossover(original_population, mutation_population, dimension);
-        original_population = mutation_commom(original_population, dimension, domain_function);
+        cross_population = mutation_commom(cross_population, dimension, domain_function);
         selection(original_population, cross_population, dimension);
 
         // print_individuo(original_population->individuos[original_population->size - 1], dimension, 1);
