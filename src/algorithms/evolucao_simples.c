@@ -12,7 +12,7 @@
 #include "../libs/crossover.h"
 #include "../libs/log.h"
 #define STATISTICS(x)
-#define DEBUG(x)
+#define DEBUG(x) 
 #define LOG(x)
 
 static args parameters;
@@ -27,7 +27,7 @@ void set_default_parameters()
     parameters.function_number = 2;
     parameters.time_limit = 10; // seconds
     parameters.island_size = 1;
-    parameters.population_size = 4777;
+    parameters.population_size = 100;
     parameters.dimension = 10; // 10 or 30
     parameters.domain_function.min = -100;
     parameters.domain_function.max = 100;
@@ -261,7 +261,6 @@ populacao *mutation_diferencial(populacao *populacao_original, int dimension, do
 individuo *get_best_of_population(populacao populacao)
 {
     DEBUG(printf("\nget_best_of_population\n"););
-    // qsort(population, n_populacoes, sizeof(individuo), comparador_individuo);
     return &populacao.individuos[populacao.size - 1];
 }
 
@@ -271,6 +270,33 @@ individuo *get_worst_of_population(individuo *population, int n_populacoes)
     return &population[0];
 }
 
+populacao * union_populations(populacao *populacao1, populacao *populacao2)
+{
+    DEBUG(printf("\nunion_populations\n"););
+    int size = populacao1->size + populacao2->size;
+    populacao *populacao_unida = generate_island(1, size, parameters.dimension, parameters.domain_function);
+    for (int i = 0; i < populacao1->size; i++)
+    {
+        populacao_unida->individuos[i] = populacao1->individuos[i];
+    }
+    for (int i = 0; i < populacao2->size; i++)
+    {
+        populacao_unida->individuos[i + populacao1->size] = populacao2->individuos[i];
+    }
+    return populacao_unida;
+}
+
+populacao * slice_population (populacao * population, int start, int end)
+{
+    DEBUG(printf("\nslice_population [%d, %d]\n", start, end););
+    populacao * sliced_population = generate_island(1, end - start, parameters.dimension, parameters.domain_function);
+    for (int i = 0; i < end - start; i++)
+    {
+        sliced_population->individuos[i] = population->individuos[i + start];
+    }
+    return sliced_population;
+}
+
 void selection(populacao *population_original, populacao *population_crossover, int dimension)
 {
     DEBUG(printf("\nselection\n"););
@@ -278,12 +304,10 @@ void selection(populacao *population_original, populacao *population_crossover, 
     DEBUG(print_population(population_original->individuos, population_original->size, dimension, 1););
     DEBUG(printf("População cruzamento\n"););
     DEBUG(print_population(population_crossover->individuos, population_crossover->size, dimension, 1););
-    for (int i = 0; i < population_crossover->size; i++)
-    {
-        if (population_crossover->individuos[i].fitness < population_original->individuos[i].fitness)
-            population_original->individuos[i] = population_crossover->individuos[i];
-    }
-    qsort(population_original->individuos, population_original->size, sizeof(individuo), comparador_individuo);
+    populacao *population_union = union_populations(population_original, population_crossover);
+    qsort(population_union->individuos, population_union->size, sizeof(individuo), comparador_individuo);
+    *population_original = *slice_population(population_union, population_union->size - population_original->size, population_union->size);
+
     DEBUG(printf("População selecionada\n"););
     DEBUG(print_population(population_original->individuos, population_original->size, dimension, 1););
 }
