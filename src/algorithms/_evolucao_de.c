@@ -24,11 +24,11 @@ void print_usage()
 
 void set_default_parameters()
 {
-    parameters.F = 0.91205;
+    parameters.F = 2;
     parameters.function_number = 2;
     parameters.time_limit = 10; // seconds
     parameters.island_size = 1;
-    parameters.population_size = 100;
+    parameters.population_size = 50;
     parameters.dimension = 10; // 10 or 30
     parameters.domain_function.min = -100;
     parameters.domain_function.max = 100;
@@ -246,14 +246,10 @@ populacao *mutation_diferencial(populacao *populacao_original, int dimension, do
 
         for (int j = 0; j < dimension; j++)
         {
-            if (rand() % 100 > parameters.mutation_rate)
-            {
-                // double result = rand();
-                double result = populacao_original->individuos[alpha].chromosome[j] + parameters.F * (fabs(populacao_original->individuos[beta].chromosome[j]) - fabs(populacao_original->individuos[gamma].chromosome[j]));
-                populacao_mutada->individuos[i].chromosome[j] = result;
-            }
-            else
-                populacao_mutada->individuos[i].chromosome[j] = populacao_original->individuos[i].chromosome[j];
+
+            // double result = rand();
+            double result = populacao_original->individuos[alpha].chromosome[j] + parameters.F * (fabs(populacao_original->individuos[beta].chromosome[j]) - fabs(populacao_original->individuos[gamma].chromosome[j]));
+            populacao_mutada->individuos[i].chromosome[j] = result;
         }
         fitness(&populacao_mutada->individuos[i], dimension);
         DEBUG(printf("Individuo %d\n", i); print_individuo(populacao_mutada->individuos[i], dimension, i);)
@@ -313,42 +309,18 @@ individuo *get_pior_pai(individuo *pais[2])
 populacao *crossover(populacao *populacao_original, populacao *populacao_mutada, int dimension)
 {
     populacao *nova_populacao = generate_island(1, populacao_original->size, dimension, parameters.domain_function);
-    DEBUG(printf("\ncruzamento\n"););
-    int i;
-
-    for (i = 0; i < populacao_original->size; i++)
+    for (int i = 0; i < populacao_original->size; i++)
     {
-        individuo *parents[2];
-        if (rand() % 100 < parameters.crossover_rate)
-            select_parents(*populacao_mutada, parents);
-        else
-            select_parents(*populacao_original, parents);
-
-        individuo parent1 = *parents[0];
-        individuo parent2 = *parents[1];
-        individuo filho;
-        switch (populacao_original->crossover)
+        for (int j = 0; j < dimension; j++)
         {
-        case MEDIA:
-            filho = cruzamento_media(parent1, parent2, dimension);
-        case METADE:
-            filho = cruzamento_metade(parent1, parent2, dimension);
-        case PONTO:
-            filho = cruzamento_ponto(parent1, parent2, dimension);
-        case MEDIA_GEOMETRICA:
-            filho = cruzamento_ponto(parent1, parent2, dimension);
-        case FLAT:
-            filho = cruzamento_flat(parent1, parent2, dimension);
-        case BLEND:
-            filho = cruzamento_blend(parent1, parent2, dimension);
-        default:
-            filho = cruzamento_media(parent1, parent2, dimension);
+            if (rand() % 100 < parameters.mutation_rate)
+                nova_populacao->individuos[i].chromosome[j] = populacao_mutada->individuos[i].chromosome[j];
+            else
+                nova_populacao->individuos[i].chromosome[j] = populacao_original->individuos[i].chromosome[j];
         }
+        fitness(&nova_populacao->individuos[i], dimension);
 
-        fitness(&filho, dimension);
-        nova_populacao->individuos[i] = filho;
     }
-    // nova_populacao->individuos[populacao->size - 1] = populacao->individuos[populacao->size - 1];
     return nova_populacao;
 }
 
@@ -471,8 +443,8 @@ individuo evolution(int island_size, int population_size, int dimension, domain 
                 {
                     time(&time_now);
                     mutation_population = mutation_diferencial(original_population, dimension, domain_function);
-                    //cross_population = crossover(original_population, mutation_population, dimension);
-                    selection(original_population, mutation_population, dimension);
+                    cross_population = crossover(original_population, mutation_population, dimension);
+                    selection(original_population, cross_population, dimension);
 
                     // print_individuo(original_population->individuos[original_population->size - 1], dimension, 1);
                     LOG(write_population_log(epoca_count, i, generation_count, *original_population, parameters););
