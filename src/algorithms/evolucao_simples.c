@@ -311,7 +311,7 @@ populacao *union_populations(populacao *populacao1, populacao *populacao2)
     }
     for (int i = 0; i < populacao2->size; i++)
     {
-        clone_individue(&populacao_unida->individuos[i], &populacao1->individuos[i], parameters.dimension);
+        clone_individue(&populacao_unida->individuos[i + populacao1->size], &populacao2->individuos[i], parameters.dimension);
     }
     return populacao_unida;
 }
