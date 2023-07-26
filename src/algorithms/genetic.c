@@ -26,17 +26,15 @@ void set_default_parameters()
 {
     parameters.function_number = 2;
     parameters.time_limit = 10; // seconds
-    parameters.island_size = 7;
-    parameters.population_size = 4777;
+    parameters.island_size = 1;
+    parameters.population_size = 100;
     parameters.dimension = 10; // 10 or 30
     parameters.domain_function.min = -100;
     parameters.domain_function.max = 100;
     parameters.mutation_rate = 25;  // %
-    parameters.crossover_rate = 90; // %
-    parameters.num_migrations = 14;
-    parameters.num_generations_per_epoca = 226;
+    parameters.crossover_rate = 62; // %
+    parameters.num_migrations = 0;
     parameters.evaluation_limit = 1490400;
-    parameters.F = 2;
     parameters.seed = time(NULL);
 }
 
@@ -194,6 +192,16 @@ individuo *generate_population(int n_individuos, int dimension, domain domain_fu
     return population;
 }
 
+void destroy_population(individuo *population, int n_individuos)
+{
+    DEBUG(printf("\ndestroy_population\n"););
+    for (int i = 0; i < n_individuos; i++)
+    {
+        free(population[i].chromosome);
+    }
+    free(population);
+}
+
 populacao *generate_island(int island_size, int population_size, int dimension, domain domain_function)
 {
     DEBUG(printf("\ngenerate_island\n"););
@@ -209,6 +217,17 @@ populacao *generate_island(int island_size, int population_size, int dimension, 
         populations[i].neighbours[1] = &populations[(i + 3) % island_size]; // talvez isso dê problema
     }
     return populations;
+}
+
+void destroy_island(populacao *populations, int island_size)
+{
+    DEBUG(printf("\ndestroy_island\n"););
+    for (int i = 0; i < island_size; i++)
+    {
+        destroy_population(populations[i].individuos, populations[i].size);
+        free(populations[i].neighbours);
+    }
+    free(populations);
 }
 
 populacao *mutation_commom(populacao *populacao, int dimension, domain domain_function)
@@ -263,7 +282,6 @@ populacao *mutation_diferencial(populacao *populacao_original, int dimension, do
 individuo *get_best_of_population(populacao populacao)
 {
     DEBUG(printf("\nget_best_of_population\n"););
-    // qsort(population, n_populacoes, sizeof(individuo), comparador_individuo);
     return &populacao.individuos[populacao.size - 1];
 }
 
@@ -273,19 +291,61 @@ individuo *get_worst_of_population(individuo *population, int n_populacoes)
     return &population[0];
 }
 
-void selection(populacao *population_original, populacao *population_crossover, int dimension)
+void clone_individue(individuo *clone, individuo *original, int dimension)
+{
+    for (int i = 0; i < dimension; i++)
+    {
+        clone->chromosome[i] = original->chromosome[i];
+    }
+    clone->fitness = original->fitness;
+}
+
+populacao *union_populations(populacao *populacao1, populacao *populacao2)
+{
+    DEBUG(printf("\nunion_populations\n"););
+    int size = populacao1->size + populacao2->size;
+    populacao *populacao_unida = generate_island(1, size, parameters.dimension, parameters.domain_function);
+    for (int i = 0; i < populacao1->size; i++)
+    {
+        clone_individue(&populacao_unida->individuos[i], &populacao1->individuos[i], parameters.dimension);
+    }
+    for (int i = 0; i < populacao2->size; i++)
+    {
+        clone_individue(&populacao_unida->individuos[i + populacao1->size], &populacao2->individuos[i], parameters.dimension);
+    }
+    return populacao_unida;
+}
+
+populacao *slice_population(populacao *population, int start, int end)
+{
+    DEBUG(printf("\nslice_population [%d, %d]\n", start, end););
+    populacao *sliced_population = generate_island(1, end - start, parameters.dimension, parameters.domain_function);
+    for (int i = 0; i < end - start; i++)
+    {
+        clone_individue(&sliced_population->individuos[i], &population->individuos[i + start], parameters.dimension);
+    }
+    return sliced_population;
+}
+
+populacao *selection(populacao *population_original, populacao *population_crossover, int dimension)
 {
     DEBUG(printf("\nselection\n"););
     DEBUG(printf("População original\n"););
     DEBUG(print_population(population_original->individuos, population_original->size, dimension, 1););
     DEBUG(printf("População cruzamento\n"););
     DEBUG(print_population(population_crossover->individuos, population_crossover->size, dimension, 1););
-    for (int i = 0; i < population_crossover->size; i++)
-    {
-        if (population_crossover->individuos[i].fitness < population_original->individuos[i].fitness)
-            population_original->individuos[i] = population_crossover->individuos[i];
-    }
-    qsort(population_original->individuos, population_original->size, sizeof(individuo), comparador_individuo);
+    populacao *population_union = union_populations(population_original, population_crossover);
+    qsort(population_union->individuos, population_union->size, sizeof(individuo), comparador_individuo);
+    int original_size = population_original->size;
+    
+    destroy_island(population_original, 1);
+
+    *population_original = *slice_population(population_union, population_union->size - original_size, population_union->size);
+
+    destroy_island(population_union, 1);
+    destroy_island(population_crossover, 1);
+    
+    return population_original;
     DEBUG(printf("População selecionada\n"););
     DEBUG(print_population(population_original->individuos, population_original->size, dimension, 1););
 }
@@ -434,67 +494,59 @@ void random_random_migrate(populacao *populations, int island_size, int dimensio
     }
 }
 
-individuo evolution(int island_size, int population_size, int dimension, domain domain_function, int num_generations)
+individuo genetic()
 {
     DEBUG(printf("\nevolution\n"););
     individuo *parents[2];
     individuo bestIndividuo = {.fitness = INFINITY};
-    populacao *populations = generate_island(island_size, population_size, dimension, domain_function);
+    populacao *populations = generate_island(parameters.island_size, parameters.population_size, parameters.dimension, parameters.domain_function);
     time_t time_init, time_now;
     int evaluation_count = 0;
     int epoca_count = 0;
     double best_ep_ant = bestIndividuo.fitness;
-    DEBUG(printf("Iniciando evolucao\n"););
     time(&time_init);
     time(&time_now);
+    DEBUG(printf("Iniciando evolucao\n"););
 
-    // while (continue_evol)
+    populacao *original_population = &populations[0];
+    populacao *cross_population;
+    populacao *mutation_population;
+    int generation_count = 0;
+
     while (evaluation_count < parameters.evaluation_limit && difftime(time_now, time_init) < parameters.time_limit)
     {
-        printf("Epoca: %d\n", epoca_count);
-        best_ep_ant = bestIndividuo.fitness;
-        for (int i = 0; i < island_size; i++)
-        {
-            LOG(printf("\n\ni-ésima ilha: %d\n", i););
-            populacao *original_population = &populations[i];
-            populacao *cross_population;
-            populacao *mutation_population;
-            int generation_count = 0;
 
-            while (generation_count < num_generations && evaluation_count < parameters.evaluation_limit && difftime(time_now, time_init) < parameters.time_limit)
-            {
-                cross_population = crossover(original_population, mutation_population, dimension);
-                original_population = mutation_commom(original_population, dimension, domain_function);
-                selection(original_population, cross_population, dimension);
+        cross_population = crossover(original_population, mutation_population, parameters.dimension);
+        cross_population = mutation_commom(cross_population, parameters.dimension, parameters.domain_function);
+        original_population = selection(original_population, cross_population, parameters.dimension);
 
-                // print_individuo(original_population->individuos[original_population->size - 1], dimension, 1);
-                LOG(write_population_log(epoca_count, i, generation_count, *original_population, parameters););
-                STATISTICS(print_coords(&original_population->individuos[original_population->size - 1], 1, generation_count, num_generations););
-                DEBUG(printf("\nGeração: %d\n", generation_count););
-                generation_count++;
-                evaluation_count += original_population->size;
-                time(&time_now);
-            }
-            individuo *bestCurrent = get_best_of_population(*original_population);
-            // puts("\nMelhor de toda a população:");
-            // print_individuo(*bestCurrent, dimension);
-            // printf("%lf\n", bestCurrent->fitness);
-            if (bestCurrent->fitness < bestIndividuo.fitness)
-                bestIndividuo = *bestCurrent;
-        }
-        migrate(populations, island_size, dimension, domain_function);
-        epoca_count++;
-        parameters.num_epocas = epoca_count;
-        // Verifica se um best_Individuo foi encontrado em relaçao a epoca anterior
-        //  if(doubleEqual(bestIndividuo.fitness, best_ep_ant, 2)){
-        //      total_epocs_s_m++;
-        //  }
-        //  else
-        //    total_epocs_s_m = 0;
-        //  //Se o limite de epocas sem melhora for atingido é finalizada a evolucao
-        //  if(total_epocs_s_m == limit_epocs)
-        //     continue_evol = 0;
+        // print_individuo(original_population->individuos[original_population->size - 1], dimension, 1);
+        LOG(write_population_log(epoca_count, i, generation_count, *original_population, parameters););
+        STATISTICS(print_coords(&original_population->individuos[original_population->size - 1], 1, generation_count, parameters.num_generations_per_epoca););
+        DEBUG(printf("\nGeração: %d\n", generation_count););
+        generation_count++;
+        evaluation_count += original_population->size;
+        time(&time_now);
     }
+    individuo *bestCurrent = get_best_of_population(*original_population);
+    // puts("\nMelhor de toda a população:");
+    // print_individuo(*bestCurrent, dimension);
+    // printf("%lf\n", bestCurrent->fitness);
+    if (bestCurrent->fitness < bestIndividuo.fitness)
+        bestIndividuo = *bestCurrent;
+
+    // migrate(populations, parameters.island_size, dimension, domain_function);
+
+    // Verifica se um best_Individuo foi encontrado em relaçao a epoca anterior
+    //  if(doubleEqual(bestIndividuo.fitness, best_ep_ant, 2)){
+    //      total_epocs_s_m++;
+    //  }
+    //  else
+    //    total_epocs_s_m = 0;
+    //  //Se o limite de epocas sem melhora for atingido é finalizada a evolucao
+    //  if(total_epocs_s_m == limit_epocs)
+    //     continue_evol = 0;
+
     return bestIndividuo;
 }
 
@@ -507,7 +559,7 @@ int main(int argc, char *argv[])
     // Melhor semente até agora: 1676931005 (Funcao 3) - 301.356
     // Melhor semente até agora: 1676935665 (Funcao 8) - 801.1393
     srand(parameters.seed);
-    result = evolution(parameters.island_size, parameters.population_size, parameters.dimension, parameters.domain_function, parameters.num_generations_per_epoca);
+    result = genetic(parameters.island_size, parameters.population_size, parameters.dimension, parameters.domain_function, parameters.num_generations_per_epoca);
 
     print_individuo(result, parameters.dimension, 0);
     printf("Best %lf\n", result.fitness);
