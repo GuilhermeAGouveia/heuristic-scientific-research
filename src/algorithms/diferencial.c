@@ -113,70 +113,6 @@ int comparador_individuo(const void *a, const void *b)
     return v1->fitness < v2->fitness;
 }
 
-void print_roleta(int *roleta, int roleta_size, int ball1, int ball2)
-{
-    DEBUG(printf("\nprint_roleta\n"););
-    for (int i = 0; i < roleta_size; i++)
-    {
-        if (i == ball1 || i == ball2)
-            printf("%d<-o ", roleta[i]);
-        else
-            printf("%d ", roleta[i]);
-    }
-    printf("\n\n");
-}
-
-int roleta_pais(individuo *populacao, int num_individuos)
-{
-    // DEBUG(printf("\nroleta\n"););
-    int roulette[num_individuos + 100];
-    double sum_beneficio = 0.0;
-    double sum_beneficio_inv = 0.0;
-
-    // DEBUG(printf("sum_beneficio[init]\n"););
-    for (int i = 0; i < num_individuos; i++)
-    {
-        sum_beneficio += populacao[i].fitness;
-    }
-
-    for (int i = 0; i < num_individuos; i++)
-    {
-        sum_beneficio_inv += sum_beneficio - populacao[i].fitness;
-    }
-    // DEBUG(printf("sum_beneficio[end]: %lf\n", sum_beneficio););
-
-    int base = 0;
-    for (int i = 0; i < num_individuos; i++)
-    {
-        double individuo_beneficio_inv = sum_beneficio - populacao[i].fitness;
-        // DEBUG(printf("individuo_beneficio: %lf\n", populacao[i].fitness););
-        int limit = ceil((individuo_beneficio_inv / sum_beneficio_inv) * 100.00);
-        // DEBUG(printf("Preenchendo roleta com %d de %d até %d\n", i, base, base + limit););
-        for (int j = base; j < base + limit; j++)
-        {
-            roulette[j] = i;
-        }
-        base += limit;
-    }
-    // DEBUG(printf("Numero de elementos na rolêta: %d\n", base););
-    // DEBUG(printf("Indice sorteado: %d\n", roulette[rand() % base]););
-    return roulette[rand() % base];
-}
-
-void select_parents(populacao populacao, individuo *parents[2])
-{
-    DEBUG(printf("\nselect_parents\n"););
-    int pai1 = roleta_pais(populacao.individuos, populacao.size), pai2;
-    do
-    {
-        pai2 = roleta_pais(populacao.individuos, populacao.size);
-    } while (pai1 == pai2);
-    parents[0] = &populacao.individuos[pai1];
-    parents[1] = &populacao.individuos[pai2];
-
-    DEBUG(printf("Pais: %d e %d\n", pai1, pai2););
-}
-
 individuo *generate_population(int n_individuos, int dimension, domain domain_function)
 {
     DEBUG(printf("\ngenerate_population\n"););
@@ -231,18 +167,6 @@ void destroy_island(populacao *populations, int island_size)
     free(populations);
 }
 
-populacao *mutation_commom(populacao *populacao, int dimension, domain domain_function)
-{
-    DEBUG(printf("\nmutation\n"););
-    for (int i = 0; i < populacao->size - 1; i++)
-    {
-        int mutation_point = rand() % dimension;
-        populacao->individuos[i].chromosome[mutation_point] = random_double(domain_function.min, domain_function.max);
-        fitness(&populacao->individuos[i], dimension);
-    }
-    return populacao;
-}
-
 populacao *mutation_diferencial(populacao *populacao_original, int dimension, domain domain_function)
 {
     DEBUG(printf("\nMutation\n"););
@@ -284,12 +208,6 @@ individuo *get_best_of_population(populacao populacao)
 {
     DEBUG(printf("\nget_best_of_population\n"););
     return &populacao.individuos[populacao.size - 1];
-}
-
-individuo *get_worst_of_population(individuo *population, int n_populacoes)
-{
-    qsort(population, n_populacoes, sizeof(individuo), comparador_individuo);
-    return &population[0];
 }
 
 void clone_individue(individuo *clone, individuo *original, int dimension)
