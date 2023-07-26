@@ -1,32 +1,34 @@
 #include <stdio.h>
+#include <stdlib.h>
 
-// Função para trocar dois elementos do vetor
-void swap(int *a, int *b) {
-    int temp = *a;
-    *a = *b;
-    *b = temp;
+// Função para imprimir um vetor em formato de lista
+void printVector(int arr[], int n) {
+    printf("[");
+    for (int i = 0; i < n; i++) {
+        printf("%d", arr[i]);
+        if (i < n - 1) {
+            printf(", ");
+        }
+    }
+    printf("]");
 }
 
-// Função recursiva para gerar permutações e calcular a soma
-long long int generatePermutations(int arr[], int n, int index) {
-    if (index == n - 1) {
-        long long int sum = 0;
+// Função recursiva para gerar permutações e montá-las em um vetor
+void generatePermutations(int n, int arr[], int index, int ***result, int *size) {
+    if (index == n) {
+        (*result) = (int **)realloc(*result, (*size + 1) * sizeof(int *));
+        (*result)[*size] = (int *)malloc(n * sizeof(int));
         for (int i = 0; i < n; i++) {
-            sum += arr[i];
+            (*result)[*size][i] = arr[i];
         }
-        return sum;
+        (*size)++;
+        return;
     }
 
-    long long int totalSum = 0;
-    for (int i = index; i < n; i++) {
-        // Troca o elemento atual com o elemento do índice 'index'
-        swap(&arr[i], &arr[index]);
-        // Chama recursivamente para o subarray restante e acumula a soma
-        totalSum += generatePermutations(arr, n, index + 1);
-        // Desfaz a troca para restaurar o array original
-        swap(&arr[i], &arr[index]);
+    for (int i = 0; i < n; i++) {
+        arr[index] = i;
+        generatePermutations(n, arr, index + 1, result, size);
     }
-    return totalSum;
 }
 
 int main() {
@@ -35,13 +37,23 @@ int main() {
     scanf("%d", &n);
 
     int arr[n];
-    printf("Digite os elementos do vetor:\n");
-    for (int i = 0; i < n; i++) {
-        scanf("%d", &arr[i]);
-    }
+    int **permutations = NULL;
+    int size = 0;
 
-    long long int result = generatePermutations(arr, n, 0);
-    printf("Soma das permutações: %lld\n", result);
+    generatePermutations(n, arr, 0, &permutations, &size);
+
+    printf("Permutações possíveis:\n");
+    printf("[");
+    for (int i = 0; i < size; i++) {
+        printVector(permutations[i], n);
+        if (i < size - 1) {
+            printf(", ");
+        }
+        free(permutations[i]);
+    }
+    printf("]\n");
+
+    free(permutations);
 
     return 0;
 }
