@@ -65,4 +65,4 @@ src/log/*
 *.stdout
 !target*
 !src/irace/functions/*
-```
+irace.Rdata
