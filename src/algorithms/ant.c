@@ -41,7 +41,7 @@ double f(double *x, int n);
 void initialize(Ant *ants, int n, int d);
 void update_pheromones(double **pheromones, Ant *ants, int n, int d, Ant *best_ant);
 void select_next_position(double **pheromones, Ant *ants, int d, Ant *best_ant);
-void aco(int d);
+void aco();
 
 AntParameters parameters;
 
@@ -109,8 +109,7 @@ int main(int argc, char *argv[])
 {
     set_parameters(argc, argv);
     srand(parameters.seed);
-    int d = 10;
-    aco(d);
+    aco();
     return 0;
 }
 
@@ -456,8 +455,9 @@ double desvio_padrao_ant(Ant *ants, int ants_size)
 }
 
 // The main ACO function
-void aco(int d)
+void aco()
 {
+    int d = 10;
     DEBUG(printf("aco\n");)
     // Allocate memory for the pheromone matrix
     double **pheromones = (double **)malloc(parameters.num_ant * sizeof(double *));
