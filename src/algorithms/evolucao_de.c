@@ -410,12 +410,12 @@ void random_random_migrate(populacao *populations, int island_size, int dimensio
     }
 }
 
-individuo evolution(int island_size, int population_size, int dimension, domain domain_function, int num_generations)
+individuo diferencial()
 {
     DEBUG(printf("\nevolution\n"););
     individuo *parents[2];
     individuo bestIndividuo = {.fitness = INFINITY};
-    populacao *populations = generate_island(island_size, population_size, dimension, domain_function);
+    populacao *populations = generate_island(parameters.island_size, parameters.population_size, parameters.dimension, parameters.domain_function);
     time_t time_init, time_now;
     int epoca_count = 0;
     time(&time_init);
@@ -429,7 +429,7 @@ individuo evolution(int island_size, int population_size, int dimension, domain 
     {
         printf("Epoca: %d\n", epoca_count);
         best_ep_ant = bestIndividuo.fitness;
-        for (int i = 0; i < island_size; i++)
+        for (int i = 0; i < parameters.island_size; i++)
         {
             LOG(printf("\n\ni-ésima ilha: %d\n", i););
             populacao *original_population = &populations[i];
@@ -445,13 +445,13 @@ individuo evolution(int island_size, int population_size, int dimension, domain 
                 while (generation_count < max_inter && difftime(time_now, time_init) < parameters.time_limit)
                 {
                     time(&time_now);
-                    mutation_population = mutation_diferencial(original_population, dimension, domain_function);
-                    cross_population = crossover(original_population, mutation_population, dimension);
-                    selection(original_population, cross_population, dimension);
+                    mutation_population = mutation_diferencial(original_population, parameters.dimension, parameters.domain_function);
+                    cross_population = crossover(original_population, mutation_population, parameters.dimension);
+                    selection(original_population, cross_population, parameters.dimension);
 
-                    // print_individuo(original_population->individuos[original_population->size - 1], dimension, 1);
+                    // print_individuo(original_population->individuos[original_population->size - 1], parameters.dimension, 1);
                     LOG(write_population_log(epoca_count, i, generation_count, *original_population, parameters););
-                    STATISTICS(print_coords(&original_population->individuos[original_population->size - 1], 1, generation_count, num_generations););
+                    STATISTICS(print_coords(&original_population->individuos[original_population->size - 1], 1, generation_count, parameters.num_generations_per_epoca););
                     DEBUG(printf("\nGeração: %d\n", generation_count););
                     generation_count++;
                 }
@@ -467,12 +467,12 @@ individuo evolution(int island_size, int population_size, int dimension, domain 
             individuo *bestCurrent = get_best_of_population(*original_population);
 
             // puts("\nMelhor de toda a população:");
-            // print_individuo(*bestCurrent, dimension);
+            // print_individuo(*bestCurrent, parameters.dimension);
             // printf("%lf\n", bestCurrent->fitness);
             if (bestCurrent->fitness < bestIndividuo.fitness)
                 bestIndividuo = *bestCurrent;
         }
-        migrate(populations, island_size, dimension, domain_function);
+        migrate(populations, parameters.island_size, parameters.dimension, parameters.domain_function);
         epoca_count++;
         parameters.num_epocas = epoca_count;
         // Verifica se um best_Individuo foi encontrado em relaçao a epoca anterior
@@ -498,7 +498,7 @@ int main(int argc, char *argv[])
     // Melhor semente até agora: 1676931005 (Funcao 3) - 301.356
     // Melhor semente até agora: 1676935665 (Funcao 8) - 801.1393
     srand(parameters.seed);
-    result = evolution(parameters.island_size, parameters.population_size, parameters.dimension, parameters.domain_function, parameters.num_generations_per_epoca);
+    result = diferencial();
 
     print_individuo(result, parameters.dimension, 0);
     printf("Best %lf\n", result.fitness);
