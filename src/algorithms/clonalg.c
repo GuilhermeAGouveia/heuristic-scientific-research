@@ -248,7 +248,7 @@ void union_populacao_clones_and_main(populacao *populacao_clones, populacao *pop
     }
 }
 
-individuo clonalg()
+populacao *clonalg()
 {
     DEBUG(printf("\nevolution\n"););
     populacao *population_main = generate_island(1, parameters.population_size, parameters.dimension, parameters.domain_function);
@@ -296,7 +296,7 @@ individuo clonalg()
             max_inter += max_inter_add;
         }
     }
-    return population_main->individuos[population_main->size - 1];
+    return population_main;
 }
 
 int main(int argc, char *argv[])
@@ -304,11 +304,11 @@ int main(int argc, char *argv[])
     set_parameters(argc, argv); // Lê os parâmetros da linha de comando e repassa para as variáveis globais
     // print_parameters();
 
-    individuo result;
+    populacao *result;
 
     srand(parameters.seed);
     result = clonalg();
     // print_individuo(result, parameters.dimension, 0);
-    printf("Best %lf\n", result.fitness);
+    printf("Best %lf\n", result->individuos[result->size - 1].fitness);
     return 0;
 }

@@ -23,6 +23,7 @@ void free_population(populacao *populations, int n_populations);
 int doubleEqual(double a, double b, int num_casas);
 double calc_mean(individuo *population, int population_size);
 double desvio_padrao(individuo *population, int population_size);
+void copy_individuo(individuo *original, individuo *copia, int dimension);
 
 
 #endif /* UTILS_H */

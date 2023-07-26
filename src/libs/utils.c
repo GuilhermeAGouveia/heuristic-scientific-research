@@ -65,3 +65,12 @@ double desvio_padrao(individuo *population, int population_size)
     }
     return sqrt(sum / population_size);
 }
+
+void copy_individuo(individuo *original, individuo *copia, int dimension)
+{
+    copia->fitness = original->fitness;
+    for (int i = 0; i < dimension; i++)
+    {
+        copia->chromosome[i] = original->chromosome[i];
+    }
+}

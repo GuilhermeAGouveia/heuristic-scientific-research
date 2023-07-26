@@ -25,7 +25,7 @@ void print_usage()
 void set_default_parameters()
 {
     parameters.F = 0.77294;
-    parameters.function_number = 2;
+    parameters.function_number = 3;
     parameters.time_limit = 10; // seconds
     parameters.island_size = 1;
     parameters.population_size = 140;

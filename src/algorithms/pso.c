@@ -25,7 +25,7 @@ void print_usage()
 void set_default_parameters()
 {
     parameters.F = 0.99;
-    parameters.function_number = 1;
+    parameters.function_number = 3;
     parameters.time_limit = 10; // seconds
     parameters.island_size = 10;
     parameters.population_size = 5598;
@@ -152,16 +152,6 @@ individuo *get_worst_of_population(individuo *population, int n_populacoes)
     return &population[0];
 }
 
-void copy_individuo(individuo *original, individuo *copia, int dimension)
-{
-    copia->fitness = original->fitness;
-    for (int i = 0; i < dimension; i++)
-    {
-        copia->chromosome[i] = original->chromosome[i];
-        copia->velocidade[i] = original->velocidade[i];
-    }
-}
-
 void verifica_limites(individuo *individuo, int dimension)
 {
     double vmax = pow(parameters.domain_function.max, 2) * 0.002;
@@ -179,6 +169,16 @@ void verifica_limites(individuo *individuo, int dimension)
             individuo->chromosome[i] = parameters.domain_function.max;
             individuo->velocidade[i] = vmax;
         }
+    }
+}
+
+void copy_individuo_pso(individuo *original, individuo *copia, int dimension)
+{
+    copia->fitness = original->fitness;
+    for (int i = 0; i < dimension; i++)
+    {
+        copia->chromosome[i] = original->chromosome[i];
+        copia->velocidade[i] = original->velocidade[i];
     }
 }
 
@@ -204,7 +204,7 @@ void calcula_componente(double *componente, individuo *individuo_1, individuo *i
     }
 }
 
-individuo pso()
+populacao *pso()
 {
     populacao *population = malloc(sizeof(population));
     populacao *population_best_current = malloc(sizeof(population));
@@ -231,9 +231,9 @@ individuo pso()
             for (int i = 0; i < parameters.population_size; i++)
             {
                 if (population->individuos[i].fitness < population_best_current->individuos[i].fitness)
-                    copy_individuo(&population->individuos[i], &population_best_current->individuos[i], parameters.dimension);
+                    copy_individuo_pso(&population->individuos[i], &population_best_current->individuos[i], parameters.dimension);
                 if (population->individuos[i].fitness < individuo_best->fitness)
-                    copy_individuo(&population->individuos[i], individuo_best, parameters.dimension);
+                    copy_individuo_pso(&population->individuos[i], individuo_best, parameters.dimension);
                 double r1 = (double)rand() / RAND_MAX;
                 double r2 = (double)rand() / RAND_MAX;
                 // calcula_componente(c1, &population_best_current->individuos[i], &population->individuos[i], parameters.dimension);
@@ -268,7 +268,8 @@ individuo pso()
             max_inter += max_inter_add;
         }
     }
-    return *individuo_best;
+    copy_individuo_pso(individuo_best,&population->individuos[0], parameters.dimension);
+    return population;
 }
 
 int main(int argc, char *argv[])
@@ -276,14 +277,14 @@ int main(int argc, char *argv[])
     set_parameters(argc, argv); // Lê os parâmetros da linha de comando e repassa para as variáveis globais
     // print_parameters();
 
-    individuo result;
+    populacao *result;
     // Melhor semente até agora: 1676931005 (Funcao 3) - 301.356
     // Melhor semente até agora: 1676935665 (Funcao 8) - 801.1393
     srand(parameters.seed);
     // result = evolution(parameters.island_size, parameters.population_size, parameters.dimension, parameters.domain_function, parameters.num_generations_per_epoca);
     result = pso();
 
-    print_individuo(result, parameters.dimension, 0);
-    printf("Best %lf\n", result.fitness);
+    //print_individuo(result, parameters.dimension, 0);
+    printf("Best %lf\n", result->individuos[0].fitness);
     return 0;
 }
