@@ -1,6 +1,12 @@
 #include <stdio.h>
 #include <math.h>
 
+/**
+ * @brief Retorna um valor entre a e b, dado um valor x entre c e d, de forma logarítmica.
+ * log_scale: [c, d] -> [a, b]
+ * log_scale(c) = a
+ * log_scale(d) = b
+*/
 double log_scale(double x, double a, double b, double c, double d)
 {
     double result = a + (b - a) * (log(x) - log(c)) / (log(d) - log(c));
