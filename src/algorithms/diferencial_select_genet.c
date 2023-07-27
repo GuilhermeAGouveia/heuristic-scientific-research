@@ -24,16 +24,16 @@ void print_usage()
 
 void set_default_parameters()
 {
-    parameters.F = 0.76811;
+    parameters.F = 0.55481;
     parameters.function_number = 3;
     parameters.time_limit = 10; // seconds
     parameters.island_size = 1;
-    parameters.population_size = 58;
+    parameters.population_size = 142;
     parameters.dimension = 10; // 10 or 30
     parameters.domain_function.min = -100;
     parameters.domain_function.max = 100;
-    parameters.mutation_rate = 4;  // %
-    parameters.crossover_rate = 54; // %
+    parameters.mutation_rate = 68;  // %
+    parameters.crossover_rate = 99; // %
     parameters.num_migrations = 0;
     parameters.evaluation_limit = 1490400;
     parameters.seed = time(NULL);
@@ -246,7 +246,7 @@ populacao *slice_population(populacao *population, int start, int end)
     return sliced_population;
 }
 
- void selection(populacao *population_original, populacao *population_mutation, int dimension)
+ /*void selection(populacao *population_original, populacao *population_mutation, int dimension)
  {
      DEBUG(printf("\nselection\n"););
      DEBUG(printf("População original\n"););
@@ -261,9 +261,9 @@ populacao *slice_population(populacao *population, int start, int end)
      qsort(population_original->individuos, population_original->size, sizeof(individuo), comparador_individuo);
      DEBUG(printf("População selecionada\n"););
      DEBUG(print_population(population_original->individuos, population_original->size, dimension, 1););
- }
+ }*/
 
-/*populacao *selection(populacao *population_original, populacao *population_crossover, int dimension)
+populacao *selection(populacao *population_original, populacao *population_crossover, int dimension)
 {
     DEBUG(printf("\nselection\n"););
     DEBUG(printf("População original\n"););
@@ -284,7 +284,7 @@ populacao *slice_population(populacao *population, int start, int end)
     return population_original;
     DEBUG(printf("População selecionada\n"););
     DEBUG(print_population(population_original->individuos, population_original->size, dimension, 1););
-}*/
+}
 
 populacao *crossover(populacao *populacao_original, populacao *populacao_mutada, int dimension)
 {
@@ -328,8 +328,8 @@ populacao *diferencial()
     {
         mutation_population = mutation_diferencial(original_population, parameters.dimension, parameters.domain_function);
         cross_population = crossover(original_population, mutation_population, parameters.dimension);
-        selection(original_population, cross_population, parameters.dimension);
-        //original_population = selection(original_population, cross_population, parameters.dimension);
+        //selection(original_population, cross_population, parameters.dimension);
+        original_population = selection(original_population, cross_population, parameters.dimension);
 
         // print_individuo(original_population->individuos[original_population->size - 1], dimension, 1);
         LOG(write_population_log(epoca_count, i, generation_count, *original_population, parameters););
