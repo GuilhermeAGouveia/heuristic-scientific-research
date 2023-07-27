@@ -1,0 +1,94 @@
+#include <getopt.h>
+#include <time.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include "../libs/log.h"
+#include "./parameters.h"
+
+void print_usage()
+{
+    printf("Usage: ./evolucao_mpop -f <function_number> -t <time_limit> -i <island_size> -p <population_size> -d <dimension> -l <bounds_lower> -u <bounds_upper> -g <num_generations> -m <mutation_probability>");
+}
+
+args parameters;
+
+void set_parameters(int argc, char *argv[])
+{
+    int opt;
+    while ((opt = getopt(argc, argv, "a:f:F:t:i:p:d:l:u:g:m:c:k:s:")) != -1)
+    {
+        switch (opt)
+        {
+        case 'a':
+            
+            switch (tolower(optarg[0]))
+            {
+            case 'p':
+                parameters.algorithm = PSO;
+                break;
+            case 'g':
+                parameters.algorithm = GA;
+                break;
+            case 'd':
+                parameters.algorithm = DE;
+                break;
+            case 'a':
+                parameters.algorithm = ANT;
+                break;
+            case 'c':
+                parameters.algorithm = CLONALG;
+                break;
+            default:
+                printf("Invalid algorithm. Please use one of the following: p, g, d, a, c\n");
+                exit(1);
+            }
+            break;
+        case 'f':
+            parameters.function_number = atoi(optarg);
+            break;
+        case 't':
+            parameters.time_limit = atoi(optarg);
+            break;
+        case 'i':
+            parameters.island_size = atoi(optarg);
+            break;
+        case 'p':
+            parameters.population_size = atoi(optarg);
+            break;
+        case 'd':
+            parameters.dimension = atoi(optarg);
+            break;
+        case 'l':
+            parameters.domain_function.min = atoi(optarg);
+            break;
+        case 'u':
+            parameters.domain_function.max = atoi(optarg);
+            break;
+        case 'g':
+            parameters.num_generations_per_epoca = atoi(optarg);
+            break;
+        case 'm':
+            parameters.mutation_rate = atoi(optarg);
+            break;
+        case 'c':
+            parameters.crossover_rate = atoi(optarg);
+            break;
+        case 'k':
+            parameters.num_migrations = atoi(optarg);
+            break;
+        case 'F':
+            parameters.F = atof(optarg);
+            break;
+        case 's':
+            parameters.seed = atoi(optarg);
+            break;
+        default:
+            printf("Invalid option: %c\n", opt);
+            print_usage();
+            exit(1);
+            break;
+        }
+    }
+    srand(parameters.seed);
+}

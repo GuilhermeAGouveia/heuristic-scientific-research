@@ -11,87 +11,42 @@
 #include "../libs/utils.h"
 #include "../libs/crossover.h"
 #include "../libs/log.h"
+#include "../algorithms/parameters.h"
 #define STATISTICS(x)
 #define DEBUG(x)
 #define LOG(x)
 
-static args parameters;
-
-void print_usage()
-{
-    printf("Usage: ./evolucao_mpop -f <function_number> -t <time_limit> -i <island_size> -p <population_size> -d <dimension> -l <bounds_lower> -u <bounds_upper> -g <num_generations> -m <mutation_probability>");
-}
-
 void set_default_parameters()
 {
-    parameters.function_number = 3;
-    parameters.time_limit = 10; // seconds
-    parameters.island_size = 1;
-    parameters.population_size = 100;
-    parameters.dimension = 10; // 10 or 30
-    parameters.domain_function.min = -100;
-    parameters.domain_function.max = 100;
-    parameters.mutation_rate = 25;  // %
-    parameters.crossover_rate = 62; // %
-    parameters.num_migrations = 0;
-    parameters.evaluation_limit = 1490400;
-    parameters.seed = time(NULL);
-}
-
-void set_parameters(int argc, char *argv[])
-{
-    int opt;
-    set_default_parameters();
-    while ((opt = getopt(argc, argv, "f:F:t:i:p:d:l:u:g:m:c:k:s:")) != -1)
+    if (parameters.algorithm != GA)
     {
-        switch (opt)
-        {
-        case 'f':
-            parameters.function_number = atoi(optarg);
-            break;
-        case 't':
-            parameters.time_limit = atoi(optarg);
-            break;
-        case 'i':
-            parameters.island_size = atoi(optarg);
-            break;
-        case 'p':
-            parameters.population_size = atoi(optarg);
-            break;
-        case 'd':
-            parameters.dimension = atoi(optarg);
-            break;
-        case 'l':
-            parameters.domain_function.min = atoi(optarg);
-            break;
-        case 'u':
-            parameters.domain_function.max = atoi(optarg);
-            break;
-        case 'g':
-            parameters.num_generations_per_epoca = atoi(optarg);
-            break;
-        case 'm':
-            parameters.mutation_rate = atoi(optarg);
-            break;
-        case 'c':
-            parameters.crossover_rate = atoi(optarg);
-            break;
-        case 'k':
-            parameters.num_migrations = atoi(optarg);
-            break;
-        case 'F':
-            parameters.F = atof(optarg);
-            break;
-        case 's':
-            parameters.seed = atoi(optarg);
-            break;
-        default:
-            printf("Invalid option: %c\n", opt);
-            print_usage();
-            exit(1);
-            break;
-        }
-    }
+        printf("Invalid algorithm. Please use GA\n");
+        exit(1);
+    };
+    if (!parameters.function_number)
+        parameters.function_number = 3;
+    if (!parameters.time_limit)
+        parameters.time_limit = 10; // seconds
+    if (!parameters.island_size)
+        parameters.island_size = 1;
+    if (!parameters.population_size)
+        parameters.population_size = 100;
+    if (!parameters.dimension)
+        parameters.dimension = 10; // 10 or 30
+    if (!parameters.domain_function.max)
+        parameters.domain_function.min = -100;
+    if (!parameters.domain_function.min)
+        parameters.domain_function.max = 100;
+    if (!parameters.mutation_rate)
+        parameters.mutation_rate = 25; // %
+    if (!parameters.crossover_rate)
+        parameters.crossover_rate = 62; // %
+    if (!parameters.num_migrations)
+        parameters.num_migrations = 0;
+    if (!parameters.evaluation_limit)
+        parameters.evaluation_limit = 1490400;
+    if (!parameters.seed)
+        parameters.seed = time(NULL);
 }
 
 void fitness(individuo *individuo, int dimension)
@@ -337,14 +292,14 @@ populacao *selection(populacao *population_original, populacao *population_cross
     populacao *population_union = union_populations(population_original, population_crossover);
     qsort(population_union->individuos, population_union->size, sizeof(individuo), comparador_individuo);
     int original_size = population_original->size;
-    
+
     destroy_island(population_original, 1);
 
     *population_original = *slice_population(population_union, population_union->size - original_size, population_union->size);
 
     destroy_island(population_union, 1);
     destroy_island(population_crossover, 1);
-    
+
     return population_original;
     DEBUG(printf("População selecionada\n"););
     DEBUG(print_population(population_original->individuos, population_original->size, dimension, 1););
@@ -496,14 +451,15 @@ void random_random_migrate(populacao *populations, int island_size, int dimensio
 
 populacao *genetic()
 {
+    set_default_parameters();
     DEBUG(printf("\nevolution\n"););
     individuo *parents[2];
-    //individuo bestIndividuo = {.fitness = INFINITY};
+    // individuo bestIndividuo = {.fitness = INFINITY};
     populacao *populations = generate_island(parameters.island_size, parameters.population_size, parameters.dimension, parameters.domain_function);
     time_t time_init, time_now;
     int evaluation_count = 0;
     int epoca_count = 0;
-   // double best_ep_ant = bestIndividuo.fitness;
+    // double best_ep_ant = bestIndividuo.fitness;
     time(&time_init);
     time(&time_now);
     DEBUG(printf("Iniciando evolucao\n"););
@@ -528,12 +484,12 @@ populacao *genetic()
         evaluation_count += original_population->size;
         time(&time_now);
     }
-    //individuo *bestCurrent = get_best_of_population(*original_population);
-    // puts("\nMelhor de toda a população:");
-    // print_individuo(*bestCurrent, dimension);
-    // printf("%lf\n", bestCurrent->fitness);
-    //if (bestCurrent->fitness < bestIndividuo.fitness)
-       // bestIndividuo = *bestCurrent;
+    // individuo *bestCurrent = get_best_of_population(*original_population);
+    //  puts("\nMelhor de toda a população:");
+    //  print_individuo(*bestCurrent, dimension);
+    //  printf("%lf\n", bestCurrent->fitness);
+    // if (bestCurrent->fitness < bestIndividuo.fitness)
+    //  bestIndividuo = *bestCurrent;
 
     // migrate(populations, parameters.island_size, dimension, domain_function);
 
@@ -548,20 +504,4 @@ populacao *genetic()
     //     continue_evol = 0;
 
     return original_population;
-}
-
-int main(int argc, char *argv[])
-{
-    set_parameters(argc, argv); // Lê os parâmetros da linha de comando e repassa para as variáveis globais
-    // print_parameters();
-
-    populacao *result;
-    // Melhor semente até agora: 1676931005 (Funcao 3) - 301.356
-    // Melhor semente até agora: 1676935665 (Funcao 8) - 801.1393
-    srand(parameters.seed);
-    result = genetic(parameters.island_size, parameters.population_size, parameters.dimension, parameters.domain_function, parameters.num_generations_per_epoca);
-
-    //print_individuo(result, parameters.dimension, 0);
-    printf("Best %lf\n", get_best_of_population(*result)->fitness);
-    return 0;
 }
