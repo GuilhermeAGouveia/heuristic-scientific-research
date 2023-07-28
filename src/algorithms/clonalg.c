@@ -19,17 +19,25 @@
 
 void set_default_parameters_clonalg()
 {
-    if (!parameters.function_number) parameters.function_number = 3;
-    if (!parameters.time_limit) parameters.time_limit = 10; // seconds
-    if (!parameters.population_size) parameters.population_size = 124;
-    if (!parameters.dimension) parameters.dimension = 10; // 10 or 30
-    if (!parameters.domain_function.min) parameters.domain_function.min = -100;
-    if (!parameters.domain_function.max) parameters.domain_function.max = 100;
-    if (!parameters.num_generations_per_epoca) parameters.num_generations_per_epoca = 300;
-    if (!parameters.clones) parameters.clones = 36;
-    if (!parameters.seed) parameters.seed = time(NULL);
+    if (!parameters.function_number)
+        parameters.function_number = 3;
+    if (!parameters.time_limit)
+        parameters.time_limit = 10; // seconds
+    if (!parameters.population_size)
+        parameters.population_size = 124;
+    if (!parameters.dimension)
+        parameters.dimension = 10; // 10 or 30
+    if (!parameters.domain_function.min)
+        parameters.domain_function.min = -100;
+    if (!parameters.domain_function.max)
+        parameters.domain_function.max = 100;
+    if (!parameters.num_generations_per_epoca)
+        parameters.num_generations_per_epoca = 300;
+    if (!parameters.clones)
+        parameters.clones = 36;
+    if (!parameters.seed)
+        parameters.seed = time(NULL);
 }
-
 
 void mutation_n_genes(populacao *populacao_clones, int n_genes, int dimension, domain domain_function)
 {
@@ -159,10 +167,11 @@ populacao *clonalg()
         // printf("Desvio_P: %lf\n", desv);
         // printf("Anterior: %lf, Atual_best:%lf\n", best_anter, population_main->individuos[population_main->size - 1].fitness);
 
-        if (doubleEqual(best_anter, population_main->individuos[population_main->size - 1].fitness, 2)){
+        if (doubleEqual(best_anter, population_main->individuos[population_main->size - 1].fitness, 2))
+        {
             cont_or_stop = 0;
         }
-            
+
         else
         {
             max_inter += max_inter_add;
