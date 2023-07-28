@@ -20,5 +20,6 @@
 extern args parameters;
 
 void set_parameters(int argc, char *argv[]);
+void print_parameters(args parameters);
 
 #endif /* PARAMETERS_H */

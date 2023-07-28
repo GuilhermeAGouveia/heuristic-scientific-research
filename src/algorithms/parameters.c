@@ -98,3 +98,21 @@ void set_parameters(int argc, char *argv[])
     }
     srand(parameters.seed);
 }
+
+void print_parameters(args parameters){
+    printf("Algorithm: %d\n", parameters.algorithm);
+    printf("Function number: %d\n", parameters.function_number);
+    printf("Time limit: %d\n", parameters.time_limit);
+    printf("Island size: %d\n", parameters.island_size);
+    printf("Population size: %d\n", parameters.population_size);
+    printf("Dimension: %d\n", parameters.dimension);
+    printf("Domain function: %lf %lf\n", parameters.domain_function.min, parameters.domain_function.max);
+    printf("Number of generations per epoca: %d\n", parameters.num_generations_per_epoca);
+    printf("Mutation rate: %d\n", parameters.mutation_rate);
+    printf("Crossover rate: %d\n", parameters.crossover_rate);
+    printf("Number of migrations: %d\n", parameters.num_migrations);
+    printf("F: %f\n", parameters.F);
+    printf("Seed: %d\n", parameters.seed);
+    printf("C1: %f\n", parameters.c1);
+    printf("C2: %f\n", parameters.c2);
+}

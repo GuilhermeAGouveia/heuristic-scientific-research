@@ -3,6 +3,8 @@
 #include "algorithms/genetic.h"
 #include "algorithms/pso.h"
 #include "algorithms/parameters.h"
+#include "algorithms/commom.h"
+#include "libs/utils.h"
 
 // void main(void) {
 //     printf("Hello, World!\n");
@@ -41,5 +43,7 @@ int main(int argc, char *argv[])
         printf("Invalid algorithm. Please use one of the following: p, g, d, a, c\n");
         exit(1);
     }
+
+    print_individuo(*get_best_of_population(*result), parameters.dimension, 0);
     return 0;
 }

@@ -17,28 +17,39 @@
 #define DEBUG(x)
 #define LOG(x)
 
-
 void set_default_parameters_pso()
 {
-    if (!parameters.F) parameters.F = 0.99;
-    if (!parameters.function_number) parameters.function_number = 3;
-    if (!parameters.time_limit) parameters.time_limit = 10; // seconds
-    if (!parameters.island_size) parameters.island_size = 10;
-    if (!parameters.population_size) parameters.population_size = 5598;
-    if (!parameters.dimension) parameters.dimension = 10; // 10 or 30
-    if (!parameters.domain_function.min) parameters.domain_function.min = -100;
-    if (!parameters.domain_function.max) parameters.domain_function.max = 100;
-    if (!parameters.num_generations_per_epoca) parameters.num_generations_per_epoca = 300;
-    if (!parameters.mutation_rate) parameters.mutation_rate = 100;  // %
-    if (!parameters.crossover_rate) parameters.crossover_rate = 100; // %
-    if (!parameters.num_migrations) parameters.num_migrations = 3;
-    if (!parameters.seed) parameters.seed = time(NULL);
-    if (!parameters.c1) parameters.c1 = 1.523;
-    if (!parameters.c2) parameters.c2 = 0.77623;
+    if (!parameters.F)
+        parameters.F = 0.99;
+    if (!parameters.function_number)
+        parameters.function_number = 3;
+    if (!parameters.time_limit)
+        parameters.time_limit = 10; // seconds
+    if (!parameters.island_size)
+        parameters.island_size = 10;
+    if (!parameters.population_size)
+        parameters.population_size = 5598;
+    if (!parameters.dimension)
+        parameters.dimension = 10; // 10 or 30
+    if (!parameters.domain_function.min)
+        parameters.domain_function.min = -100;
+    if (!parameters.domain_function.max)
+        parameters.domain_function.max = 100;
+    if (!parameters.num_generations_per_epoca)
+        parameters.num_generations_per_epoca = 300;
+    if (!parameters.mutation_rate)
+        parameters.mutation_rate = 100; // %
+    if (!parameters.crossover_rate)
+        parameters.crossover_rate = 100; // %
+    if (!parameters.num_migrations)
+        parameters.num_migrations = 3;
+    if (!parameters.seed)
+        parameters.seed = time(NULL);
+    if (!parameters.c1)
+        parameters.c1 = 1.523;
+    if (!parameters.c2)
+        parameters.c2 = 0.77623;
 }
-
-
-
 
 void verifica_limites(individuo *individuo, int dimension)
 {
@@ -95,6 +106,8 @@ void calcula_componente(double *componente, individuo *individuo_1, individuo *i
 populacao *pso()
 {
     set_default_parameters_pso();
+    print_parameters(parameters);
+
     populacao *population = malloc(sizeof(population));
     populacao *population_best_current = malloc(sizeof(population));
     population->individuos = generate_population(parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
@@ -157,6 +170,6 @@ populacao *pso()
             max_inter += max_inter_add;
         }
     }
-    copy_individuo_pso(individuo_best,&population->individuos[0], parameters.dimension);
+    copy_individuo_pso(individuo_best, &population->individuos[0], parameters.dimension);
     return population;
 }

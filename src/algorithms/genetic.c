@@ -34,9 +34,9 @@ void set_default_parameters()
         parameters.population_size = 100;
     if (!parameters.dimension)
         parameters.dimension = 10; // 10 or 30
-    if (!parameters.domain_function.max)
-        parameters.domain_function.min = -100;
     if (!parameters.domain_function.min)
+        parameters.domain_function.min = -100;
+    if (!parameters.domain_function.max)
         parameters.domain_function.max = 100;
     if (!parameters.mutation_rate)
         parameters.mutation_rate = 25; // %
@@ -407,6 +407,7 @@ void random_random_migrate(populacao *populations, int island_size, int dimensio
 populacao *genetic()
 {
     set_default_parameters();
+    print_parameters(parameters);
     DEBUG(printf("\nevolution\n"););
     individuo *parents[2];
     // individuo bestIndividuo = {.fitness = INFINITY};

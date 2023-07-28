@@ -57,7 +57,7 @@ individuo *generate_population(int n_individuos, int dimension, domain domain_fu
 individuo *get_best_of_population(populacao populacao)
 {
     DEBUG(printf("\nget_best_of_population\n"););
-    // qsort(population, n_populacoes, sizeof(individuo), comparador_individuo);
+    qsort(populacao.individuos, populacao.size, sizeof(individuo), comparador_individuo);
     return &populacao.individuos[populacao.size - 1];
 }
 
