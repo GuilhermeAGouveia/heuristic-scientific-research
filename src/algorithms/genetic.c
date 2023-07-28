@@ -11,7 +11,8 @@
 #include "../libs/utils.h"
 #include "../libs/crossover.h"
 #include "../libs/log.h"
-#include "../algorithms/parameters.h"
+#include "parameters.h"
+#include "commom.h"
 #define STATISTICS(x)
 #define DEBUG(x)
 #define LOG(x)
@@ -47,24 +48,6 @@ void set_default_parameters()
         parameters.evaluation_limit = 1490400;
     if (!parameters.seed)
         parameters.seed = time(NULL);
-}
-
-void fitness(individuo *individuo, int dimension)
-{
-    // individuo.fitness = real_function(individuo.chromosome, dimension);
-    cec15_test_func(individuo->chromosome, &individuo->fitness, dimension, 1, parameters.function_number);
-    // double x = individuo->chromosome[0];
-    // double y = individuo->chromosome[1];
-    // individuo->fitness = pow(x, 2) + pow(y, 2) - cos(18 * x) - cos(18 * y);
-    // printf("fitness: %f\n", individuo->fitness);
-}
-
-int comparador_individuo(const void *a, const void *b)
-{
-    individuo *v1 = (individuo *)a;
-    individuo *v2 = (individuo *)b;
-
-    return v1->fitness < v2->fitness;
 }
 
 void print_roleta(int *roleta, int roleta_size, int ball1, int ball2)
@@ -131,22 +114,6 @@ void select_parents(populacao populacao, individuo *parents[2])
     DEBUG(printf("Pais: %d e %d\n", pai1, pai2););
 }
 
-individuo *generate_population(int n_individuos, int dimension, domain domain_function)
-{
-    DEBUG(printf("\ngenerate_population\n"););
-    individuo *population = malloc(n_individuos * sizeof(individuo));
-    for (int i = 0; i < n_individuos; i++)
-    {
-        population[i].chromosome = (double *)malloc(dimension * sizeof(double));
-        for (int j = 0; j < dimension; j++)
-        {
-            population[i].chromosome[j] = random_double(domain_function.min, domain_function.max);
-        }
-        fitness(&population[i], dimension);
-    }
-    return population;
-}
-
 void destroy_population(individuo *population, int n_individuos)
 {
     DEBUG(printf("\ndestroy_population\n"););
@@ -164,7 +131,7 @@ populacao *generate_island(int island_size, int population_size, int dimension, 
     populacao **neighbours = calloc(4, sizeof(populacao *));
     for (int i = 0; i < island_size; i++)
     {
-        populations[i].individuos = generate_population(population_size, dimension, domain_function);
+        populations[i].individuos = generate_population(population_size, dimension, domain_function, parameters.function_number);
         populations[i].size = population_size;
         populations[i].crossover = rand() % 6;
         populations[i].neighbours = calloc(4, sizeof(populacao *));
@@ -192,7 +159,7 @@ populacao *mutation_commom(populacao *populacao, int dimension, domain domain_fu
     {
         int mutation_point = rand() % dimension;
         populacao->individuos[i].chromosome[mutation_point] = random_double(domain_function.min, domain_function.max);
-        fitness(&populacao->individuos[i], dimension);
+        fitness(&populacao->individuos[i], dimension, parameters.function_number);
     }
     return populacao;
 }
@@ -228,22 +195,10 @@ populacao *mutation_diferencial(populacao *populacao_original, int dimension, do
             double result = populacao_original->individuos[alpha].chromosome[j] + parameters.F * (fabs(populacao_original->individuos[beta].chromosome[j]) - fabs(populacao_original->individuos[gamma].chromosome[j]));
             populacao_mutada->individuos[i].chromosome[j] = result;
         }
-        fitness(&populacao_mutada->individuos[i], dimension);
+        fitness(&populacao_mutada->individuos[i], dimension, parameters.function_number);
         DEBUG(printf("Individuo %d\n", i); print_individuo(populacao_mutada->individuos[i], dimension, i);)
     }
     return populacao_mutada;
-}
-
-individuo *get_best_of_population(populacao populacao)
-{
-    DEBUG(printf("\nget_best_of_population\n"););
-    return &populacao.individuos[populacao.size - 1];
-}
-
-individuo *get_worst_of_population(individuo *population, int n_populacoes)
-{
-    qsort(population, n_populacoes, sizeof(individuo), comparador_individuo);
-    return &population[0];
 }
 
 void clone_individue(individuo *clone, individuo *original, int dimension)
@@ -359,7 +314,7 @@ populacao *crossover(populacao *populacao_original, populacao *populacao_mutada,
             filho = cruzamento_media(parent1, parent2, dimension);
         }
 
-        fitness(&filho, dimension);
+        fitness(&filho, dimension, parameters.function_number);
         nova_populacao->individuos[i] = filho;
     }
     // nova_populacao->individuos[populacao->size - 1] = populacao->individuos[populacao->size - 1];
@@ -390,7 +345,7 @@ void migrate(populacao *populations, int island_size, int dimension, domain doma
                 individuo *pior_indivuduo_do_vizinho = get_worst_of_population(neighbour_population, parameters.population_size);
                 if (melhor_individuo_da_populacao->fitness > pior_indivuduo_do_vizinho->fitness)
                 {
-                    individuo *new_worst = generate_population(1, dimension, domain_function);
+                    individuo *new_worst = generate_population(1, dimension, domain_function, parameters.function_number);
                     *pior_indivuduo_do_vizinho = *new_worst;
                 }
                 else
@@ -416,7 +371,7 @@ void shuffle(individuo *pool, int size_pool)
 void random_random_migrate(populacao *populations, int island_size, int dimension, domain domain_function)
 {
     DEBUG(printf("\nrandom random migrate\n"););
-    individuo *pool = generate_population(parameters.num_migrations * island_size, dimension, domain_function);
+    individuo *pool = generate_population(parameters.num_migrations * island_size, dimension, domain_function, parameters.function_number);
     int positions[island_size][parameters.num_migrations];
     for (int i = 0; i < island_size; i++)
     {

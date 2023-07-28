@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "algorithms/genetic.h"
+#include "algorithms/pso.h"
 #include "algorithms/parameters.h"
 
 // void main(void) {
@@ -19,8 +20,7 @@ int main(int argc, char *argv[])
     switch (parameters.algorithm)
     {
     case PSO:
-        // result = pso();
-        printf("PSO not implemented yet\n");
+        result = pso();
         break;
     case GA:
         result = genetic();

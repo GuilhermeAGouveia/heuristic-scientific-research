@@ -16,12 +16,12 @@ args parameters;
 void set_parameters(int argc, char *argv[])
 {
     int opt;
-    while ((opt = getopt(argc, argv, "a:f:F:t:i:p:d:l:u:g:m:c:k:s:")) != -1)
+    while ((opt = getopt(argc, argv, "a:f:F:t:i:p:d:l:u:g:m:c:k:s:v:z:")) != -1)
     {
         switch (opt)
         {
         case 'a':
-            
+
             switch (tolower(optarg[0]))
             {
             case 'p':
@@ -82,6 +82,12 @@ void set_parameters(int argc, char *argv[])
             break;
         case 's':
             parameters.seed = atoi(optarg);
+            break;
+        case 'v':
+            parameters.c1 = atof(optarg);
+            break;
+        case 'z':
+            parameters.c2 = atof(optarg);
             break;
         default:
             printf("Invalid option: %c\n", opt);
