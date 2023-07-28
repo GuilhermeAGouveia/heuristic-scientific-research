@@ -17,7 +17,7 @@
 #define DEBUG(x)
 #define LOG(x)
 
-void set_default_parameters()
+void set_default_parameters_genetic()
 {
     if (parameters.algorithm != GA)
     {
@@ -124,23 +124,6 @@ void destroy_population(individuo *population, int n_individuos)
     free(population);
 }
 
-populacao *generate_island(int island_size, int population_size, int dimension, domain domain_function)
-{
-    DEBUG(printf("\ngenerate_island\n"););
-    populacao *populations = malloc(island_size * sizeof(populacao));
-    populacao **neighbours = calloc(4, sizeof(populacao *));
-    for (int i = 0; i < island_size; i++)
-    {
-        populations[i].individuos = generate_population(population_size, dimension, domain_function, parameters.function_number);
-        populations[i].size = population_size;
-        populations[i].crossover = rand() % 6;
-        populations[i].neighbours = calloc(4, sizeof(populacao *));
-        populations[i].neighbours[0] = &populations[(i + 1) % island_size]; // talvez isso dê problema
-        populations[i].neighbours[1] = &populations[(i + 3) % island_size]; // talvez isso dê problema
-    }
-    return populations;
-}
-
 void destroy_island(populacao *populations, int island_size)
 {
     DEBUG(printf("\ndestroy_island\n"););
@@ -167,7 +150,7 @@ populacao *mutation_commom(populacao *populacao, int dimension, domain domain_fu
 populacao *mutation_diferencial(populacao *populacao_original, int dimension, domain domain_function)
 {
     DEBUG(printf("\nMutation\n"););
-    populacao *populacao_mutada = generate_island(1, populacao_original->size, dimension, domain_function);
+    populacao *populacao_mutada = generate_island(1, populacao_original->size, dimension, domain_function, parameters.function_number);
 
     for (int i = 0; i < populacao_original->size; i++)
     {
@@ -201,20 +184,11 @@ populacao *mutation_diferencial(populacao *populacao_original, int dimension, do
     return populacao_mutada;
 }
 
-void clone_individue(individuo *clone, individuo *original, int dimension)
-{
-    for (int i = 0; i < dimension; i++)
-    {
-        clone->chromosome[i] = original->chromosome[i];
-    }
-    clone->fitness = original->fitness;
-}
-
 populacao *union_populations(populacao *populacao1, populacao *populacao2)
 {
     DEBUG(printf("\nunion_populations\n"););
     int size = populacao1->size + populacao2->size;
-    populacao *populacao_unida = generate_island(1, size, parameters.dimension, parameters.domain_function);
+    populacao *populacao_unida = generate_island(1, size, parameters.dimension, parameters.domain_function, parameters.function_number);
     for (int i = 0; i < populacao1->size; i++)
     {
         clone_individue(&populacao_unida->individuos[i], &populacao1->individuos[i], parameters.dimension);
@@ -229,7 +203,7 @@ populacao *union_populations(populacao *populacao1, populacao *populacao2)
 populacao *slice_population(populacao *population, int start, int end)
 {
     DEBUG(printf("\nslice_population [%d, %d]\n", start, end););
-    populacao *sliced_population = generate_island(1, end - start, parameters.dimension, parameters.domain_function);
+    populacao *sliced_population = generate_island(1, end - start, parameters.dimension, parameters.domain_function, parameters.function_number);
     for (int i = 0; i < end - start; i++)
     {
         clone_individue(&sliced_population->individuos[i], &population->individuos[i + start], parameters.dimension);
@@ -281,7 +255,7 @@ individuo *get_pior_pai(individuo *pais[2])
 
 populacao *crossover(populacao *populacao_original, populacao *populacao_mutada, int dimension)
 {
-    populacao *nova_populacao = generate_island(1, populacao_original->size, dimension, parameters.domain_function);
+    populacao *nova_populacao = generate_island(1, populacao_original->size, dimension, parameters.domain_function, parameters.function_number);
     DEBUG(printf("\ncruzamento\n"););
     int i;
 
@@ -406,12 +380,12 @@ void random_random_migrate(populacao *populations, int island_size, int dimensio
 
 populacao *genetic()
 {
-    set_default_parameters();
+    set_default_parameters_genetic();
     print_parameters(parameters);
     DEBUG(printf("\nevolution\n"););
     individuo *parents[2];
     // individuo bestIndividuo = {.fitness = INFINITY};
-    populacao *populations = generate_island(parameters.island_size, parameters.population_size, parameters.dimension, parameters.domain_function);
+    populacao *populations = generate_island(parameters.island_size, parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
     time_t time_init, time_now;
     int evaluation_count = 0;
     int epoca_count = 0;

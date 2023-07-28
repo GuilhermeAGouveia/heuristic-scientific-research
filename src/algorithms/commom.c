@@ -54,6 +54,23 @@ individuo *generate_population(int n_individuos, int dimension, domain domain_fu
     return population;
 }
 
+populacao *generate_island(int island_size, int population_size, int dimension, domain domain_function, int function_number)
+{
+    DEBUG(printf("\ngenerate_island\n"););
+    populacao *populations = malloc(island_size * sizeof(populacao));
+    populacao **neighbours = calloc(4, sizeof(populacao *));
+    for (int i = 0; i < island_size; i++)
+    {
+        populations[i].individuos = generate_population(population_size, dimension, domain_function, function_number);
+        populations[i].size = population_size;
+        populations[i].crossover = rand() % 6;
+        populations[i].neighbours = calloc(4, sizeof(populacao *));
+        populations[i].neighbours[0] = &populations[(i + 1) % island_size]; // talvez isso dê problema
+        populations[i].neighbours[1] = &populations[(i + 3) % island_size]; // talvez isso dê problema
+    }
+    return populations;
+}
+
 individuo *get_best_of_population(populacao populacao)
 {
     DEBUG(printf("\nget_best_of_population\n"););
@@ -65,4 +82,13 @@ individuo *get_worst_of_population(individuo *population, int n_populacoes)
 {
     qsort(population, n_populacoes, sizeof(individuo), comparador_individuo);
     return &population[0];
+}
+
+void clone_individue(individuo *clone, individuo *original, int dimension)
+{
+    for (int i = 0; i < dimension; i++)
+    {
+        clone->chromosome[i] = original->chromosome[i];
+    }
+    clone->fitness = original->fitness;
 }

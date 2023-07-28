@@ -22,7 +22,7 @@ void print_usage()
     printf("Usage: ./evolucao_mpop -f <function_number> -t <time_limit> -i <island_size> -p <population_size> -d <dimension> -l <bounds_lower> -u <bounds_upper> -g <num_generations> -m <mutation_probability>");
 }
 
-void set_default_parameters()
+void set_default_parameters_clonalg()
 {
     parameters.function_number = 3;
     parameters.time_limit = 10; // seconds
@@ -41,7 +41,7 @@ void set_default_parameters()
 void set_parameters(int argc, char *argv[])
 {
     int opt;
-    set_default_parameters();
+    set_default_parameters_clonalg();
     while ((opt = getopt(argc, argv, "f:F:t:i:p:d:l:u:g:m:c:k:s:")) != -1)
     {
         switch (opt)

@@ -16,7 +16,7 @@ args parameters;
 void set_parameters(int argc, char *argv[])
 {
     int opt;
-    while ((opt = getopt(argc, argv, "a:f:F:t:i:p:d:l:u:g:m:c:k:s:v:z:")) != -1)
+    while ((opt = getopt(argc, argv, "a:f:F:t:i:p:d:l:u:g:m:c:k:s:v:z:C:")) != -1)
     {
         switch (opt)
         {
@@ -89,6 +89,9 @@ void set_parameters(int argc, char *argv[])
         case 'z':
             parameters.c2 = atof(optarg);
             break;
+        case 'C':
+            parameters.clones = atoi(optarg);
+            break;
         default:
             printf("Invalid option: %c\n", opt);
             print_usage();
@@ -115,4 +118,5 @@ void print_parameters(args parameters){
     printf("Seed: %d\n", parameters.seed);
     printf("C1: %f\n", parameters.c1);
     printf("C2: %f\n", parameters.c2);
+    printf("Clones: %d\n", parameters.clones);
 }

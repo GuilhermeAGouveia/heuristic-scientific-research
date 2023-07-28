@@ -29,6 +29,7 @@ typedef struct args_
     int seed;
     double c1;
     double c2;
+    int clones;
 
 } args;
 

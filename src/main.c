@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "algorithms/genetic.h"
 #include "algorithms/pso.h"
+#include "algorithms/clonalg.h"
 #include "algorithms/parameters.h"
 #include "algorithms/commom.h"
 #include "libs/utils.h"
@@ -36,8 +37,7 @@ int main(int argc, char *argv[])
         printf("ANT not implemented yet\n");
         break;
     case CLONALG:
-        // result = clonalg();
-        printf("CLONALG not implemented yet\n");
+        result = clonalg();
         break;
     default:
         printf("Invalid algorithm. Please use one of the following: p, g, d, a, c\n");

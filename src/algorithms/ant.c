@@ -40,7 +40,7 @@ populacao *aco();
 
 individuoParameters parameters;
 
-void set_default_parameters()
+void set_default_parameters_clonalg()
 {
     parameters.num_individuo = 5252;
     parameters.num_iter = 2000;
@@ -60,7 +60,7 @@ void print_usage()
 void set_parameters(int argc, char *argv[])
 {
     int opt;
-    set_default_parameters();
+    set_default_parameters_clonalg();
     while ((opt = getopt(argc, argv, "f:t:i:p:e:c:a:s:")) != -1)
     {
         switch (opt)
