@@ -114,27 +114,6 @@ void select_parents(populacao populacao, individuo *parents[2])
     DEBUG(printf("Pais: %d e %d\n", pai1, pai2););
 }
 
-void destroy_population(individuo *population, int n_individuos)
-{
-    DEBUG(printf("\ndestroy_population\n"););
-    for (int i = 0; i < n_individuos; i++)
-    {
-        free(population[i].chromosome);
-    }
-    free(population);
-}
-
-void destroy_island(populacao *populations, int island_size)
-{
-    DEBUG(printf("\ndestroy_island\n"););
-    for (int i = 0; i < island_size; i++)
-    {
-        destroy_population(populations[i].individuos, populations[i].size);
-        free(populations[i].neighbours);
-    }
-    free(populations);
-}
-
 populacao *mutation_commom(populacao *populacao, int dimension, domain domain_function)
 {
     DEBUG(printf("\nmutation\n"););
@@ -145,43 +124,6 @@ populacao *mutation_commom(populacao *populacao, int dimension, domain domain_fu
         fitness(&populacao->individuos[i], dimension, parameters.function_number);
     }
     return populacao;
-}
-
-populacao *mutation_diferencial(populacao *populacao_original, int dimension, domain domain_function)
-{
-    DEBUG(printf("\nMutation\n"););
-    populacao *populacao_mutada = generate_island(1, populacao_original->size, dimension, domain_function, parameters.function_number);
-
-    for (int i = 0; i < populacao_original->size; i++)
-    {
-
-        DEBUG(printf("\nIndividuo %d\n", i); print_individuo(populacao_original->individuos[i], dimension, i);)
-        if (rand() % 100 > parameters.mutation_rate)
-        {
-            DEBUG(printf("individuo %d não sofreu mutação\n", i););
-            continue;
-        }
-
-        DEBUG(printf("individuo %d sofreu mutação\n", i););
-        int alpha, beta, gamma;
-
-        do
-        {
-            alpha = rand() % populacao_original->size;
-            beta = rand() % populacao_original->size;
-            gamma = rand() % populacao_original->size;
-        } while (alpha == beta || alpha == gamma || beta == gamma);
-
-        for (int j = 0; j < dimension; j++)
-        {
-            // double result = rand();
-            double result = populacao_original->individuos[alpha].chromosome[j] + parameters.F * (fabs(populacao_original->individuos[beta].chromosome[j]) - fabs(populacao_original->individuos[gamma].chromosome[j]));
-            populacao_mutada->individuos[i].chromosome[j] = result;
-        }
-        fitness(&populacao_mutada->individuos[i], dimension, parameters.function_number);
-        DEBUG(printf("Individuo %d\n", i); print_individuo(populacao_mutada->individuos[i], dimension, i);)
-    }
-    return populacao_mutada;
 }
 
 populacao *union_populations(populacao *populacao1, populacao *populacao2)

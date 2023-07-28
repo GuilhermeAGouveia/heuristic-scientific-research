@@ -3,6 +3,8 @@
 #include "algorithms/genetic.h"
 #include "algorithms/pso.h"
 #include "algorithms/clonalg.h"
+#include "algorithms/aco.h"
+#include "algorithms/diferencial.h"
 #include "algorithms/parameters.h"
 #include "algorithms/commom.h"
 #include "libs/utils.h"
@@ -29,12 +31,10 @@ int main(int argc, char *argv[])
         result = genetic();
         break;
     case DE:
-        // result = de();
-        printf("DE not implemented yet\n");
+        result = diferencial();
         break;
-    case ANT:
-        // result = ant();
-        printf("ANT not implemented yet\n");
+    case ACO:
+        result = aco();
         break;
     case CLONALG:
         result = clonalg();

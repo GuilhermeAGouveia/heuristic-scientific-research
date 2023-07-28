@@ -92,3 +92,24 @@ void clone_individue(individuo *clone, individuo *original, int dimension)
     }
     clone->fitness = original->fitness;
 }
+
+void destroy_population(individuo *population, int n_individuos)
+{
+    DEBUG(printf("\ndestroy_population\n"););
+    for (int i = 0; i < n_individuos; i++)
+    {
+        free(population[i].chromosome);
+    }
+    free(population);
+}
+
+void destroy_island(populacao *populations, int island_size)
+{
+    DEBUG(printf("\ndestroy_island\n"););
+    for (int i = 0; i < island_size; i++)
+    {
+        destroy_population(populations[i].individuos, populations[i].size);
+        free(populations[i].neighbours);
+    }
+    free(populations);
+}

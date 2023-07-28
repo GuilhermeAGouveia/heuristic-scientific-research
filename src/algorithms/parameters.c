@@ -16,11 +16,11 @@ args parameters;
 void set_parameters(int argc, char *argv[])
 {
     int opt;
-    while ((opt = getopt(argc, argv, "a:f:F:t:i:p:d:l:u:g:m:c:k:s:v:z:C:")) != -1)
+    while ((opt = getopt(argc, argv, "A:f:F:t:i:p:d:l:u:g:m:c:k:s:v:z:C:p:e:a:")) != -1)
     {
         switch (opt)
         {
-        case 'a':
+        case 'A':
 
             switch (tolower(optarg[0]))
             {
@@ -34,7 +34,7 @@ void set_parameters(int argc, char *argv[])
                 parameters.algorithm = DE;
                 break;
             case 'a':
-                parameters.algorithm = ANT;
+                parameters.algorithm = ACO;
                 break;
             case 'c':
                 parameters.algorithm = CLONALG;
@@ -92,6 +92,15 @@ void set_parameters(int argc, char *argv[])
         case 'C':
             parameters.clones = atoi(optarg);
             break;
+        case 'a':
+            parameters.num_ants = atoi(optarg);
+            break;
+        case 'e':
+            parameters.tax_evaporate = atof(optarg);
+            break;
+        case 'P': 
+            parameters.p_exploitation = atof(optarg);
+            break;
         default:
             printf("Invalid option: %c\n", opt);
             print_usage();
@@ -119,4 +128,8 @@ void print_parameters(args parameters){
     printf("C1: %f\n", parameters.c1);
     printf("C2: %f\n", parameters.c2);
     printf("Clones: %d\n", parameters.clones);
+    printf("Number of ants: %d\n", parameters.num_ants);
+    printf("Tax evaporate: %f\n", parameters.tax_evaporate);
+    printf("P exploitation: %f\n", parameters.p_exploitation);
+    
 }

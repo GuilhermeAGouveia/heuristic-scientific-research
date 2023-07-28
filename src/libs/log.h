@@ -7,7 +7,7 @@ enum algorithm
     PSO = 1,
     GA,
     DE,
-    ANT,
+    ACO,
     CLONALG
 };
 typedef struct args_
@@ -30,6 +30,10 @@ typedef struct args_
     double c1;
     double c2;
     int clones;
+    double tax_evaporate;
+    double num_candidates;
+    double p_exploitation;
+    int num_ants;
 
 } args;
 
