@@ -2,11 +2,19 @@
 #include "types.h"
 #define LOG_H
 
+enum algorithm
+{
+    PSO = 1,
+    GA,
+    DE,
+    ACO,
+    CLONALG
+};
 typedef struct args_
 {
     int function_number;
     domain domain_function;
-
+    enum algorithm algorithm;
     double F;
     int time_limit;
     int island_size;
@@ -21,6 +29,11 @@ typedef struct args_
     int seed;
     double c1;
     double c2;
+    int clones;
+    double tax_evaporate;
+    double num_candidates;
+    double p_exploitation;
+    int num_ants;
 
 } args;
 
