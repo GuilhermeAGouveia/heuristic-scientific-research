@@ -20,7 +20,7 @@
 void set_default_parameters_diferencial()
 {
     if (!parameters.F)
-        parameters.F = 0.77294;
+        parameters.F = 0.76811;
     if (!parameters.function_number)
         parameters.function_number = 3;
     if (!parameters.time_limit)
@@ -28,7 +28,7 @@ void set_default_parameters_diferencial()
     if (!parameters.island_size)
         parameters.island_size = 1;
     if (!parameters.population_size)
-        parameters.population_size = 140;
+        parameters.population_size = 58;
     if (!parameters.dimension)
         parameters.dimension = 10; // 10 or 30
     if (!parameters.domain_function.min)
@@ -38,9 +38,9 @@ void set_default_parameters_diferencial()
     if (!parameters.num_generations_per_epoca)
         parameters.num_generations_per_epoca = 300;
     if (!parameters.mutation_rate)
-        parameters.mutation_rate = 28; // %
+        parameters.mutation_rate = 4; // %
     if (!parameters.crossover_rate)
-        parameters.crossover_rate = 89; // %
+        parameters.crossover_rate = 54; // %
     if (!parameters.seed)
         parameters.seed = time(NULL);
     if (!parameters.evaluation_limit)
@@ -169,12 +169,12 @@ populacao *diferencial()
         evaluation_count += original_population->size;
         time(&time_now);
     }
-    individuo *bestCurrent = get_best_of_population(*original_population);
+   // individuo *bestCurrent = get_best_of_population(*original_population);
     // puts("\nMelhor de toda a população:");
     // print_individuo(*bestCurrent, dimension);
     // printf("%lf\n", bestCurrent->fitness);
-    if (bestCurrent->fitness < bestIndividuo.fitness)
-        bestIndividuo = *bestCurrent;
+    //if (bestCurrent->fitness < bestIndividuo.fitness)
+     //   bestIndividuo = *bestCurrent;
 
     // migrate(populations, parameters.island_size, dimension, domain_function);
 
@@ -187,6 +187,5 @@ populacao *diferencial()
     //  //Se o limite de epocas sem melhora for atingido é finalizada a evolucao
     //  if(total_epocs_s_m == limit_epocs)
     //     continue_evol = 0;
-
     return original_population;
 }

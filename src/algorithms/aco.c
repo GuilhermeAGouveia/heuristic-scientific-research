@@ -40,6 +40,8 @@ void set_default_parameters_ant()
         parameters.time_limit = 10; // in seconds
     if (!parameters.seed)
         parameters.seed = time(NULL);
+    if (!parameters.dimension)
+        parameters.dimension = 10; // 10 or 30
 }
 
 void print_individuos(individuo *individuo, int dimension)
@@ -451,7 +453,7 @@ populacao *aco()
     populacao *population = malloc(sizeof(populacao));
     population->individuos = individuos;
     population->size = parameters.num_ants;
-    copy_individuo(&population->individuos[1], &population->individuos[0], d);
+    copy_individuo(best_individuo, &population->individuos[0], d);
 
     // Print the best solution found
     // print_individuos(individuos, d);
