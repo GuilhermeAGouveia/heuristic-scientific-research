@@ -74,3 +74,50 @@ void copy_individuo(individuo *original, individuo *copia, int dimension)
         copia->chromosome[i] = original->chromosome[i];
     }
 }
+
+// Função para imprimir um vetor em formato de lista
+void printVector(int arr[], int n)
+{
+    printf("[");
+    for (int i = 0; i < n; i++)
+    {
+        printf("%d", arr[i]);
+        if (i < n - 1)
+        {
+            printf(", ");
+        }
+    }
+    printf("]");
+}
+
+// Função recursiva para gerar combinações e montá-las em um vetor
+void generateCombinations(int n, int arr[], int index, int **result, int *size)
+{
+    if (index == n)
+    {
+        result[*size] = (int *)malloc(n * sizeof(int));
+        for (int i = 0; i < n; i++)
+        {
+            result[*size][i] = arr[i];
+        }
+        (*size)++;
+        return;
+    }
+
+    for (int i = (index == 0) ? 0 : arr[index - 1]; i < n; i++)
+    {
+        arr[index] = i;
+        generateCombinations(n, arr, index + 1, result, size);
+    }
+}
+
+Array generateComb(int n)
+{
+    int arr[n];
+    int **combinations = (int **)malloc(n * n * n * n * sizeof(int *));
+    int size = 0;
+
+    generateCombinations(n, arr, 0, combinations, &size);
+    
+    return (Array) {combinations, size};
+}

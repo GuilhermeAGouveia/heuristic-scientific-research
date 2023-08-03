@@ -137,7 +137,7 @@ populacao *crossover_diferencial(populacao *populacao_original, populacao *popul
 populacao *diferencial()
 {
     set_default_parameters_diferencial();
-    print_parameters(parameters);
+    // print_parameters(parameters);
     DEBUG(printf("\nevolution\n"););
     individuo *parents[2];
     individuo bestIndividuo = {.fitness = INFINITY};

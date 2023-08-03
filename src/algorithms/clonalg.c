@@ -129,7 +129,7 @@ void union_populacao_clones_and_main(populacao *populacao_clones, populacao *pop
 populacao *clonalg()
 {
     set_default_parameters_clonalg();
-    print_parameters(parameters);
+    // print_parameters(parameters);
     DEBUG(printf("\nevolution\n"););
     populacao *population_main = generate_island(1, parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
     qsort(population_main->individuos, population_main->size, sizeof(individuo), comparador_individuo);

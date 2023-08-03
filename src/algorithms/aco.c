@@ -372,7 +372,7 @@ double desvio_padrao_individuo(individuo *individuos, int individuos_size)
 populacao *aco()
 {
     set_default_parameters_ant();
-    print_parameters(parameters);
+    // print_parameters(parameters);
     int d = 10;
     DEBUG(printf("aco\n");)
     // Allocate memory for the pheromone matrix

@@ -14,6 +14,14 @@
 #ifndef TYPES_H
 #define TYPES_H
 
+enum algorithm
+{
+    PSO = 1,
+    GA,
+    DE,
+    ACO,
+    CLONALG
+};
 typedef struct individuo_
 {
     double *chromosome;
@@ -29,6 +37,7 @@ typedef struct population_
     struct population_ **neighbours;
     int crossover;
     int n_mutations;
+    enum algorithm algorithm;
 
 } populacao;
 

@@ -323,7 +323,7 @@ void random_random_migrate(populacao *populations, int island_size, int dimensio
 populacao *genetic()
 {
     set_default_parameters_genetic();
-    print_parameters(parameters);
+    // print_parameters(parameters);
     DEBUG(printf("\nevolution\n"););
     individuo *parents[2];
     // individuo bestIndividuo = {.fitness = INFINITY};

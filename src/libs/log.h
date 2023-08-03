@@ -2,14 +2,6 @@
 #include "types.h"
 #define LOG_H
 
-enum algorithm
-{
-    PSO = 1,
-    GA,
-    DE,
-    ACO,
-    CLONALG
-};
 typedef struct args_
 {
     int function_number;

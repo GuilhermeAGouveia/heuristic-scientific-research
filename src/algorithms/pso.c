@@ -106,7 +106,7 @@ void calcula_componente(double *componente, individuo *individuo_1, individuo *i
 populacao *pso()
 {
     set_default_parameters_pso();
-    print_parameters(parameters);
+    // print_parameters(parameters);
 
     populacao *population = malloc(sizeof(population));
     populacao *population_best_current = malloc(sizeof(population));
