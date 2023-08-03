@@ -369,10 +369,14 @@ double desvio_padrao_individuo(individuo *individuos, int individuos_size)
 }
 
 // The main ACO function
-populacao *aco()
+populacao *aco(populacao *population)
 {
     set_default_parameters_ant();
     print_parameters(parameters);
+    if(population == NULL){
+        population = malloc(sizeof(population));
+        population->individuos = generate_population(parameters.num_ants, parameters.dimension, parameters.domain_function, parameters.function_number);
+    }
     int d = 10;
     DEBUG(printf("aco\n");)
     // Allocate memory for the pheromone matrix
@@ -401,11 +405,12 @@ populacao *aco()
     }
 
     // Allocate memory for the individuos
-    individuo *individuos = (individuo *)malloc(parameters.num_ants * sizeof(individuo));
+    //individuo *individuos = (individuo *)malloc(parameters.num_ants * sizeof(individuo));
+    individuo *individuos = population->individuos;
     individuo *best_individuo = (individuo *)malloc(1 * sizeof(individuo));
     candidates = (individuo *)malloc(parameters.num_candidates * sizeof(individuo));
 
-    // Initialize the individuos' positions and fitness values
+    // Initialize the individuos' positions and fitness valuess
     initialize(individuos, parameters.num_ants, d);
     initialize(best_individuo, 1, d);
     initialize(candidates, parameters.num_candidates, d);
@@ -450,7 +455,6 @@ populacao *aco()
             cont_or_stop = 0;
     }
 
-    populacao *population = malloc(sizeof(populacao));
     population->individuos = individuos;
     population->size = parameters.num_ants;
     copy_individuo(best_individuo, &population->individuos[0], d);

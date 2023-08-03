@@ -320,14 +320,20 @@ void random_random_migrate(populacao *populations, int island_size, int dimensio
     }
 }
 
-populacao *genetic()
+populacao *genetic(populacao *population)
 {
     set_default_parameters_genetic();
     print_parameters(parameters);
+
+    populacao *populations = generate_island(parameters.island_size, parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
+    if(population != NULL){
+        free(populations[0].individuos);
+        populations[0].individuos = population->individuos;
+    }
     DEBUG(printf("\nevolution\n"););
     individuo *parents[2];
-    // individuo bestIndividuo = {.fitness = INFINITY};
-    populacao *populations = generate_island(parameters.island_size, parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
+    individuo bestIndividuo = {.fitness = INFINITY};
+    //populacao *populations = generate_island(parameters.island_size, parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
     time_t time_init, time_now;
     int evaluation_count = 0;
     int epoca_count = 0;

@@ -103,15 +103,21 @@ void calcula_componente(double *componente, individuo *individuo_1, individuo *i
     }
 }
 
-populacao *pso()
+populacao *pso(populacao *population)
 {
     set_default_parameters_pso();
     print_parameters(parameters);
-
-    populacao *population = malloc(sizeof(population));
+    //print_individuo(population->individuos[2], parameters.dimension, 0);
     populacao *population_best_current = malloc(sizeof(population));
-    population->individuos = generate_population(parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
-    population_best_current->individuos = generate_population(parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
+    if(population == NULL){
+        population = malloc(sizeof(population));
+        population->individuos = generate_population(parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
+        population_best_current->individuos = generate_population(parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
+    }     
+    else{
+        free(population_best_current->individuos);
+        population_best_current->individuos = population->individuos;
+    }
     population->size = parameters.population_size;
     time_t time_init, time_now;
     time(&time_init);

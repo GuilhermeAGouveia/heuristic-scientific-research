@@ -20,6 +20,6 @@ double abs_double(double x);
 void initialize(individuo *individuos, int n, int d);
 void update_pheromones(double **pheromones, individuo *individuos, int n, int d, individuo *best_individuo);
 void select_next_position(double **pheromones, individuo *individuos, int d, individuo *best_individuo);
-populacao *aco();
+populacao *aco(populacao *population);
 
 #endif /* ACO_H */
