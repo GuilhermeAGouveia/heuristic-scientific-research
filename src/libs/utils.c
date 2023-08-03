@@ -75,13 +75,32 @@ void copy_individuo(individuo *original, individuo *copia, int dimension)
     }
 }
 
+char *translateIntToAlg(enum algorithm alg)
+{
+    switch (alg)
+    {
+    case PSO:
+        return "PSO";
+    case GA:
+        return "GA";
+    case DE:
+        return "DE";
+    case ACO:
+        return "ACO";
+    case CLONALG:
+        return "CLONALG";
+    default:
+        return "Invalid algorithm";
+    }
+}
+
 // Função para imprimir um vetor em formato de lista
 void printVector(int arr[], int n)
 {
     printf("[");
     for (int i = 0; i < n; i++)
     {
-        printf("%d", arr[i]);
+        printf("%s", translateIntToAlg(arr[i] + 1));
         if (i < n - 1)
         {
             printf(", ");

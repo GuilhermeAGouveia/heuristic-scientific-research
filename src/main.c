@@ -9,6 +9,8 @@
 #include "algorithms/commom.h"
 #include "libs/utils.h"
 
+#define DEBUG(x) 
+
 // void main(void) {
 //     printf("Hello, World!\n");
 // }
@@ -48,35 +50,18 @@
 //     return 0;
 // }
 
-char *translateIntToAlg(enum algorithm alg)
-{
-    switch (alg)
-    {
-    case PSO:
-        return "PSO";
-    case GA:
-        return "GA";
-    case DE:
-        return "DE";
-    case ACO:
-        return "ACO";
-    case CLONALG:
-        return "CLONALG";
-    default:
-        return "Invalid algorithm";
-    }
-}
 
-void migrate(populacao *populations, int island_size, int dimension, domain domain_function)
+void migrate_(populacao *populations, int island_size, int dimension, domain domain_function)
 {
-    DEBUG(printf("\nmigrate\n"););
+    DEBUG(printf("\nmigrate_\n"););
     populacao *vizinho;
     // print_population(populations[0].individuos, populations[0].size, dimension, 1);
 
     for (int i = 0; i < island_size; i++)
     {
-        DEBUG(printf("Populacao %d\n", i));
+        DEBUG(printf("Populacao %d com %d individuos\n", i, populations[i].size););
         populacao current_island = populations[i];
+        //print_population(current_island.individuos, current_island.size, dimension, 1);
         individuo *population = current_island.individuos;
         for (int k = 1; k <= parameters.num_migrations; k++)
         {
@@ -101,20 +86,63 @@ void migrate(populacao *populations, int island_size, int dimension, domain doma
     }
 }
 
+void set_neighbours(populacao *populations, int island_size)
+{
+    DEBUG(printf("\nset_neighbours\n"););
+    for (int i = 0; i < island_size; i++)
+    {
+        DEBUG(printf("Populacao %d com %d individuos\n", i, populations[i].size););
+        populacao* current_island = &populations[i];
+        current_island->neighbours = calloc(4, sizeof(populacao *));
+        current_island->neighbours[0] = &populations[(i + 1) % island_size];
+        current_island->neighbours[1] = &populations[(i + 3) % island_size];
+    }
+}
+
+void print_neighbours(populacao *populations, int island_size)
+{
+    DEBUG(printf("\nprint_neighbours\n"););
+    for (int i = 0; i < island_size; i++)
+    {
+        printf("Populacao %d com %d individuos\n", i, populations[i].size);
+        populacao current_island = populations[i];
+        for (int j = 0; j < 4; j++)
+        {
+            populacao *vizinho = current_island.neighbours[j];
+            if (vizinho == NULL)
+                continue;
+            printf("Populacao %d tem vizinho %d\n", i, vizinho->size);
+        }
+    }
+}
+
+void print_combinations(Array combinations, int nAlgorithms)
+{
+    for (int i = 0; i < combinations.size; i++)
+    {
+        printf("Combination %d: ", i);
+        printVector(combinations.arr[i], nAlgorithms);
+        printf("\n");
+    }
+}
+
 int main(int argc, char *argv[])
 {
     int nAlgorithms = 5;
     set_parameters(argc, argv); // Lê os parâmetros da linha de comando e repassa para as variáveis globais
 
     Array algorithmsConfigurations = generateComb(nAlgorithms);
-    int nConfigurations = algorithmsConfigurations.size;
 
-    printf("Running %d configurations\n", nConfigurations);
+    print_combinations(algorithmsConfigurations, nAlgorithms);
+
+    int nConfigurations = algorithmsConfigurations.size;
 
     for (int conf = 0; conf < nConfigurations; conf++)
     {
-        populacao *populations[nAlgorithms];
-        for (int i = 0; i < parameters.num_migrations; i++)
+        printf("Running %d of %d configurations\n", conf, nConfigurations);
+
+        populacao *populations = malloc(nAlgorithms * sizeof(populacao));
+        for (int i = 0; i < parameters.num_migrations; i++) 
         {
 
             for (int alg = 0; alg < nAlgorithms; alg++)
@@ -128,30 +156,31 @@ int main(int argc, char *argv[])
                 switch (parameters.algorithm)
                 {
                 case PSO:
-                    populations[alg] = pso();
+                    populations[alg] = *pso();
                     break;
                 case GA:
-                    populations[alg] = genetic();
+                    populations[alg] = *genetic();
                     break;
                 case DE:
-                    populations[alg] = diferencial();
+                    populations[alg] = *diferencial();
                     break;
                 case ACO:
-                    populations[alg] = aco();
+                    populations[alg] = *aco();
                     break;
                 case CLONALG:
-                    populations[alg] = clonalg();
+                    populations[alg] = *clonalg();
                     break;
                 default:
                     printf("Invalid algorithm. Please use one of the following: p, g, d, a, c\n");
                     exit(1);
                 }
 
-                print_individuo(*get_best_of_population(*populations[alg]), parameters.dimension, 0);
+                print_individuo(*get_best_of_population(populations[alg]), parameters.dimension, 0);
             }
-
+            set_neighbours(populations, nAlgorithms);
+            //print_neighbours(populations, nAlgorithms);
             printf("Migrating...\n");
-            migrate(populations, nAlgorithms, parameters.dimension, parameters.domain_function);
+            migrate(populations, nAlgorithms, 4, parameters.dimension, parameters.domain_function, parameters.function_number);
         }
     }
 }

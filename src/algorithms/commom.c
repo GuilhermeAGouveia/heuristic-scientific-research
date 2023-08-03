@@ -13,9 +13,8 @@
 
 #include "../libs/log.h"
 #define STATISTICS(x)
-#define DEBUG(x)
+#define DEBUG(x) 
 #define LOG(x)
-
 
 void fitness(individuo *individuo, int dimension, int function_number)
 {
@@ -34,7 +33,6 @@ int comparador_individuo(const void *a, const void *b)
 
     return v1->fitness < v2->fitness;
 }
-
 
 individuo *generate_population(int n_individuos, int dimension, domain domain_function, int function_number)
 {
@@ -58,7 +56,6 @@ populacao *generate_island(int island_size, int population_size, int dimension, 
 {
     DEBUG(printf("\ngenerate_island\n"););
     populacao *populations = malloc(island_size * sizeof(populacao));
-    populacao **neighbours = calloc(4, sizeof(populacao *));
     for (int i = 0; i < island_size; i++)
     {
         populations[i].individuos = generate_population(population_size, dimension, domain_function, function_number);
@@ -112,4 +109,38 @@ void destroy_island(populacao *populations, int island_size)
         free(populations[i].neighbours);
     }
     free(populations);
+}
+
+void migrate(populacao *populations, int island_size, int num_migrations, int dimension, domain domain_function, int function_number)
+{
+    DEBUG(printf("\nmigrate\n"););
+    populacao *vizinho;
+    // print_population(populations[0].individuos, populations[0].size, dimension, 1);
+
+    for (int i = 0; i < island_size; i++)
+    {
+        DEBUG(printf("Populacao %d\n", i));
+        populacao current_island = populations[i];
+        individuo *population = current_island.individuos;
+        for (int k = 1; k <= num_migrations; k++)
+        {
+            individuo *melhor_individuo_da_populacao = &population[current_island.size - k];
+            DEBUG(printf("Melhor individuo da populacao %d: %lf\n", i, melhor_individuo_da_populacao->fitness););
+            for (int j = 0; j < 4; j++)
+            {
+                vizinho = current_island.neighbours[j];
+                if (vizinho == NULL)
+                    continue;
+                individuo *neighbour_population = vizinho->individuos;
+                individuo *pior_indivuduo_do_vizinho = get_worst_of_population(neighbour_population, vizinho->size);
+                if (melhor_individuo_da_populacao->fitness > pior_indivuduo_do_vizinho->fitness)
+                {
+                    individuo *new_worst = generate_population(1, dimension, domain_function, function_number);
+                    *pior_indivuduo_do_vizinho = *new_worst;
+                }
+                else
+                    *pior_indivuduo_do_vizinho = *melhor_individuo_da_populacao;
+            }
+        }
+    }
 }

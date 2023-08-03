@@ -32,5 +32,6 @@ double desvio_padrao(individuo *population, int population_size);
 void copy_individuo(individuo *original, individuo *copia, int dimension);
 Array generateComb(int n);
 void printVector(int arr[], int n);
+char *translateIntToAlg(enum algorithm alg);
 
 #endif /* UTILS_H */
