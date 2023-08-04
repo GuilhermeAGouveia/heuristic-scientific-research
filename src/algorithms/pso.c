@@ -108,17 +108,12 @@ populacao *pso(populacao *population)
     set_default_parameters_pso();
     print_parameters(parameters);
     //print_individuo(population->individuos[2], parameters.dimension, 0);
-    populacao *population_best_current = malloc(sizeof(population));
     if(population == NULL){
-        population = malloc(sizeof(population));
-        population->individuos = generate_population(parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
-        population_best_current->individuos = generate_population(parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
-    }     
-    else{
-        free(population_best_current->individuos);
-        population_best_current->individuos = population->individuos;
+        population = generate_island(1,parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
     }
-    population->size = parameters.population_size;
+    populacao *population_best_current;
+    population_best_current = generate_island(1,parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
+      
     time_t time_init, time_now;
     time(&time_init);
     time(&time_now);
@@ -131,17 +126,21 @@ populacao *pso(populacao *population)
     int max_inter_add = 100;
     int max_inter = max_inter_add;
     int cont_or_stop = 1;
+    
     while (cont_or_stop && difftime(time_now, time_init) < parameters.time_limit)
     {
+        
         double best_anter = individuo_best->fitness;
         while (generation_count < max_inter && difftime(time_now, time_init) < parameters.time_limit)
         {
             for (int i = 0; i < parameters.population_size; i++)
             {
+                
                 if (population->individuos[i].fitness < population_best_current->individuos[i].fitness)
                     copy_individuo_pso(&population->individuos[i], &population_best_current->individuos[i], parameters.dimension);
                 if (population->individuos[i].fitness < individuo_best->fitness)
                     copy_individuo_pso(&population->individuos[i], individuo_best, parameters.dimension);
+                    
                 double r1 = (double)rand() / RAND_MAX;
                 double r2 = (double)rand() / RAND_MAX;
                 // calcula_componente(c1, &population_best_current->individuos[i], &population->individuos[i], parameters.dimension);

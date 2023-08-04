@@ -25,8 +25,7 @@ int main(int argc, char *argv[])
     domain domainAux;
     domainAux.max= 100;
     domainAux.min = -100;
-    population = malloc(sizeof(population));
-    population->individuos = generate_population(124, 10, domainAux, 3);
+    population = generate_island(1, 5800, 10, domainAux, 5);
     //population = NULL;
     // Melhor semente até agora: 1676931005 (Funcao 3) - 301.356
     // Melhor semente até agora: 1676935665 (Funcao 8) - 801.1393

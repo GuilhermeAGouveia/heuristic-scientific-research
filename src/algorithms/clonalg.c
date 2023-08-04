@@ -130,14 +130,12 @@ populacao *clonalg(populacao *population)
 {
     set_default_parameters_clonalg();
     print_parameters(parameters);
-    populacao *populations = generate_island(1, parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
-    if(population != NULL){
-        free(populations[0].individuos);
-        populations[0].individuos = population->individuos;
+    if(population == NULL){
+        population = generate_island(1,parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
     }
     DEBUG(printf("\nevolution\n"););
     //populacao *population_main = generate_island(1, parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
-    populacao *population_main = &populations[0];
+    populacao *population_main = population;
     qsort(population_main->individuos, population_main->size, sizeof(individuo), comparador_individuo);
     populacao *populacao_clones;
     populacao *populacao_clones_mutated;
