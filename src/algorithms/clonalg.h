@@ -17,6 +17,6 @@
 #define CLONALG_H
 
 
-populacao *clonalg();
+populacao *clonalg(populacao *population);
 
 #endif /* CLONALG_H */

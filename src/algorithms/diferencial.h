@@ -16,6 +16,6 @@
 
 #define DIFERENCIAL_H
 
-populacao *diferencial();
+populacao *diferencial(populacao *population);
 
 #endif /* DIFERENCIAL_H */

@@ -126,12 +126,16 @@ void union_populacao_clones_and_main(populacao *populacao_clones, populacao *pop
     }
 }
 
-populacao *clonalg()
+populacao *clonalg(populacao *population)
 {
     set_default_parameters_clonalg();
     print_parameters(parameters);
+    if(population == NULL){
+        population = generate_island(1,parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
+    }
     DEBUG(printf("\nevolution\n"););
-    populacao *population_main = generate_island(1, parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
+    //populacao *population_main = generate_island(1, parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
+    populacao *population_main = population;
     qsort(population_main->individuos, population_main->size, sizeof(individuo), comparador_individuo);
     populacao *populacao_clones;
     populacao *populacao_clones_mutated;

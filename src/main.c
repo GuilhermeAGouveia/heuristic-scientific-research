@@ -20,24 +20,32 @@ int main(int argc, char *argv[])
     // print_parameters();
 
     populacao *result;
+    populacao *population = NULL;
+
+    domain domainAux;
+    domainAux.max= 100;
+    domainAux.min = -100;
+    population = generate_island(1, 5800, 10, domainAux, 5);
+    //population = NULL;
     // Melhor semente até agora: 1676931005 (Funcao 3) - 301.356
     // Melhor semente até agora: 1676935665 (Funcao 8) - 801.1393
     switch (parameters.algorithm)
     {
     case PSO:
-        result = pso();
+        //population = genetic();
+        result = pso(population);
         break;
     case GA:
-        result = genetic();
+        result = genetic(population);
         break;
     case DE:
-        result = diferencial();
+        result = diferencial(population);
         break;
     case ACO:
-        result = aco();
+        result = aco(population);
         break;
     case CLONALG:
-        result = clonalg();
+        result = clonalg(population);
         break;
     default:
         printf("Invalid algorithm. Please use one of the following: p, g, d, a, c\n");

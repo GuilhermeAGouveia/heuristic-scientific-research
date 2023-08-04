@@ -17,6 +17,6 @@
 #define GENETIC_H
 
 
-populacao *genetic();
+populacao *genetic(populacao *population);
 
 #endif /* GENETIC_H */
