@@ -140,3 +140,39 @@ Array generateComb(int n)
     
     return (Array) {combinations, size};
 }
+
+/**
+ * @brief Converts a string of comma separated numbers to an array of integers
+ * @param parameter String of comma separated numbers. Ex: [1,2,3,4,5]
+ * @return array of integers
+ */
+int size_of_array(char *parameter)
+{
+    int i = 0;
+    char parameters_copy[256];
+    strcpy(parameters_copy, parameter);
+    char *token = strtok(parameters_copy, ",");
+    while (token != NULL)
+    {
+        i++;
+        token = strtok(NULL, ",");
+    }
+    return i;
+}
+
+int *convert_parameter_to_array(char *parameter)
+{
+    char parameters_copy[256];
+    strcpy(parameters_copy, parameter);
+    int *array = calloc(size_of_array(parameter), sizeof(int));
+    int i = 0;
+    char *token = strtok(parameters_copy, ",");
+    while (token != NULL)
+    {
+        array[i] = atoi(token);
+        i++;
+        token = strtok(NULL, ",");
+    }
+    return array;
+}
+

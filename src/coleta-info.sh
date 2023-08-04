@@ -3,8 +3,6 @@
 # Options
 n_execucoes=10 # Default value
 function_number=3 # Default value
-alg_name="evolucao_simples" # Default value
-alg_path="algorithms/$alg_name"
 
 usage() { echo "Usage: $0 [-n <Numero de execuções>] [-f <Numero da função de teste de 1 a 15>] [-c <Nome do código evolutivo que será executado>] [-t <Tempo máximo de cada execução>]" 1>&2; exit 1; }
 
@@ -20,7 +18,7 @@ while getopts ":n:f:t:c:" o; do
             time_limit=${OPTARG}
             ;;
         c)
-            alg_name=${OPTARG}
+            alg_config=${OPTARG}
             ;;
         *)
             usage
@@ -28,7 +26,6 @@ while getopts ":n:f:t:c:" o; do
     esac
 done
 shift $((OPTIND-1))
-alg_path="algorithms/$alg_name"
 
 # Math
 
@@ -89,20 +86,11 @@ verify_existence() {
 }
 
 define_command_evol() {
-    echo "./evol -f $function_number" 
+    echo "./evol -A $alg_config-f $function_number" 
 }
 
 show_indicator_algorithm() {
-    all_algorithms=$(ls algorithms/ | cut -d'/' -f 2 | cut -d'.' -f1 | egrep -e "^[^_].*")
-    string="algoritmos:"
-    find_current_alg=0
-    for alg in $all_algorithms; do
-        if [ $alg == $alg_name ]; then
-            string="$string [$alg]"
-        else
-            string="$string    $alg"
-        fi
-    done;
+    string="config: $alg_config"
     echo -e $string
 
 }
@@ -124,8 +112,8 @@ main () {
     source libs/progress-bar/progress-bar.sh
     echo -e "Realizando ${n_execucoes} execuções..."
     #echo -e "Código em execução: $alg_path\n"
-    show_indicator_function
     show_indicator_algorithm
+    show_indicator_function
     tput civis
 
     resultado=0

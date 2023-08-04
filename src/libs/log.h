@@ -6,7 +6,8 @@ typedef struct args_
 {
     int function_number;
     domain domain_function;
-    enum algorithm algorithm;
+    char algorithms[100];
+    int num_algorithms;
     double F;
     int time_limit;
     int island_size;

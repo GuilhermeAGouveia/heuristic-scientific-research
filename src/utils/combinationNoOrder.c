@@ -10,7 +10,7 @@ void printVector(int arr[], int n)
         printf("%d", arr[i]);
         if (i < n - 1)
         {
-            printf(", ");
+            printf(",");
         }
     }
     printf("]");
@@ -50,30 +50,24 @@ Array generateComb(int n)
     int size = 0;
 
     generateCombinations(n, arr, 0, combinations, &size);
-    
-    return (Array) {combinations, size};
+
+    return (Array){combinations, size};
 }
 
-int main()
+int main(int argc, char const *argv[])
 {
-    int n;
-    printf("Digite o tamanho do vetor (N): ");
-    scanf("%d", &n);
+    int n = atoi(argv[1]);
 
     Array result = generateComb(n);
 
-    printf("Combinações possíveis:\n");
-    printf("[");
     for (int i = 0; i < result.size; i++)
     {
         printVector(result.arr[i], n);
         if (i < result.size - 1)
-        {
-            printf(", ");
-        }
+            printf("\n");
+
         free(result.arr[i]);
     }
-    printf("]\n");
 
     return 0;
 }

@@ -19,11 +19,6 @@
 
 void set_default_parameters_genetic()
 {
-    if (parameters.algorithm != GA)
-    {
-        printf("Invalid algorithm. Please use GA\n");
-        exit(1);
-    };
     if (!parameters.function_number)
         parameters.function_number = 3;
     if (!parameters.time_limit)

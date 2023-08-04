@@ -33,5 +33,7 @@ void copy_individuo(individuo *original, individuo *copia, int dimension);
 Array generateComb(int n);
 void printVector(int arr[], int n);
 char *translateIntToAlg(enum algorithm alg);
+int size_of_array(char *parameter);
+int *convert_parameter_to_array(char *parameter);
 
 #endif /* UTILS_H */
