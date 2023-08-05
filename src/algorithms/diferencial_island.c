@@ -12,7 +12,7 @@
 #include "../libs/crossover.h"
 #include "../libs/log.h"
 #define STATISTICS(x)
-#define DEBUG(x)
+#define DEBUG(x) x
 #define LOG(x)
 
 static args parameters;

@@ -14,34 +14,34 @@
 #include "parameters.h"
 #include "commom.h"
 #define STATISTICS(x)
-#define DEBUG(x)
+#define DEBUG(x) x
 #define LOG(x)
 
 void set_default_parameters_genetic()
 {
-    if (!parameters.function_number)
+    // if (!parameters.function_number)
         parameters.function_number = 3;
-    if (!parameters.time_limit)
+    // if (!parameters.time_limit)
         parameters.time_limit = 10; // seconds
-    if (!parameters.island_size)
+    // if (!parameters.island_size)
         parameters.island_size = 1;
-    if (!parameters.population_size)
+    // if (!parameters.population_size)
         parameters.population_size = 100;
-    if (!parameters.dimension)
+    // if (!parameters.dimension)
         parameters.dimension = 10; // 10 or 30
-    if (!parameters.domain_function.min)
+    // if (!parameters.domain_function.min)
         parameters.domain_function.min = -100;
-    if (!parameters.domain_function.max)
+    // if (!parameters.domain_function.max)
         parameters.domain_function.max = 100;
-    if (!parameters.mutation_rate)
+    // if (!parameters.mutation_rate)
         parameters.mutation_rate = 25; // %
-    if (!parameters.crossover_rate)
+    // if (!parameters.crossover_rate)
         parameters.crossover_rate = 62; // %
-    if (!parameters.num_migrations)
+    // if (!parameters.num_migrations)
         parameters.num_migrations = 0;
-    if (!parameters.evaluation_limit)
+    // if (!parameters.evaluation_limit)
         parameters.evaluation_limit = 1490400;
-    if (!parameters.seed)
+    // if (!parameters.seed)
         parameters.seed = time(NULL);
 }
 
@@ -207,7 +207,7 @@ populacao *crossover(populacao *populacao_original, populacao *populacao_mutada,
         individuo parent1 = *parents[0];
         individuo parent2 = *parents[1];
         individuo filho;
-        switch (populacao_original->crossover)
+        switch (3)
         {
         case MEDIA:
             filho = cruzamento_media(parent1, parent2, dimension);

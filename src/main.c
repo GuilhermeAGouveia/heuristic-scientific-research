@@ -69,11 +69,8 @@ int main(int argc, char *argv[])
         {
             enum algorithm alg = (enum algorithm) (alg_set[alg_pos]);
 
-            // print alg array
-
             printf("Running algorithm %s\n", translateIntToAlg(alg));
-            // Melhor semente até agora: 1676931005 (Funcao 3) - 301.356
-            // Melhor semente até agora: 1676935665 (Funcao 8) - 801.1393
+
             switch (alg)
             {
             case PSO:

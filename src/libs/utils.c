@@ -100,7 +100,7 @@ void printVector(int arr[], int n)
     printf("[");
     for (int i = 0; i < n; i++)
     {
-        printf("%s", translateIntToAlg(arr[i] + 1));
+        printf("%s", translateIntToAlg(arr[i]));
         if (i < n - 1)
         {
             printf(", ");
