@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   lista.h
  * Author: Guilherme Gouveia
  *
@@ -17,10 +17,10 @@
 enum algorithm
 {
     PSO = 0,
-    GA,
     DE,
     ACO,
-    CLONALG
+    CLONALG,
+    GA,
 };
 typedef struct individuo_
 {
@@ -28,7 +28,6 @@ typedef struct individuo_
     double fitness;
     double *velocidade;
 } individuo;
-
 
 typedef struct population_
 {

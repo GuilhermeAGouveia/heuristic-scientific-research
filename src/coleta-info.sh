@@ -3,7 +3,7 @@
 # Options
 n_execucoes=10 # Default value
 function_number=3 # Default value
-time_limit=1 # Default value
+time_limit=10 # Default value
 
 translate_alg_int_to_alg_name() {
     config_alg=$1
@@ -14,18 +14,18 @@ translate_alg_int_to_alg_name() {
             0)
                 string_result="$string_result PSO"
                 ;;
+          
             1)
-                echo "GA"
-                string_result="$string_result GA"
-                ;;
-            2)
                 string_result="$string_result DE"
                 ;;
-            3)
+            2)
                 string_result="$string_result ACO"
                 ;;
-            4)
+            3)
                 string_result="$string_result CLONALG"
+                ;;
+            4)
+                string_result="$string_result GA"
                 ;;
             *)
                 echo "Algoritmo desconhecido ???"
