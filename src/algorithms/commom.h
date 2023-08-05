@@ -26,6 +26,8 @@ void destroy_island(populacao *populations, int island_size);
 individuo *get_best_of_population(populacao populacao);
 individuo *get_worst_of_population(individuo *population, int n_populacoes);
 void clone_individue(individuo *clone, individuo *original, int dimension);
-void migrate(populacao *populations, int island_size, int num_migrations, int dimension, domain domain_function, int function_number);
+void migrate(populacao **populations, int island_size, int num_migrations, int dimension, domain domain_function, int function_number);
+void random_random_migrate(populacao **populations, int island_size, int num_migrations, int dimension, domain domain_function, int function_number);
+
 
 #endif /* COMMOM_H */

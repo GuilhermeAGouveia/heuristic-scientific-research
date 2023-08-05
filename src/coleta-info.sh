@@ -86,7 +86,7 @@ verify_existence() {
 }
 
 define_command_evol() {
-    echo "./evol -A $alg_config-f $function_number" 
+    echo "./evol -A $alg_config-f $function_number -t $time_limit -s $semente_atual" 
 }
 
 show_indicator_algorithm() {

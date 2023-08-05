@@ -111,7 +111,7 @@ void destroy_island(populacao *populations, int island_size)
     free(populations);
 }
 
-void migrate(populacao *populations, int island_size, int num_migrations, int dimension, domain domain_function, int function_number)
+void migrate(populacao **populations, int island_size, int num_migrations, int dimension, domain domain_function, int function_number)
 {
     DEBUG(printf("\nmigrate\n"););
     populacao *vizinho;
@@ -120,15 +120,15 @@ void migrate(populacao *populations, int island_size, int num_migrations, int di
     for (int i = 0; i < island_size; i++)
     {
         DEBUG(printf("Populacao %d\n", i));
-        populacao current_island = populations[i];
-        individuo *population = current_island.individuos;
+        populacao *current_island = populations[i];
+        individuo *population = current_island->individuos;
         for (int k = 1; k <= num_migrations; k++)
         {
-            individuo *melhor_individuo_da_populacao = &population[current_island.size - k];
+            individuo *melhor_individuo_da_populacao = &population[current_island->size - k];
             DEBUG(printf("Melhor individuo da populacao %d: %lf\n", i, melhor_individuo_da_populacao->fitness););
             for (int j = 0; j < 4; j++)
             {
-                vizinho = current_island.neighbours[j];
+                vizinho = current_island->neighbours[j];
                 if (vizinho == NULL)
                     continue;
                 individuo *neighbour_population = vizinho->individuos;
@@ -141,6 +141,55 @@ void migrate(populacao *populations, int island_size, int num_migrations, int di
                 else
                     *pior_indivuduo_do_vizinho = *melhor_individuo_da_populacao;
             }
+        }
+    }
+}
+
+void swap_individuo(individuo *a, individuo *b)
+{
+    individuo temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void shuffle(individuo *pool, int size_pool)
+{
+    for (int i = 0; i < size_pool; i++)
+        swap_individuo(&pool[rand() % size_pool], &pool[rand() % size_pool]);
+}
+
+void random_random_migrate(populacao **populations, int island_size, int num_migrations, int dimension, domain domain_function, int function_number)
+{
+    DEBUG(printf("\nrandom random migrate\n"););
+    individuo *pool = generate_population(num_migrations * island_size, dimension, domain_function, function_number);
+    int positions[island_size][num_migrations];
+    for (int i = 0; i < island_size; i++)
+    {
+        DEBUG(printf("população %d\n", i););
+        for (int j = 0; j < num_migrations; j++)
+        {
+            int rand_index = rand() % populations[i]->size;
+            DEBUG(printf("posição sorteada %d\n", rand_index););
+            if (!populations[i]->individuos[rand_index].chromosome)
+            { // se for nulo que dizer que o elemento já foi sorteado
+                j--;
+                DEBUG(printf("posição já foi sorteada\n"););
+                continue;
+            }
+
+            pool[i * num_migrations + j] = populations[i]->individuos[rand_index]; // corre o risco de sortear o mesmo individuo
+            populations[i]->individuos[rand_index] = (individuo){NULL, INFINITY, NULL};
+            positions[i][j] = rand_index;
+        }
+    }
+
+    shuffle(pool, num_migrations * island_size);
+
+    for (int i = 0; i < island_size; i++)
+    {
+        for (int j = 0; j < num_migrations; j++)
+        {
+            populations[i]->individuos[positions[i][j]] = pool[i * num_migrations + j];
         }
     }
 }

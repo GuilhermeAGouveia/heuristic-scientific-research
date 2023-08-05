@@ -16,7 +16,6 @@
 
 #define PSO_H
 
-
-populacao *pso();
+populacao *pso(populacao *population);
 
 #endif /* PSO_H */
