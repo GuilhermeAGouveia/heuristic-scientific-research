@@ -1,0 +1,2 @@
+Resultado para função 1: Minimo: 100.010369 Maximo: 100.010369 Média: 100.01036900000000000000 Desvio padrão: 0
+Resultado para função 2: Minimo: 200.000276 Maximo: 200.000276 Média: 200.00027600000000000000 Desvio padrão: 0
