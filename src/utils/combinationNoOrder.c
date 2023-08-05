@@ -4,7 +4,7 @@
 // Função para imprimir um vetor em formato de lista
 void printVector(int arr[], int n)
 {
-    printf("[");
+
     for (int i = 0; i < n; i++)
     {
         printf("%d", arr[i]);
@@ -13,7 +13,6 @@ void printVector(int arr[], int n)
             printf(",");
         }
     }
-    printf("]");
 }
 
 // Função recursiva para gerar combinações e montá-las em um vetor

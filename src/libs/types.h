@@ -16,7 +16,7 @@
 
 enum algorithm
 {
-    PSO = 1,
+    PSO = 0,
     GA,
     DE,
     ACO,

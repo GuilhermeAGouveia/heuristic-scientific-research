@@ -6,13 +6,13 @@
 gcc utils/combinationNoOrder.c -o combinationNoOrder
 all_configurations=$(./combinationNoOrder 2 | tee)
 for config in $all_configurations; do
-    rm result_$alg.txt
+    rm result_[$config].txt
     make
     clear
     for func in $(seq 1 15); do
-        ./coleta-info.sh -n 20 -c $conf -f $func | tee output-coleta-info.dat
+        ./coleta-info.sh -n 20 -c $config -f $func -t 1 | tee output-coleta-info.dat
         result=$(cat output-coleta-info.dat | tail -n 6)
-        echo -e $result >> result_$conf.txt
+        echo -e $result >> result_[$config].txt
         rm output-coleta-info.dat
         tput reset
     done;

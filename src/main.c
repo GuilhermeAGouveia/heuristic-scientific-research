@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
 
         for (int alg_pos = 0; alg_pos < parameters.num_algorithms; alg_pos++)
         {
-            enum algorithm alg = (enum algorithm) (alg_set[alg_pos] + 1);
+            enum algorithm alg = (enum algorithm) (alg_set[alg_pos]);
 
             // print alg array
 
