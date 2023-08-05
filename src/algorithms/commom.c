@@ -108,7 +108,7 @@ void destroy_island(populacao *populations, int island_size)
         destroy_population(populations[i].individuos, populations[i].size);
         free(populations[i].neighbours);
     }
-    free(populations);
+    //free(populations);
 }
 
 void migrate(populacao **populations, int island_size, int num_migrations, int dimension, domain domain_function, int function_number)

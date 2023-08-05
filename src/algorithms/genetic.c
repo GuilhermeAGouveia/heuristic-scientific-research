@@ -14,7 +14,7 @@
 #include "parameters.h"
 #include "commom.h"
 #define STATISTICS(x)
-#define DEBUG(x) x
+#define DEBUG(x)
 #define LOG(x)
 
 void set_default_parameters_genetic()
