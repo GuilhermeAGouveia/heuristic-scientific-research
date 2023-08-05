@@ -51,6 +51,7 @@ void print_combinations(Array combinations, int nAlgorithms)
     }
 }
 
+
 int main(int argc, char *argv[])
 {
     set_parameters(argc, argv); // Lê os parâmetros da linha de comando e repassa para as variáveis globais
