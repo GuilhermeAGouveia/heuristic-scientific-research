@@ -106,7 +106,7 @@ void printVector(int arr[], int n)
             printf(", ");
         }
     }
-    printf("]");
+    printf("]\n");
 }
 
 // Função recursiva para gerar combinações e montá-las em um vetor
