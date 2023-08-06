@@ -13,7 +13,7 @@
 
 #include "../libs/log.h"
 #define STATISTICS(x)
-#define DEBUG(x) 
+#define DEBUG(x) x
 #define LOG(x)
 
 void fitness(individuo *individuo, int dimension, int function_number)
@@ -97,7 +97,7 @@ void destroy_population(individuo *population, int n_individuos)
     {
         free(population[i].chromosome);
     }
-    free(population);
+    //free(population);
 }
 
 void destroy_island(populacao *populations, int island_size)
@@ -136,10 +136,10 @@ void migrate(populacao **populations, int island_size, int num_migrations, int d
                 if (melhor_individuo_da_populacao->fitness > pior_indivuduo_do_vizinho->fitness)
                 {
                     individuo *new_worst = generate_population(1, dimension, domain_function, function_number);
-                    *pior_indivuduo_do_vizinho = *new_worst;
+                    clone_individue(new_worst, melhor_individuo_da_populacao, dimension);
                 }
                 else
-                    *pior_indivuduo_do_vizinho = *melhor_individuo_da_populacao;
+                    clone_individue(pior_indivuduo_do_vizinho, melhor_individuo_da_populacao, dimension);
             }
         }
     }

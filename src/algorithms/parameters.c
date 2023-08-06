@@ -15,7 +15,6 @@ void print_usage()
 
 args parameters;
 
-
 void set_parameters(int argc, char *argv[])
 {
     int opt;
@@ -27,8 +26,6 @@ void set_parameters(int argc, char *argv[])
 
             parameters.num_algorithms = size_of_array(optarg);
             strcpy(parameters.algorithms, optarg);
-     
-            //exit(0);
             break;
         case 'f':
             parameters.function_number = atoi(optarg);

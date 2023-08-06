@@ -104,8 +104,8 @@ int main(int argc, char *argv[])
         set_neighbours(populations, parameters.num_algorithms);
         //print_neighbours(populations, parameters.num_algorithms);
         printf("Migrating...\n");
-        //migrate(populations, parameters.num_algorithms, 4, parameters.dimension, parameters.domain_function, parameters.function_number);
-        random_random_migrate(populations, parameters.num_algorithms, 4, parameters.dimension, parameters.domain_function, parameters.function_number);
+        migrate(populations, parameters.num_algorithms, 4, parameters.dimension, parameters.domain_function, parameters.function_number);
+        //random_random_migrate(populations, parameters.num_algorithms, 4, parameters.dimension, parameters.domain_function, parameters.function_number);
 
 
     }
