@@ -13,7 +13,7 @@
 
 #include "../libs/log.h"
 #define STATISTICS(x)
-#define DEBUG(x) x
+#define DEBUG(x)
 #define LOG(x)
 
 void fitness(individuo *individuo, int dimension, int function_number)
@@ -97,7 +97,7 @@ void destroy_population(individuo *population, int n_individuos)
     {
         free(population[i].chromosome);
     }
-    //free(population);
+    free(population);
 }
 
 void destroy_island(populacao *populations, int island_size)
