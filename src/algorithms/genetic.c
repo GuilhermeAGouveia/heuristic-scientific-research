@@ -114,10 +114,13 @@ populacao *mutation_commom(populacao *populacao, int dimension, domain domain_fu
     DEBUG(printf("\nmutation\n"););
     for (int i = 0; i < populacao->size - 1; i++)
     {
-        int mutation_point = rand() % dimension;
-        populacao->individuos[i].chromosome[mutation_point] = random_double(domain_function.min, domain_function.max);
-        fitness(&populacao->individuos[i], dimension, parameters.function_number);
-    }
+        if (rand() % 100 < parameters.mutation_rate)
+        {
+            int mutation_point = rand() % dimension;
+            populacao->individuos[i].chromosome[mutation_point] = random_double(domain_function.min, domain_function.max);
+            fitness(&populacao->individuos[i], dimension, parameters.function_number);
+        }
+        }
     return populacao;
 }
 
@@ -209,7 +212,7 @@ populacao *crossover(populacao *populacao_original, populacao *populacao_mutada,
             individuo parent1 = *parents[0];
             individuo parent2 = *parents[1];
             individuo filho;
-            switch (3)
+            switch (3) // sempre usar o cruzamento de ponto de corte
             {
             case MEDIA:
                 filho = cruzamento_media(parent1, parent2, dimension);
