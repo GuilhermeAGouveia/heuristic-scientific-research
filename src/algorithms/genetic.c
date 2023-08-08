@@ -199,34 +199,41 @@ populacao *crossover(populacao *populacao_original, populacao *populacao_mutada,
     for (i = 0; i < populacao_original->size; i++)
     {
         individuo *parents[2];
-        if (0)
-            select_parents(*populacao_mutada, parents);
-        else
-            select_parents(*populacao_original, parents);
-
-        individuo parent1 = *parents[0];
-        individuo parent2 = *parents[1];
-        individuo filho;
-        switch (3)
+        if (rand() % 100 < parameters.crossover_rate)
         {
-        case MEDIA:
-            filho = cruzamento_media(parent1, parent2, dimension);
-        case METADE:
-            filho = cruzamento_metade(parent1, parent2, dimension);
-        case PONTO:
-            filho = cruzamento_ponto(parent1, parent2, dimension);
-        case MEDIA_GEOMETRICA:
-            filho = cruzamento_ponto(parent1, parent2, dimension);
-        case FLAT:
-            filho = cruzamento_flat(parent1, parent2, dimension);
-        case BLEND:
-            filho = cruzamento_blend(parent1, parent2, dimension);
-        default:
-            filho = cruzamento_media(parent1, parent2, dimension);
-        }
+            if (0) // sempre escolher da população original
+                select_parents(*populacao_mutada, parents);
+            else
+                select_parents(*populacao_original, parents);
 
-        fitness(&filho, dimension, parameters.function_number);
-        nova_populacao->individuos[i] = filho;
+            individuo parent1 = *parents[0];
+            individuo parent2 = *parents[1];
+            individuo filho;
+            switch (3)
+            {
+            case MEDIA:
+                filho = cruzamento_media(parent1, parent2, dimension);
+            case METADE:
+                filho = cruzamento_metade(parent1, parent2, dimension);
+            case PONTO:
+                filho = cruzamento_ponto(parent1, parent2, dimension);
+            case MEDIA_GEOMETRICA:
+                filho = cruzamento_ponto(parent1, parent2, dimension);
+            case FLAT:
+                filho = cruzamento_flat(parent1, parent2, dimension);
+            case BLEND:
+                filho = cruzamento_blend(parent1, parent2, dimension);
+            default:
+                filho = cruzamento_media(parent1, parent2, dimension);
+            }
+
+            fitness(&filho, dimension, parameters.function_number);
+            nova_populacao->individuos[i] = filho;
+        }
+        else
+        {
+            clone_individue(&nova_populacao->individuos[i], &populacao_original->individuos[i], dimension);
+        }
     }
     // nova_populacao->individuos[populacao->size - 1] = populacao->individuos[populacao->size - 1];
     return nova_populacao;
@@ -236,13 +243,14 @@ populacao *genetic(populacao *population)
 {
     set_default_parameters_genetic();
 
-    if(population == NULL){
-        population = generate_island(1,parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
+    if (population == NULL)
+    {
+        population = generate_island(1, parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
     }
     DEBUG(printf("\nevolution\n"););
     individuo *parents[2];
     individuo bestIndividuo = {.fitness = INFINITY};
-    //populacao *populations = generate_island(parameters.island_size, parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
+    // populacao *populations = generate_island(parameters.island_size, parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
     time_t time_init, time_now;
     int evaluation_count = 0;
     int epoca_count = 0;
