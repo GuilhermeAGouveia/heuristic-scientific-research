@@ -3,17 +3,15 @@
 
 # Coloque _ no inicio do nome dos algoritmos que não deseja executar
 # Exemplo: _nome_do_algoritmo.sh
-all_algorithms=$(ls algorithms/ | cut -d'/' -f 2 | cut -d'.' -f1 | egrep -e "^[^_].*")
-for alg in $all_algorithms; do
-    rm result_$alg.txt
-    alg_path_seed_command="algorithms\/$alg"
-    sed "s/<codname>/$alg_path_seed_command/g" makefile_ > makefile
-    make
+make
+all_configurations=$(./combinationNoOrder 3 | tee)
+for config in $all_configurations; do
+    rm results/tcc/result_[$config].txt
     clear
     for func in $(seq 1 15); do
-        ./coleta-info.sh -n 20 -c $alg -f $func | tee output-coleta-info.dat
+        ./coleta-info.sh -n 20 -c $config -f $func | tee output-coleta-info.dat
         result=$(cat output-coleta-info.dat | tail -n 6)
-        echo -e $result >> result_$alg.txt
+        echo -e $result >> results/tcc/result_[$config].txt
         rm output-coleta-info.dat
         tput reset
     done;

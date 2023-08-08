@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <string.h>
+#include "../libs/utils.h"
 #include "../libs/log.h"
 #include "./parameters.h"
 
@@ -22,27 +24,8 @@ void set_parameters(int argc, char *argv[])
         {
         case 'A':
 
-            switch (tolower(optarg[0]))
-            {
-            case 'p':
-                parameters.algorithm = PSO;
-                break;
-            case 'g':
-                parameters.algorithm = GA;
-                break;
-            case 'd':
-                parameters.algorithm = DE;
-                break;
-            case 'a':
-                parameters.algorithm = ACO;
-                break;
-            case 'c':
-                parameters.algorithm = CLONALG;
-                break;
-            default:
-                printf("Invalid algorithm. Please use one of the following: p, g, d, a, c\n");
-                exit(1);
-            }
+            parameters.num_algorithms = size_of_array(optarg);
+            strcpy(parameters.algorithms, optarg);
             break;
         case 'f':
             parameters.function_number = atoi(optarg);
@@ -98,7 +81,7 @@ void set_parameters(int argc, char *argv[])
         case 'e':
             parameters.tax_evaporate = atof(optarg);
             break;
-        case 'P': 
+        case 'P':
             parameters.p_exploitation = atof(optarg);
             break;
         default:
@@ -111,8 +94,8 @@ void set_parameters(int argc, char *argv[])
     srand(parameters.seed);
 }
 
-void print_parameters(args parameters){
-    printf("Algorithm: %d\n", parameters.algorithm);
+void print_parameters(args parameters)
+{
     printf("Function number: %d\n", parameters.function_number);
     printf("Time limit: %d\n", parameters.time_limit);
     printf("Island size: %d\n", parameters.island_size);
@@ -131,5 +114,4 @@ void print_parameters(args parameters){
     printf("Number of ants: %d\n", parameters.num_ants);
     printf("Tax evaporate: %f\n", parameters.tax_evaporate);
     printf("P exploitation: %f\n", parameters.p_exploitation);
-    
 }

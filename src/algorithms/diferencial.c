@@ -137,7 +137,6 @@ populacao *crossover_diferencial(populacao *populacao_original, populacao *popul
 populacao *diferencial(populacao *population)
 {
     set_default_parameters_diferencial();
-    print_parameters(parameters);
 
     if(population == NULL){
         population = generate_island(1,parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);

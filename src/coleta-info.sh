@@ -3,8 +3,39 @@
 # Options
 n_execucoes=10 # Default value
 function_number=3 # Default value
-alg_name="evolucao_simples" # Default value
-alg_path="algorithms/$alg_name"
+time_limit=10 # Default value
+
+translate_alg_int_to_alg_name() {
+    config_alg=$1
+    string_result="["
+    for i in $(echo $config_alg | tr "," "\n"); do
+
+        case $i in
+            0)
+                string_result="$string_result PSO"
+                ;;
+          
+            1)
+                string_result="$string_result DE"
+                ;;
+            2)
+                string_result="$string_result ACO"
+                ;;
+            3)
+                string_result="$string_result CLONALG"
+                ;;
+            4)
+                string_result="$string_result GA"
+                ;;
+            *)
+                echo "Algoritmo desconhecido ???"
+                exit 1
+                ;;
+        esac
+    done;
+    string_result="$string_result ]"
+    echo -e $string_result
+}
 
 usage() { echo "Usage: $0 [-n <Numero de execuções>] [-f <Numero da função de teste de 1 a 15>] [-c <Nome do código evolutivo que será executado>] [-t <Tempo máximo de cada execução>]" 1>&2; exit 1; }
 
@@ -20,7 +51,7 @@ while getopts ":n:f:t:c:" o; do
             time_limit=${OPTARG}
             ;;
         c)
-            alg_name=${OPTARG}
+            alg_config=${OPTARG}
             ;;
         *)
             usage
@@ -28,7 +59,6 @@ while getopts ":n:f:t:c:" o; do
     esac
 done
 shift $((OPTIND-1))
-alg_path="algorithms/$alg_name"
 
 # Math
 
@@ -80,31 +110,13 @@ set_color_progress() {
     fi
 }
 
-verify_existence() {
-    if [ ! -f $1 ]; then
-        tput reset
-        echo "Erro: Arquivo $1 não encontrado"
-        exit 1
-    fi
-}
-
 define_command_evol() {
-    echo "./evol -f $function_number" 
+    echo "./evol -A $alg_config -f $function_number -t $time_limit -k 3" 
 }
 
 show_indicator_algorithm() {
-    all_algorithms=$(ls algorithms/ | cut -d'/' -f 2 | cut -d'.' -f1 | egrep -e "^[^_].*")
-    string="algoritmos:"
-    find_current_alg=0
-    for alg in $all_algorithms; do
-        if [ $alg == $alg_name ]; then
-            string="$string [$alg]"
-        else
-            string="$string    $alg"
-        fi
-    done;
-    echo -e $string
-
+    formated_algs="config: $(translate_alg_int_to_alg_name $alg_config)"
+    echo -e $formated_algs
 }
 
 show_indicator_function() {
@@ -120,12 +132,11 @@ show_indicator_function() {
 }
 
 main () {
-    verify_existence "$alg_path.c"
     source libs/progress-bar/progress-bar.sh
     echo -e "Realizando ${n_execucoes} execuções..."
     #echo -e "Código em execução: $alg_path\n"
-    show_indicator_function
     show_indicator_algorithm
+    show_indicator_function
     tput civis
 
     resultado=0
@@ -146,13 +157,12 @@ main () {
 
     mount_progress_bar 0 $n_execucoes
     for i in $(seq 1 $n_execucoes); do
-        resultado=$(eval $(define_command_evol $alg_name) | tail -n 1)
+        resultado=$(eval $(define_command_evol $alg_config) | tail -n 1)
         
         valor_atual=$(echo $resultado | grep Best | cut -d' ' -f2)
         array_values+=($valor_atual)
         if (( $(echo "$minimo > $valor_atual" | bc -l) )); then
             minimo=$valor_atual
-            semente=$semente_atual
         fi
 
         if (( $(echo "$maximo < $valor_atual" | bc -l) )); then

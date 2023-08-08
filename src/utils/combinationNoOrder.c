@@ -2,55 +2,71 @@
 #include <stdlib.h>
 
 // Função para imprimir um vetor em formato de lista
-void printVector(int arr[], int n) {
-    printf("[");
-    for (int i = 0; i < n; i++) {
+void printVector(int arr[], int n)
+{
+
+    for (int i = 0; i < n; i++)
+    {
         printf("%d", arr[i]);
-        if (i < n - 1) {
-            printf(", ");
+        if (i < n - 1)
+        {
+            printf(",");
         }
     }
-    printf("]");
 }
 
 // Função recursiva para gerar combinações e montá-las em um vetor
-void generateCombinations(int n, int arr[], int index, int **result, int *size) {
-    if (index == n) {
+void generateCombinations(int n, int arr[], int index, int **result, int *size)
+{
+    if (index == n)
+    {
         result[*size] = (int *)malloc(n * sizeof(int));
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < n; i++)
+        {
             result[*size][i] = arr[i];
         }
         (*size)++;
         return;
     }
 
-    for (int i = (index == 0) ? 0 : arr[index - 1]; i < n; i++) {
+    for (int i = (index == 0) ? 0 : arr[index - 1]; i < n; i++)
+    {
         arr[index] = i;
         generateCombinations(n, arr, index + 1, result, size);
     }
 }
 
-int main() {
-    int n;
-    printf("Digite o tamanho do vetor (N): ");
-    scanf("%d", &n);
+typedef struct array
+{
+    int **arr;
+    int size;
+} Array;
 
+Array generateComb(int n)
+{
     int arr[n];
-    int *combinations[n*n*n*n]; // Alteramos o tamanho do vetor para evitar estouro de memória
+    int **combinations = (int **)malloc(n * n * n * n * sizeof(int *));
     int size = 0;
 
     generateCombinations(n, arr, 0, combinations, &size);
 
-    printf("Combinações possíveis:\n");
-    printf("[");
-    for (int i = 0; i < size; i++) {
-        printVector(combinations[i], n);
-        if (i < size - 1) {
-            printf(", ");
-        }
-        free(combinations[i]);
+    return (Array){combinations, size};
+}
+
+int main(int argc, char const *argv[])
+{
+    int n = atoi(argv[1]);
+
+    Array result = generateComb(n);
+
+    for (int i = 0; i < result.size; i++)
+    {
+        printVector(result.arr[i], n);
+        if (i < result.size - 1)
+            printf("\n");
+
+        free(result.arr[i]);
     }
-    printf("]\n");
 
     return 0;
 }

@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-/* 
+/*
  * File:   lista.h
  * Author: Guilherme Gouveia
  *
@@ -14,13 +14,20 @@
 #ifndef TYPES_H
 #define TYPES_H
 
+enum algorithm
+{
+    PSO = 0,
+    DE,
+    ACO,
+    CLONALG,
+    GA,
+};
 typedef struct individuo_
 {
     double *chromosome;
     double fitness;
     double *velocidade;
 } individuo;
-
 
 typedef struct population_
 {
@@ -29,6 +36,7 @@ typedef struct population_
     struct population_ **neighbours;
     int crossover;
     int n_mutations;
+    enum algorithm algorithm;
 
 } populacao;
 

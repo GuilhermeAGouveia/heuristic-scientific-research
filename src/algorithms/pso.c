@@ -106,7 +106,6 @@ void calcula_componente(double *componente, individuo *individuo_1, individuo *i
 populacao *pso(populacao *population)
 {
     set_default_parameters_pso();
-    print_parameters(parameters);
     //print_individuo(population->individuos[2], parameters.dimension, 0);
     if(population == NULL){
         population = generate_island(1,parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);

@@ -129,7 +129,6 @@ void union_populacao_clones_and_main(populacao *populacao_clones, populacao *pop
 populacao *clonalg(populacao *population)
 {
     set_default_parameters_clonalg();
-    print_parameters(parameters);
     if(population == NULL){
         population = generate_island(1,parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
     }

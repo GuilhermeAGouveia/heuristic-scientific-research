@@ -58,7 +58,6 @@ dkms.conf
 !*.*
 !makefile*
 !Makefile*
-src/statistics/coords.dat
 src/log/*
 !README*
 *.stderr
@@ -66,3 +65,4 @@ src/log/*
 !target*
 !src/irace/functions/*
 irace.Rdata
+*.dat

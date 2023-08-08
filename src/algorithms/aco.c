@@ -372,7 +372,6 @@ double desvio_padrao_individuo(individuo *individuos, int individuos_size)
 populacao *aco(populacao *population)
 {
     set_default_parameters_ant();
-    print_parameters(parameters);
     if(population == NULL){
         population = generate_island(1,parameters.num_ants, parameters.dimension, parameters.domain_function, parameters.function_number);
     }
