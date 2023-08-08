@@ -18,14 +18,15 @@ void generateCombinations(int n, int arr[], int index, int ***result, int *size,
     }
 }
 
-int main() {
-    int n, k;
+int main(int argc, char *argv[]) {
 
-    printf("Digite o tamanho do vetor (N): ");
-    scanf("%d", &n);
-    
-    printf("Digite o valor de K: ");
-    scanf("%d", &k);
+    if (argc != 3) {
+        printf("Usage: %s <n> <k>\n", argv[0]);
+        return 1;
+    }
+
+    int n = atoi(argv[1]);
+    int k = atoi(argv[2]);
 
     int arr[n];
     int **combinations = NULL;
@@ -33,23 +34,16 @@ int main() {
 
     generateCombinations(n, arr, 0, &combinations, &size, k);
 
-    printf("Combinações possíveis:\n");
-    printf("[");
     for (int i = 0; i < size; i++) {
-        if (i > 0) {
-            printf(", ");
-        }
-        printf("[");
         for (int j = 0; j < n; j++) {
             if (j > 0) {
-                printf(", ");
+                printf(",");
             }
             printf("%d", combinations[i][j]);
         }
-        printf("]");
+        printf("\n");
         free(combinations[i]);
     }
-    printf("]\n");
     
     free(combinations);
 
