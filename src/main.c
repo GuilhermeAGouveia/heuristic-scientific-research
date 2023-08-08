@@ -104,16 +104,10 @@ int main(int argc, char *argv[])
         // print_neighbours(populations, parameters.num_algorithms);
         printf("Migrating...\n");
         printf("Choice random migrate: %lf\n", parameters.choice_random_migrate);
-        if (((float) rand() / RAND_MAX) < parameters.choice_random_migrate)
-        {
-            printf("Random migration\n");
+        if (((float)rand() / RAND_MAX) < parameters.choice_random_migrate)
             random_random_migrate(populations, parameters.num_algorithms, parameters.num_migrations, parameters.dimension, parameters.domain_function, parameters.function_number);
-        }
         else
-        {
-            printf("Best migration\n");
             migrate(populations, parameters.num_algorithms, parameters.num_migrations, parameters.dimension, parameters.domain_function, parameters.function_number);
-        }
     }
 
     printf("Best %lf\n", gbest_individuo->fitness);
