@@ -13,7 +13,7 @@
 
 #include "../libs/log.h"
 #define STATISTICS(x)
-#define DEBUG(x)
+#define DEBUG(x) 
 #define LOG(x)
 
 void fitness(individuo *individuo, int dimension, int function_number)

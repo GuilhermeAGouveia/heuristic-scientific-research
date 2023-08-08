@@ -10,7 +10,7 @@
 
 void print_usage()
 {
-    printf("Usage: ./evolucao_mpop -f <function_number> -t <time_limit> -i <island_size> -p <population_size> -d <dimension> -l <bounds_lower> -u <bounds_upper> -g <num_generations> -m <mutation_probability>");
+    printf("Usage: ./evolucao_mpop -f <function_number> -t <time_limit> -i <island_size> -p <population_size> -d <dimension> -l <bounds_lower> -u <bounds_upper> -g <num_generations> -m <mutation_probability> -k");
 }
 
 args parameters;
@@ -18,7 +18,7 @@ args parameters;
 void set_parameters(int argc, char *argv[])
 {
     int opt;
-    while ((opt = getopt(argc, argv, "A:f:F:t:i:p:d:l:u:g:m:c:k:s:v:z:C:p:e:a:K:")) != -1)
+    while ((opt = getopt(argc, argv, "A:f:F:t:i:p:d:l:u:g:m:c:k:s:v:z:C:p:e:a:K:M:")) != -1)
     {
         switch (opt)
         {
@@ -62,6 +62,9 @@ void set_parameters(int argc, char *argv[])
             break;
         case 'K':
             parameters.num_epocas = atoi(optarg);
+            break;
+        case 'M':
+            parameters.choice_random_migrate = atof(optarg);
             break;
         case 'F':
             parameters.F = atof(optarg);

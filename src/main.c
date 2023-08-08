@@ -51,14 +51,13 @@ void print_combinations(Array combinations, int nAlgorithms)
     }
 }
 
-
 int main(int argc, char *argv[])
 {
     set_parameters(argc, argv); // Lê os parâmetros da linha de comando e repassa para as variáveis globais
 
     individuo *gbest_individuo = NULL;
     individuo *pbest_individuo = NULL;
-    populacao **populations = calloc(10, sizeof(populacao*));
+    populacao **populations = calloc(10, sizeof(populacao *));
     int *alg_set = convert_parameter_to_array(parameters.algorithms);
     printf("Algorithms: ");
     printVector(alg_set, parameters.num_algorithms);
@@ -68,7 +67,7 @@ int main(int argc, char *argv[])
 
         for (int alg_pos = 0; alg_pos < parameters.num_algorithms; alg_pos++)
         {
-            enum algorithm alg = (enum algorithm) (alg_set[alg_pos]);
+            enum algorithm alg = (enum algorithm)(alg_set[alg_pos]);
 
             printf("Running algorithm %s\n", translateIntToAlg(alg));
 
@@ -102,12 +101,19 @@ int main(int argc, char *argv[])
             }
         }
         set_neighbours(populations, parameters.num_algorithms);
-        //print_neighbours(populations, parameters.num_algorithms);
+        // print_neighbours(populations, parameters.num_algorithms);
         printf("Migrating...\n");
-        migrate(populations, parameters.num_algorithms, parameters.num_migrations, parameters.dimension, parameters.domain_function, parameters.function_number);
-        //random_random_migrate(populations, parameters.num_algorithms, 4, parameters.dimension, parameters.domain_function, parameters.function_number);
-
-
+        printf("Choice random migrate: %lf\n", parameters.choice_random_migrate);
+        if (((float) rand() / RAND_MAX) < parameters.choice_random_migrate)
+        {
+            printf("Random migration\n");
+            random_random_migrate(populations, parameters.num_algorithms, parameters.num_migrations, parameters.dimension, parameters.domain_function, parameters.function_number);
+        }
+        else
+        {
+            printf("Best migration\n");
+            migrate(populations, parameters.num_algorithms, parameters.num_migrations, parameters.dimension, parameters.domain_function, parameters.function_number);
+        }
     }
 
     printf("Best %lf\n", gbest_individuo->fitness);
