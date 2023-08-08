@@ -114,13 +114,15 @@ populacao *mutation_commom(populacao *populacao, int dimension, domain domain_fu
     DEBUG(printf("\nmutation\n"););
     for (int i = 0; i < populacao->size - 1; i++)
     {
-        if (rand() % 100 < parameters.mutation_rate)
+        for (int j = 0; j < dimension; j++)
         {
-            int mutation_point = rand() % dimension;
-            populacao->individuos[i].chromosome[mutation_point] = random_double(domain_function.min, domain_function.max);
-            fitness(&populacao->individuos[i], dimension, parameters.function_number);
+            if (rand() % 100 < parameters.mutation_rate)
+            {
+                populacao->individuos[i].chromosome[j] = random_double(domain_function.min, domain_function.max);
+            }
         }
-        }
+        fitness(&populacao->individuos[i], dimension, parameters.function_number);
+    }
     return populacao;
 }
 
