@@ -18,7 +18,7 @@ args parameters;
 void set_parameters(int argc, char *argv[])
 {
     int opt;
-    while ((opt = getopt(argc, argv, "A:f:F:t:i:p:d:l:u:g:m:c:k:s:v:z:C:p:e:a:")) != -1)
+    while ((opt = getopt(argc, argv, "A:f:F:t:i:p:d:l:u:g:m:c:k:s:v:z:C:p:e:a:K:")) != -1)
     {
         switch (opt)
         {
@@ -59,6 +59,9 @@ void set_parameters(int argc, char *argv[])
             break;
         case 'k':
             parameters.num_migrations = atoi(optarg);
+            break;
+        case 'K':
+            parameters.num_epocas = atoi(optarg);
             break;
         case 'F':
             parameters.F = atof(optarg);

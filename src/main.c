@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
     printf("Algorithms: ");
     printVector(alg_set, parameters.num_algorithms);
 
-    for (int i = 0; i < parameters.num_migrations; i++)
+    for (int i = 0; i < parameters.num_epocas; i++)
     {
 
         for (int alg_pos = 0; alg_pos < parameters.num_algorithms; alg_pos++)
@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
         set_neighbours(populations, parameters.num_algorithms);
         //print_neighbours(populations, parameters.num_algorithms);
         printf("Migrating...\n");
-        migrate(populations, parameters.num_algorithms, 4, parameters.dimension, parameters.domain_function, parameters.function_number);
+        migrate(populations, parameters.num_algorithms, parameters.num_migrations, parameters.dimension, parameters.domain_function, parameters.function_number);
         //random_random_migrate(populations, parameters.num_algorithms, 4, parameters.dimension, parameters.domain_function, parameters.function_number);
 
 
