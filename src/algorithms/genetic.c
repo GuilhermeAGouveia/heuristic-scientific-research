@@ -19,14 +19,15 @@
 
 void set_default_parameters_genetic()
 {
-    if (!parameters.function_number)
-        parameters.function_number = 3;
+
+    if(!parameters.function_number)
+       parameters.function_number = 3;
     if (!parameters.time_limit)
         parameters.time_limit = 10; // seconds
     if (!parameters.island_size)
         parameters.island_size = 1;
     if (!parameters.population_size)
-        parameters.population_size = 100;
+        parameters.population_size = 507;//1613;
     if (!parameters.dimension)
         parameters.dimension = 10; // 10 or 30
     if (!parameters.domain_function.min)
@@ -34,15 +35,16 @@ void set_default_parameters_genetic()
     if (!parameters.domain_function.max)
         parameters.domain_function.max = 100;
     if (!parameters.mutation_rate)
-        parameters.mutation_rate = 25; // %
+        parameters.mutation_rate = 15;//6; // %
     if (!parameters.crossover_rate)
-        parameters.crossover_rate = 62; // %
+        parameters.crossover_rate = 34;//21; // %
     if (!parameters.num_migrations)
         parameters.num_migrations = 0;
     if (!parameters.evaluation_limit)
         parameters.evaluation_limit = 1490400;
     if (!parameters.seed)
         parameters.seed = time(NULL);
+    srand(parameters.seed);
 }
 
 void print_roleta(int *roleta, int roleta_size, int ball1, int ball2)
@@ -302,6 +304,5 @@ populacao *genetic(populacao *population)
     //  //Se o limite de epocas sem melhora for atingido é finalizada a evolucao
     //  if(total_epocs_s_m == limit_epocs)
     //     continue_evol = 0;
-
     return original_population;
 }

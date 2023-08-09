@@ -53,7 +53,9 @@ fi
 ##$EXE ${FIXED_PARAMS} -i $FUNCTION --seed $SEED ${CONFIG_PARAMS} 1> $STDOUT 2> $STDERR
 ##$EXE $P $G
 
-$EXE -f $FUNCTION -s $SEED $CONFIG_PARAMS > "$STDOUT" 2> "$STDERR"
+##echo -e "Valor da variável FUNCTION:irace$FUNCTION\n\n\n\n\n\n\n\n\n\n"
+##$EXE  -f $FUNCTION -s $SEED -K 1 -k 0 -A 4 $CONFIG_PARAMS > "$STDOUT" 2> "$STDERR"
+$EXE  -f $FUNCTION -s $SEED -A 4 -K 1 -k 0 $CONFIG_PARAMS > "$STDOUT" 2> "$STDERR"
 
 # Verificar se ocorreram erros durante a execução
 if [ $? -ne 0 ]; then

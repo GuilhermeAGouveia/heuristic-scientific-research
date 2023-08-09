@@ -49,6 +49,7 @@ void set_default_parameters_pso()
         parameters.c1 = 1.523;
     if (!parameters.c2)
         parameters.c2 = 0.77623;
+    srand(parameters.seed);
 }
 
 void verifica_limites(individuo *individuo, int dimension)

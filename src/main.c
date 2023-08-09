@@ -62,6 +62,7 @@ int main(int argc, char *argv[])
     printf("Algorithms: ");
     printVector(alg_set, parameters.num_algorithms);
 
+
     for (int i = 0; i < parameters.num_epocas; i++)
     {
 

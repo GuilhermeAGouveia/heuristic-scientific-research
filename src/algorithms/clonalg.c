@@ -37,6 +37,7 @@ void set_default_parameters_clonalg()
         parameters.clones = 36;
     if (!parameters.seed)
         parameters.seed = time(NULL);
+    srand(parameters.seed);
 }
 
 void mutation_n_genes(populacao *populacao_clones, int n_genes, int dimension, domain domain_function)

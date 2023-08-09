@@ -19,8 +19,9 @@
 
 void set_default_parameters_diferencial()
 {
+
     if (!parameters.F)
-        parameters.F = 0.76811;
+        parameters.F = 0.34104;//0.76811;
     if (!parameters.function_number)
         parameters.function_number = 3;
     if (!parameters.time_limit)
@@ -28,7 +29,7 @@ void set_default_parameters_diferencial()
     if (!parameters.island_size)
         parameters.island_size = 1;
     if (!parameters.population_size)
-        parameters.population_size = 58;
+        parameters.population_size = 130; //58;
     if (!parameters.dimension)
         parameters.dimension = 10; // 10 or 30
     if (!parameters.domain_function.min)
@@ -38,13 +39,14 @@ void set_default_parameters_diferencial()
     if (!parameters.num_generations_per_epoca)
         parameters.num_generations_per_epoca = 300;
     if (!parameters.mutation_rate)
-        parameters.mutation_rate = 4; // %
-    if (!parameters.crossover_rate)
-        parameters.crossover_rate = 54; // %
+        parameters.mutation_rate = 84;//4; // %
+  //  if (!parameters.crossover_rate)
+    //    parameters.crossover_rate = 54; // %
     if (!parameters.seed)
         parameters.seed = time(NULL);
     if (!parameters.evaluation_limit)
         parameters.evaluation_limit = 1490400;
+    srand(parameters.seed);
 }
 
 populacao *mutation_diferencial(populacao *populacao_original, int dimension, domain domain_function)
@@ -137,7 +139,6 @@ populacao *crossover_diferencial(populacao *populacao_original, populacao *popul
 populacao *diferencial(populacao *population)
 {
     set_default_parameters_diferencial();
-
     if(population == NULL){
         population = generate_island(1,parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
     }

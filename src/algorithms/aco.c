@@ -42,6 +42,7 @@ void set_default_parameters_ant()
         parameters.seed = time(NULL);
     if (!parameters.dimension)
         parameters.dimension = 10; // 10 or 30
+    srand(parameters.seed);
 }
 
 void print_individuos(individuo *individuo, int dimension)
