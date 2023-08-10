@@ -8,6 +8,7 @@
 #include "algorithms/parameters.h"
 #include "algorithms/commom.h"
 #include "libs/utils.h"
+#include <math.h>
 
 #define DEBUG(x)
 
@@ -51,24 +52,64 @@ void print_combinations(Array combinations, int nAlgorithms)
     }
 }
 
+void get_algoritms(int *result){
+    double total = parameters.num_aco + parameters.num_ants + parameters.num_clonal + parameters.num_diferencial + parameters.num_genetico;
+    int aux, totais[5];
+
+    int cont = 0;
+
+    totais[0] = ceil(parameters.num_algorithms * (parameters.num_pso / total));
+    totais[1] =  ceil(parameters.num_algorithms * (parameters.num_diferencial / total));
+    totais[2] = ceil(parameters.num_algorithms * (parameters.num_aco / total));
+    totais[3] = ceil(parameters.num_algorithms * (parameters.num_clonal / total));
+    totais[4] = ceil(parameters.num_algorithms * (parameters.num_genetico / total));
+    total = 0;
+
+   for(int i = 0; i < 5; i++)
+     total += totais[i];
+    
+  //  while(total > parameters.num_algorithms){
+  //      aux = rand() % 5;
+   //     totais[aux] -= 1;
+   //     total -= 1;
+  //  }
+
+    while(total > parameters.num_algorithms){
+        for(int i = 0; total > parameters.num_algorithms && i < 5; i++){
+            totais[i] -= 1;
+            total -= 1;
+        }
+    }
+
+    for(int i = 0; i < 5; i++){
+        for(int j = 0; j < totais[i]; j++, cont++){
+            result[cont] = i;
+        }
+    }
+    printVector(result, parameters.num_algorithms);
+
+}
+
 int main(int argc, char *argv[])
 {
+    // ./evol  -t 1 -K 2 -k 3 -Q 30 -G 0 -D 68 -O 0 -L 49 -A 10
     set_parameters(argc, argv); // Lê os parâmetros da linha de comando e repassa para as variáveis globais
-
+    int *algoritmos = calloc(parameters.num_algorithms, sizeof(int *));;
+    get_algoritms(algoritmos);
     individuo *gbest_individuo = NULL;
     individuo *pbest_individuo = NULL;
     populacao **populations = calloc(10, sizeof(populacao *));
-    int *alg_set = convert_parameter_to_array(parameters.algorithms);
-    printf("Algorithms: ");
-    printVector(alg_set, parameters.num_algorithms);
-
+    //int *alg_set = convert_parameter_to_array(parameters.algorithms);
+    //printf("Algorithms: ");
+    //printVector(alg_set, parameters.num_algorithms);
 
     for (int i = 0; i < parameters.num_epocas; i++)
     {
 
         for (int alg_pos = 0; alg_pos < parameters.num_algorithms; alg_pos++)
         {
-            enum algorithm alg = (enum algorithm)(alg_set[alg_pos]);
+            enum algorithm alg = (enum algorithm)(algoritmos[alg_pos]);
+            parameters.seed = time(NULL);
 
             printf("Running algorithm %s\n", translateIntToAlg(alg));
 

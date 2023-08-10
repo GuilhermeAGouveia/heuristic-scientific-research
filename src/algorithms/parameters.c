@@ -18,14 +18,14 @@ args parameters;
 void set_parameters(int argc, char *argv[])
 {
     int opt;
-    while ((opt = getopt(argc, argv, "A:f:F:t:i:p:d:l:u:g:m:c:k:s:v:z:C:p:e:a:K:M:")) != -1)
+    while ((opt = getopt(argc, argv, "A:f:F:t:i:p:d:l:u:g:m:c:k:s:v:z:C:P:e:a:K:M:Q:O:D:L:G:")) != -1)
     {
         switch (opt)
         {
         case 'A':
-
-            parameters.num_algorithms = size_of_array(optarg);
-            strcpy(parameters.algorithms, optarg);
+            //parameters.num_algorithms = size_of_array(optarg);
+            parameters.num_algorithms = atoi(optarg);
+            //strcpy(parameters.algorithms, optarg);
             break;
         case 'f':
             parameters.function_number = atoi(optarg);
@@ -86,6 +86,21 @@ void set_parameters(int argc, char *argv[])
             break;
         case 'e':
             parameters.tax_evaporate = atof(optarg);
+            break;
+        case 'Q':
+            parameters.num_pso = atoi(optarg);
+            break;
+        case 'L':
+            parameters.num_clonal = atoi(optarg);
+            break;
+        case 'O':
+            parameters.num_aco = atoi(optarg);
+            break;
+        case 'G':
+            parameters.num_genetico = atoi(optarg);
+            break;
+        case 'D':
+            parameters.num_diferencial = atoi(optarg);
             break;
         case 'P':
             parameters.p_exploitation = atof(optarg);
