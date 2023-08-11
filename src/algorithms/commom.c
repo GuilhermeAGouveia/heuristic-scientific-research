@@ -26,6 +26,14 @@ void fitness(individuo *individuo, int dimension, int function_number)
     // printf("fitness: %f\n", individuo->fitness);
 }
 
+int comparador_proporcoes_alg(const void *a, const void *b)
+{
+    proporcao_alg *v1 = (proporcao_alg *)a;
+    proporcao_alg *v2 = (proporcao_alg *)b;
+
+    return v1->proporcao < v2->proporcao;
+}
+
 int comparador_individuo(const void *a, const void *b)
 {
     individuo *v1 = (individuo *)a;

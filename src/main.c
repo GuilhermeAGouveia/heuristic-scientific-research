@@ -12,6 +12,7 @@
 
 #define DEBUG(x)
 
+
 void set_neighbours(populacao **populations, int island_size)
 {
     DEBUG(printf("\nset_neighbours\n"););
@@ -53,37 +54,40 @@ void print_combinations(Array combinations, int nAlgorithms)
 }
 
 void get_algoritms(int *result){
-    double total = parameters.num_aco + parameters.num_ants + parameters.num_clonal + parameters.num_diferencial + parameters.num_genetico;
-    int aux, totais[5];
+    double soma_proporcoes = parameters.num_pso + parameters.num_aco + parameters.num_clonal + parameters.num_diferencial + parameters.num_genetico;
+    int cont = 0, total_islands = 0;
+    proporcao_alg proporcoes[5];
 
-    int cont = 0;
-
-    totais[0] = ceil(parameters.num_algorithms * (parameters.num_pso / total));
-    totais[1] =  ceil(parameters.num_algorithms * (parameters.num_diferencial / total));
-    totais[2] = ceil(parameters.num_algorithms * (parameters.num_aco / total));
-    totais[3] = ceil(parameters.num_algorithms * (parameters.num_clonal / total));
-    totais[4] = ceil(parameters.num_algorithms * (parameters.num_genetico / total));
-    total = 0;
-
-   for(int i = 0; i < 5; i++)
-     total += totais[i];
-    
-  //  while(total > parameters.num_algorithms){
-  //      aux = rand() % 5;
-   //     totais[aux] -= 1;
-   //     total -= 1;
-  //  }
-
-    while(total > parameters.num_algorithms){
-        for(int i = 0; total > parameters.num_algorithms && i < 5; i++){
-            totais[i] -= 1;
-            total -= 1;
-        }
-    }
+    proporcoes[0].proporcao = parameters.num_pso;
+    proporcoes[1].proporcao = parameters.num_diferencial;
+    proporcoes[2].proporcao = parameters.num_aco;
+    proporcoes[3].proporcao = parameters.num_clonal;
+    proporcoes[4].proporcao = parameters.num_genetico;
 
     for(int i = 0; i < 5; i++){
-        for(int j = 0; j < totais[i]; j++, cont++){
-            result[cont] = i;
+        proporcoes[i].alg = i;
+        proporcoes[i].total_islands = (int)(parameters.num_algorithms * (proporcoes[i].proporcao/soma_proporcoes));
+        total_islands += proporcoes[i].total_islands;
+    }
+
+    qsort(&proporcoes, 5, sizeof(proporcao_alg), comparador_proporcoes_alg);
+
+    //for(int i = 0; i < 5; i++){
+      //  printf("proporção:%d\n",proporcoes[i].proporcao);
+   // }
+
+   //adiciona ilhas aos algoritmos até que total == num_algoritmos
+    while(total_islands < parameters.num_algorithms){
+        for(int i = 0; total_islands < parameters.num_algorithms && i < 5; i++){
+            proporcoes[i].total_islands += 1;
+            total_islands += 1;
+        }
+    }
+    
+    //cria o vetor de algoritmos [0,0,0,1,1...]
+    for(int i = 0; i < 5; i++){
+        for(int j = 0; j < proporcoes[i].total_islands; j++, cont++){
+            result[cont] = proporcoes[i].alg;
         }
     }
     printVector(result, parameters.num_algorithms);
@@ -98,7 +102,7 @@ int main(int argc, char *argv[])
     get_algoritms(algoritmos);
     individuo *gbest_individuo = NULL;
     individuo *pbest_individuo = NULL;
-    populacao **populations = calloc(10, sizeof(populacao *));
+    populacao **populations = calloc(25, sizeof(populacao *));
     //int *alg_set = convert_parameter_to_array(parameters.algorithms);
     //printf("Algorithms: ");
     //printVector(alg_set, parameters.num_algorithms);

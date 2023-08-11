@@ -40,6 +40,13 @@ typedef struct population_
 
 } populacao;
 
+typedef struct proporcao_alg_
+{
+    int alg;
+    int proporcao;
+    int total_islands;
+}proporcao_alg;
+
 typedef struct domain
 {
     double min;
