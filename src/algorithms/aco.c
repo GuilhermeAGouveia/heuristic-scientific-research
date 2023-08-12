@@ -45,6 +45,15 @@ void set_default_parameters_ant()
     srand(parameters.seed);
 }
 
+void reset_parameters_ant() {
+    parameters.num_ants = 0;
+    parameters.num_generations_per_epoca = 0;
+    parameters.tax_evaporate = 0;
+    parameters.num_candidates = 0;
+    parameters.p_exploitation = 0;
+    parameters.seed = 0;
+}
+
 void print_individuos(individuo *individuo, int dimension)
 {
     for (int i = 0; i < parameters.num_ants; i++)
@@ -88,11 +97,9 @@ void update_pheromones(double **pheromones, individuo *individuos, int n, int d,
         for (int j = 0; j < d; j++)
         {
             pheromones[i][j] = (1 / sqrt(2 * sigma[j] * PI)) * exp(pow((best_individuo->chromosome[j] - individuos[i].chromosome[j]), 2) / (-2 * pow(sigma[j], 2)));
-            // printf("pheromoneo: %lf\n",pheromones[i][j] );
             if (j % 2 == 0)
                 pheromones[i][j] += random_double(0, 0.3);
         }
-        // printf("\n\n");
     }
 }
 
@@ -148,7 +155,6 @@ void select_next_position2(double **pheromones, individuo *individuos, int d)
     {
         sum_pheromone[i] = sum_pheromone_dimension(pheromones, i);
     }
-    // printf("Select_Sum_Pheromone:%lf\n", sum_pheromone[1]);
 
     for (int i = 0; i < parameters.num_ants; i++)
     {
@@ -186,8 +192,6 @@ void candiate_calculator_crossover(individuo *individuos, int d, int id_individu
         current_dimension_value = individuos[id_individuo].chromosome[j];
 
         candidates[id_candit].chromosome[j] = (current_dimension_value + individuos[individuo2].chromosome[j]) / 2;
-        // printf("Original: %lf  ", current_dimension_value);
-        // printf("candidato: %lf\n", candidates[id_candit].individuo_chromossome[j]);
         if (random_double(0, 1) <= parameters.p_exploitation || !(candidates[id_candit].chromosome[j] <= 100 && candidates[id_candit].chromosome[j] >= -100))
             candidates[id_candit].chromosome[j] = random_double(-100, 100);
     }
@@ -205,8 +209,6 @@ void candiate_calculator(individuo *individuos, double **pheromones, double *sum
         delta = distance / current_dimension_value;
         // Cij = Xi,j + Δij * (m - Xi,j).
         candidates[id_candit].chromosome[j] = current_dimension_value + delta * (mean - current_dimension_value);
-        // printf("Original: %lf  ", current_dimension_value);
-        // printf("candidato: %lf\n", candidates[id_candit].individuo_chromossome[j]);
         if (random_double(0, 1) <= parameters.p_exploitation || !(candidates[id_candit].chromosome[j] <= 100 && candidates[id_candit].chromosome[j] >= -100))
             candidates[id_candit].chromosome[j] = random_double(-100, 100);
     }
@@ -278,14 +280,9 @@ double sigma_sums(individuo *individuos, int dimension, individuo *best_individu
             subtraction_fitness = 0.001;
         sum_one += pow(best_individuo->chromosome[dimension] - individuos[i].chromosome[dimension], 2) / subtraction_fitness;
         sum_two += 1 / subtraction_fitness;
-        // printf("sum_one-:%Lf\n", sum_one);
-        // printf("sum_two-:%Lf\n", sum_two);
-        // printf("subtract-:%Lf\n", subtraction_fitness);
     }
-    // printf("sum_one-FINAL:%Lf\n", sum_one);
-    // printf("sum_two-FINAL:%Lf\n", sum_two);
+
     sum_one = sqrt(abs_double(sum_one / sum_two));
-    // printf("sigma-:%Lf\n", sum_one);
     return sum_one;
 }
 
@@ -433,7 +430,6 @@ populacao *aco(populacao *population)
         for (int iter = 0; iter < max_inter && difftime(time_now, time_init) < parameters.time_limit; iter++)
         {
             DEBUG(print_individuo(individuos, d, best_individuo););
-            // printf("Best_fitness: %lf\n", best_individuo->fitness);
             //  Move each individuo to a new individuo_chromossome
             select_next_position(pheromones, individuos, d, best_individuo);
             evaporate_pheromones(pheromones, d);
@@ -448,26 +444,12 @@ populacao *aco(populacao *population)
             time(&time_now);
         }
 
-        // double desv = desvio_padrao_individuo(individuos, parameters.num_ants);
-        // printf("Desvio: %lf\n", desv);
-
         if (doubleEqual(best_individuoer, best_individuo->fitness, 2))
             cont_or_stop = 0;
     }
 
     population->individuos = individuos;
     copy_individuo(best_individuo, &population->individuos[0], d);
-
-    // Print the best solution found
-    // print_individuos(individuos, d);
-    // printf("Best fitness value: %lf\n", best_individuo->fitness);
-    // printf("Best individuo_chromossome:");
-    // for (int i = 0; i < d; i++)
-    // {
-    // printf(" %lf", best_individuo->chromosome[i]);
-    // }
-    // printf("\n");
-    // printf("Best %lf\n", best_individuo->fitness);
 
     // Free memory
     for (int i = 0; i < parameters.num_ants; i++)
@@ -486,5 +468,6 @@ populacao *aco(populacao *population)
     free(candidates);
     free(sigma);
     free(best_individuo);
+    reset_parameters_ant();
     return population;
 }

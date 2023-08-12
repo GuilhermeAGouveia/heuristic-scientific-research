@@ -24,8 +24,6 @@ void set_default_parameters_genetic()
        parameters.function_number = 3;
     if (!parameters.time_limit)
         parameters.time_limit = 10; // seconds
-    if (!parameters.island_size)
-        parameters.island_size = 1;
     if (!parameters.population_size)
         parameters.population_size = 507;//1613;
     if (!parameters.dimension)
@@ -38,13 +36,19 @@ void set_default_parameters_genetic()
         parameters.mutation_rate = 15;//6; // %
     if (!parameters.crossover_rate)
         parameters.crossover_rate = 34;//21; // %
-    if (!parameters.num_migrations)
-        parameters.num_migrations = 0;
     if (!parameters.evaluation_limit)
         parameters.evaluation_limit = 1490400;
     if (!parameters.seed)
         parameters.seed = time(NULL);
     srand(parameters.seed);
+}
+
+void reset_parameters_genetic()
+{
+    parameters.population_size = 0;
+    parameters.mutation_rate = 0;
+    parameters.crossover_rate = 0;
+    parameters.seed = 0;
 }
 
 void print_roleta(int *roleta, int roleta_size, int ball1, int ball2)
@@ -257,7 +261,6 @@ populacao *genetic(populacao *population)
     DEBUG(printf("\nevolution\n"););
     individuo *parents[2];
     individuo bestIndividuo = {.fitness = INFINITY};
-    // populacao *populations = generate_island(parameters.island_size, parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
     time_t time_init, time_now;
     int evaluation_count = 0;
     int epoca_count = 0;
@@ -286,23 +289,7 @@ populacao *genetic(populacao *population)
         evaluation_count += original_population->size;
         time(&time_now);
     }
-    // individuo *bestCurrent = get_best_of_population(*original_population);
-    //  puts("\nMelhor de toda a população:");
-    //  print_individuo(*bestCurrent, dimension);
-    //  printf("%lf\n", bestCurrent->fitness);
-    // if (bestCurrent->fitness < bestIndividuo.fitness)
-    //  bestIndividuo = *bestCurrent;
 
-    // migrate(populations, parameters.island_size, dimension, domain_function);
-
-    // Verifica se um best_Individuo foi encontrado em relaçao a epoca anterior
-    //  if(doubleEqual(bestIndividuo.fitness, best_ep_ant, 2)){
-    //      total_epocs_s_m++;
-    //  }
-    //  else
-    //    total_epocs_s_m = 0;
-    //  //Se o limite de epocas sem melhora for atingido é finalizada a evolucao
-    //  if(total_epocs_s_m == limit_epocs)
-    //     continue_evol = 0;
+    reset_parameters_genetic();
     return original_population;
 }

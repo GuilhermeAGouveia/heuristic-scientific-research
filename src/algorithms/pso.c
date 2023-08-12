@@ -19,14 +19,10 @@
 
 void set_default_parameters_pso()
 {
-    if (!parameters.F)
-        parameters.F = 0.99;
     if (!parameters.function_number)
         parameters.function_number = 3;
     if (!parameters.time_limit)
         parameters.time_limit = 10; // seconds
-    if (!parameters.island_size)
-        parameters.island_size = 10;
     if (!parameters.population_size)
         parameters.population_size = 5598;
     if (!parameters.dimension)
@@ -37,12 +33,6 @@ void set_default_parameters_pso()
         parameters.domain_function.max = 100;
     if (!parameters.num_generations_per_epoca)
         parameters.num_generations_per_epoca = 300;
-    if (!parameters.mutation_rate)
-        parameters.mutation_rate = 100; // %
-    if (!parameters.crossover_rate)
-        parameters.crossover_rate = 100; // %
-    if (!parameters.num_migrations)
-        parameters.num_migrations = 3;
     if (!parameters.seed)
         parameters.seed = time(NULL);
     if (!parameters.c1)
@@ -50,6 +40,14 @@ void set_default_parameters_pso()
     if (!parameters.c2)
         parameters.c2 = 0.77623;
     srand(parameters.seed);
+}
+
+void reset_parameters_pso() {
+    parameters.population_size = 0;
+    parameters.num_generations_per_epoca = 0;
+    parameters.c1 = 0;
+    parameters.c2 = 0;
+    parameters.seed = 0;
 }
 
 void verifica_limites(individuo *individuo, int dimension)
@@ -69,16 +67,6 @@ void verifica_limites(individuo *individuo, int dimension)
             individuo->chromosome[i] = parameters.domain_function.max;
             individuo->velocidade[i] = vmax;
         }
-    }
-}
-
-void copy_individuo_pso(individuo *original, individuo *copia, int dimension)
-{
-    copia->fitness = original->fitness;
-    for (int i = 0; i < dimension; i++)
-    {
-        copia->chromosome[i] = original->chromosome[i];
-        copia->velocidade[i] = original->velocidade[i];
     }
 }
 
@@ -137,9 +125,9 @@ populacao *pso(populacao *population)
             {
                 
                 if (population->individuos[i].fitness < population_best_current->individuos[i].fitness)
-                    copy_individuo_pso(&population->individuos[i], &population_best_current->individuos[i], parameters.dimension);
+                    copy_individuo(&population->individuos[i], &population_best_current->individuos[i], parameters.dimension);
                 if (population->individuos[i].fitness < individuo_best->fitness)
-                    copy_individuo_pso(&population->individuos[i], individuo_best, parameters.dimension);
+                    copy_individuo(&population->individuos[i], individuo_best, parameters.dimension);
                     
                 double r1 = (double)rand() / RAND_MAX;
                 double r2 = (double)rand() / RAND_MAX;
@@ -175,6 +163,6 @@ populacao *pso(populacao *population)
             max_inter += max_inter_add;
         }
     }
-    copy_individuo_pso(individuo_best, &population->individuos[0], parameters.dimension);
+    reset_parameters_pso();
     return population;
 }

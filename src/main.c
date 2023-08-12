@@ -113,7 +113,6 @@ int main(int argc, char *argv[])
         for (int alg_pos = 0; alg_pos < parameters.num_algorithms; alg_pos++)
         {
             enum algorithm alg = (enum algorithm)(algoritmos[alg_pos]);
-            parameters.seed = time(NULL);
 
             printf("Running algorithm %s\n", translateIntToAlg(alg));
 

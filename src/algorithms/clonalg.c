@@ -40,6 +40,13 @@ void set_default_parameters_clonalg()
     srand(parameters.seed);
 }
 
+void reset_parameters_clonalg(){
+    parameters.population_size = 0;
+    parameters.num_generations_per_epoca = 0;
+    parameters.clones = 0;
+    parameters.seed = 0;
+}
+
 void mutation_n_genes(populacao *populacao_clones, int n_genes, int dimension, domain domain_function)
 {
     DEBUG(printf("\nmutation\n"););
@@ -181,5 +188,6 @@ populacao *clonalg(populacao *population)
             max_inter += max_inter_add;
         }
     }
+    reset_parameters_clonalg();
     return population_main;
 }

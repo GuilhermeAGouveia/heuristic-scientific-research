@@ -70,7 +70,7 @@ void set_parameters(int argc, char *argv[])
             parameters.F = atof(optarg);
             break;
         case 's':
-            parameters.seed = atoi(optarg);
+            parameters.seed = atoi(optarg); // não funciona momento, os algoritmos vão definir uma semente própria
             break;
         case 'v':
             parameters.c1 = atof(optarg);

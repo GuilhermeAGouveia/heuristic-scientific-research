@@ -40,13 +40,19 @@ void set_default_parameters_diferencial()
         parameters.num_generations_per_epoca = 300;
     if (!parameters.mutation_rate)
         parameters.mutation_rate = 84;//4; // %
-  //  if (!parameters.crossover_rate)
-    //    parameters.crossover_rate = 54; // %
     if (!parameters.seed)
         parameters.seed = time(NULL);
     if (!parameters.evaluation_limit)
         parameters.evaluation_limit = 1490400;
     srand(parameters.seed);
+}
+
+void reset_parameters_diferencial() {
+    parameters.population_size = 0;
+    parameters.num_generations_per_epoca = 0;
+    parameters.mutation_rate = 0;
+    parameters.F = 0;
+    parameters.seed = 0;
 }
 
 populacao *mutation_diferencial(populacao *populacao_original, int dimension, domain domain_function)
@@ -174,23 +180,6 @@ populacao *diferencial(populacao *population)
         evaluation_count += original_population->size;
         time(&time_now);
     }
-   // individuo *bestCurrent = get_best_of_population(*original_population);
-    // puts("\nMelhor de toda a população:");
-    // print_individuo(*bestCurrent, dimension);
-    // printf("%lf\n", bestCurrent->fitness);
-    //if (bestCurrent->fitness < bestIndividuo.fitness)
-     //   bestIndividuo = *bestCurrent;
-
-    // migrate(populations, parameters.island_size, dimension, domain_function);
-
-    // Verifica se um best_Individuo foi encontrado em relaçao a epoca anterior
-    //  if(doubleEqual(bestIndividuo.fitness, best_ep_ant, 2)){
-    //      total_epocs_s_m++;
-    //  }
-    //  else
-    //    total_epocs_s_m = 0;
-    //  //Se o limite de epocas sem melhora for atingido é finalizada a evolucao
-    //  if(total_epocs_s_m == limit_epocs)
-    //     continue_evol = 0;
+    reset_parameters_diferencial();
     return original_population;
 }
