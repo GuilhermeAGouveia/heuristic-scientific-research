@@ -25,7 +25,7 @@ void set_default_parameters_genetic()
     if (!parameters.time_limit)
         parameters.time_limit = 10; // seconds
     if (!parameters.population_size)
-        parameters.population_size = 507;//1613;
+        parameters.population_size = 507;//507;
     if (!parameters.dimension)
         parameters.dimension = 10; // 10 or 30
     if (!parameters.domain_function.min)
@@ -250,9 +250,11 @@ populacao *crossover(populacao *populacao_original, populacao *populacao_mutada,
     return nova_populacao;
 }
 
+
 populacao *genetic(populacao *population)
 {
     set_default_parameters_genetic();
+    //print_parameters(parameters);
 
     if (population == NULL)
     {

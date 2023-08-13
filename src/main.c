@@ -54,6 +54,7 @@ void print_combinations(Array combinations, int nAlgorithms)
 }
 
 void get_algoritms(int *result){
+
     double soma_proporcoes = parameters.num_pso + parameters.num_aco + parameters.num_clonal + parameters.num_diferencial + parameters.num_genetico;
     int cont = 0, total_islands = 0;
     proporcao_alg proporcoes[5];
@@ -100,8 +101,9 @@ int main(int argc, char *argv[])
     set_parameters(argc, argv); // Lê os parâmetros da linha de comando e repassa para as variáveis globais
     int *algoritmos = calloc(parameters.num_algorithms, sizeof(int *));;
     get_algoritms(algoritmos);
-    individuo *gbest_individuo = NULL;
-    individuo *pbest_individuo = NULL;
+    individuo *gbest_individuo = generate_population(1, 10, parameters.domain_function, 15);
+    individuo *pbest_individuo = generate_population(1, 10, parameters.domain_function, 15);
+    gbest_individuo->fitness = -10;
     populacao **populations = calloc(25, sizeof(populacao *));
     //int *alg_set = convert_parameter_to_array(parameters.algorithms);
     //printf("Algorithms: ");
@@ -112,6 +114,7 @@ int main(int argc, char *argv[])
 
         for (int alg_pos = 0; alg_pos < parameters.num_algorithms; alg_pos++)
         {
+  
             enum algorithm alg = (enum algorithm)(algoritmos[alg_pos]);
 
             printf("Running algorithm %s\n", translateIntToAlg(alg));
@@ -138,11 +141,14 @@ int main(int argc, char *argv[])
                 exit(1);
             }
 
-            pbest_individuo = get_best_of_population(*populations[alg_pos]);
+            //pbest_individuo = get_best_of_population(*populations[alg_pos]);
+            copy_individuo(get_best_of_population(*populations[alg_pos]),pbest_individuo, parameters.dimension);
             print_individuo(*pbest_individuo, parameters.dimension, alg_pos);
-            if (gbest_individuo == NULL || pbest_individuo->fitness < gbest_individuo->fitness)
+            
+            if (gbest_individuo->fitness < 0 || pbest_individuo->fitness < gbest_individuo->fitness)
             {
-                gbest_individuo = pbest_individuo;
+                //gbest_individuo = pbest_individuo;
+                copy_individuo(pbest_individuo,gbest_individuo, parameters.dimension);
             }
         }
         set_neighbours(populations, parameters.num_algorithms);

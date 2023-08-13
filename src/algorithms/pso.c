@@ -92,9 +92,20 @@ void calcula_componente(double *componente, individuo *individuo_1, individuo *i
     }
 }
 
+void copy_individuo_pso(individuo *original, individuo *copia, int dimension)
+{
+    copia->fitness = original->fitness;
+    for (int i = 0; i < dimension; i++)
+    {
+        copia->chromosome[i] = original->chromosome[i];
+        copia->velocidade[i] = original->velocidade[i];
+    }
+}
+
 populacao *pso(populacao *population)
 {
     set_default_parameters_pso();
+    //print_parameters(parameters);
     //print_individuo(population->individuos[2], parameters.dimension, 0);
     if(population == NULL){
         population = generate_island(1,parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
@@ -125,9 +136,9 @@ populacao *pso(populacao *population)
             {
                 
                 if (population->individuos[i].fitness < population_best_current->individuos[i].fitness)
-                    copy_individuo(&population->individuos[i], &population_best_current->individuos[i], parameters.dimension);
+                    copy_individuo_pso(&population->individuos[i], &population_best_current->individuos[i], parameters.dimension);
                 if (population->individuos[i].fitness < individuo_best->fitness)
-                    copy_individuo(&population->individuos[i], individuo_best, parameters.dimension);
+                    copy_individuo_pso(&population->individuos[i], individuo_best, parameters.dimension);
                     
                 double r1 = (double)rand() / RAND_MAX;
                 double r2 = (double)rand() / RAND_MAX;
@@ -163,6 +174,7 @@ populacao *pso(populacao *population)
             max_inter += max_inter_add;
         }
     }
+    copy_individuo_pso(individuo_best, &population->individuos[0], parameters.dimension);
     reset_parameters_pso();
     return population;
 }

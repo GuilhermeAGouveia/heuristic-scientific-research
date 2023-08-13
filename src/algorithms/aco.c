@@ -25,7 +25,7 @@ individuo *candidates;
 void set_default_parameters_ant()
 {
     if (!parameters.num_ants)
-        parameters.num_ants = 5252;
+        parameters.num_ants = 5252;//5252;
     if (!parameters.num_generations_per_epoca)
         parameters.num_generations_per_epoca = 2000;
     if (!parameters.tax_evaporate)
@@ -320,29 +320,13 @@ void best_individuo_check(individuo *individuos, individuo *best_individuo, doub
     }
 }
 
-void catch_best_individuo(individuo *individuos, individuo *best_individuot, double **pheromones, int d)
+
+void catch_best_individuo(populacao *population, individuo *best_individuot, double **pheromones, int d)
 {
-    double best_fitness = best_individuot->fitness;
-    int best_individuo = -1;
-
-    for (int i = 1; i < parameters.num_ants; i++)
-    {
-        if (individuos[i].fitness < best_fitness)
-        {
-            best_fitness = individuos[i].fitness;
-            best_individuo = i;
-        }
+    if(get_best_of_population(*population)->fitness < best_individuot->fitness){
+        copy_individuo(get_best_of_population(*population),best_individuot, parameters.dimension);
     }
-
-    if (best_individuo != -1)
-    {
-
-        for (int i = 0; i < d; i++)
-        {
-            best_individuot->chromosome[i] = individuos[best_individuo].chromosome[i];
-        }
-        best_individuot->fitness = individuos[best_individuo].fitness;
-    }
+    
 }
 
 double calc_mean_individuo(individuo *individuos, int individuos_size)
@@ -370,6 +354,7 @@ double desvio_padrao_individuo(individuo *individuos, int individuos_size)
 populacao *aco(populacao *population)
 {
     set_default_parameters_ant();
+    //print_parameters(parameters);
     if(population == NULL){
         population = generate_island(1,parameters.num_ants, parameters.dimension, parameters.domain_function, parameters.function_number);
     }
@@ -403,16 +388,13 @@ populacao *aco(populacao *population)
 
     // Allocate memory for the individuos
     //individuo *individuos = (individuo *)malloc(parameters.num_ants * sizeof(individuo));
-    individuo *best_individuo = (individuo *)malloc(1 * sizeof(individuo));
+    individuo *best_individuo = generate_population(1, 10, parameters.domain_function, 15);
     candidates = (individuo *)malloc(parameters.num_candidates * sizeof(individuo));
 
-    // Initialize the individuos' positions and fitness valuess
-    initialize(individuos, parameters.num_ants, d);
-    initialize(best_individuo, 1, d);
     initialize(candidates, parameters.num_candidates, d);
 
     // Find the best individuo and its fitness value
-    catch_best_individuo(individuos, best_individuo, pheromones, d);
+    copy_individuo(get_best_of_population(*population),best_individuo, parameters.dimension);
 
     sigma = (double *)malloc(d * sizeof(double));
     update_sigma(individuos, d, best_individuo);
@@ -435,7 +417,7 @@ populacao *aco(populacao *population)
             evaporate_pheromones(pheromones, d);
 
             // Update the best individuo and its fitness value
-            catch_best_individuo(individuos, best_individuo, pheromones, d);
+            catch_best_individuo(population, best_individuo, pheromones, d);
             // Verifica se a melhor posição não foi perdida
             best_individuo_check(individuos, best_individuo, pheromones, d);
             // Update the pheromone matrix with the best individuo's path
@@ -449,23 +431,24 @@ populacao *aco(populacao *population)
     }
 
     population->individuos = individuos;
+    population->size = parameters.num_ants;
     copy_individuo(best_individuo, &population->individuos[0], d);
 
     // Free memory
-    for (int i = 0; i < parameters.num_ants; i++)
-    {
-        free(pheromones[i]);
-        // free(individuos[i].chromosome);
-    }
+    //for (int i = 0; i < parameters.num_ants; i++)
+    //{
+        //free(pheromones[i]);
+        //free(individuos[i].chromosome);
+   // }
 
-    for (int i = 0; i < parameters.num_candidates; i++)
-    {
-        free(pheromones_candidates[i]);
-        free(candidates[i].chromosome);
-    }
+   // for (int i = 0; i < parameters.num_candidates; i++)
+    //{
+        //free(pheromones_candidates[i]);
+        //free(candidates[i].chromosome);
+    //}
     free(pheromones);
     free(pheromones_candidates);
-    free(candidates);
+    //free(candidates);
     free(sigma);
     free(best_individuo);
     reset_parameters_ant();
