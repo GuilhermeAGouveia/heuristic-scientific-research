@@ -42,6 +42,10 @@ void set_default_parameters_ant()
         parameters.seed = time(NULL);
     if (!parameters.dimension)
         parameters.dimension = 10; // 10 or 30
+    if (!parameters.domain_function.min)
+        parameters.domain_function.min = -100;
+    if (!parameters.domain_function.max)
+        parameters.domain_function.max = 100;
     srand(parameters.seed);
 }
 
@@ -358,6 +362,7 @@ populacao *aco(populacao *population)
     if(population == NULL){
         population = generate_island(1,parameters.num_ants, parameters.dimension, parameters.domain_function, parameters.function_number);
     }
+
     individuo *individuos = population->individuos;
     int d = 10;
     DEBUG(printf("aco\n");)
@@ -392,7 +397,7 @@ populacao *aco(populacao *population)
     candidates = (individuo *)malloc(parameters.num_candidates * sizeof(individuo));
 
     initialize(candidates, parameters.num_candidates, d);
-
+    
     // Find the best individuo and its fitness value
     copy_individuo(get_best_of_population(*population),best_individuo, parameters.dimension);
 

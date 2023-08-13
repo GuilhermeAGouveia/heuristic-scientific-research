@@ -57,6 +57,7 @@ void get_algoritms(int *result){
 
     double soma_proporcoes = parameters.num_pso + parameters.num_aco + parameters.num_clonal + parameters.num_diferencial + parameters.num_genetico;
     int cont = 0, total_islands = 0;
+    double total_islands_double;
     proporcao_alg proporcoes[5];
 
     proporcoes[0].proporcao = parameters.num_pso;
@@ -66,8 +67,12 @@ void get_algoritms(int *result){
     proporcoes[4].proporcao = parameters.num_genetico;
 
     for(int i = 0; i < 5; i++){
+        total_islands_double = parameters.num_algorithms * (proporcoes[i].proporcao/soma_proporcoes);
         proporcoes[i].alg = i;
-        proporcoes[i].total_islands = (int)(parameters.num_algorithms * (proporcoes[i].proporcao/soma_proporcoes));
+        if((total_islands_double - (int)total_islands_double) < 0.5)
+          proporcoes[i].total_islands = (int)total_islands_double;
+        else
+           proporcoes[i].total_islands = 1 + (int)total_islands_double;
         total_islands += proporcoes[i].total_islands;
     }
 
@@ -82,6 +87,13 @@ void get_algoritms(int *result){
         for(int i = 0; total_islands < parameters.num_algorithms && i < 5; i++){
             proporcoes[i].total_islands += 1;
             total_islands += 1;
+        }
+    }
+
+    while(total_islands > parameters.num_algorithms){
+        for(int i = 5; total_islands > parameters.num_algorithms && i > 0; i--){
+            proporcoes[i].total_islands -= 1;
+            total_islands -= 1;
         }
     }
     
@@ -140,6 +152,7 @@ int main(int argc, char *argv[])
                 printf("Invalid algorithm. Please use one of the following: p, g, d, a, c\n");
                 exit(1);
             }
+            //print_population(populations[alg_pos]->individuos, 10, 10, 0);
 
             //pbest_individuo = get_best_of_population(*populations[alg_pos]);
             copy_individuo(get_best_of_population(*populations[alg_pos]),pbest_individuo, parameters.dimension);
