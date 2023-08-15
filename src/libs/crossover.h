@@ -25,10 +25,10 @@ typedef enum
 #define CROSSOVER_H
 
 
-individuo cruzamento_media(individuo parent1, individuo parent2, int n_itens);
-individuo cruzamento_flat(individuo parent1, individuo parent2, int n_itens);
-individuo cruzamento_blend(individuo parent1, individuo parent2, int n_itens);
-individuo cruzamento_metade(individuo parent1, individuo parent2, int n_itens);
-individuo cruzamento_ponto(individuo parent1, individuo parent2, int n_itens);
+void cruzamento_media(individuo parent1, individuo parent2, int n_itens, individuo *child);
+void cruzamento_flat(individuo parent1, individuo parent2, int n_itens, individuo *child);
+void cruzamento_blend(individuo parent1, individuo parent2, int n_itens, individuo *child);
+void cruzamento_metade(individuo parent1, individuo parent2, int n_itens, individuo *child);
+void cruzamento_ponto(individuo parent1, individuo parent2, int n_itens, individuo *child);
 
 #endif /* CROSSOVER_H */

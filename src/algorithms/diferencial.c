@@ -102,9 +102,11 @@ void selection_diferencial(populacao *population_original, populacao *population
     for (int i = 0; i < population_mutation->size; i++)
     {
         if (population_mutation->individuos[i].fitness < population_original->individuos[i].fitness)
-            population_original->individuos[i] = population_mutation->individuos[i];
+            copy_individuo(&population_mutation->individuos[i], &population_original->individuos[i], parameters.dimension);
+            //population_original->individuos[i] = population_mutation->individuos[i];
     }
     qsort(population_original->individuos, population_original->size, sizeof(individuo), comparador_individuo);
+    destroy_island(population_mutation, 1);
     DEBUG(printf("População selecionada\n"););
     DEBUG(print_population(population_original->individuos, population_original->size, dimension, 1););
 }
@@ -139,6 +141,7 @@ populacao *crossover_diferencial(populacao *populacao_original, populacao *popul
         }
         fitness(&nova_populacao->individuos[i], dimension, parameters.function_number);
     }
+    destroy_island(populacao_mutada, 1);
     return nova_populacao;
 }
 

@@ -20,12 +20,12 @@
 void set_default_parameters_genetic()
 {
 
-    if(!parameters.function_number)
-       parameters.function_number = 3;
+    if (!parameters.function_number)
+        parameters.function_number = 3;
     if (!parameters.time_limit)
         parameters.time_limit = 10; // seconds
     if (!parameters.population_size)
-        parameters.population_size = 507;//507;
+        parameters.population_size = 507; // 507;
     if (!parameters.dimension)
         parameters.dimension = 10; // 10 or 30
     if (!parameters.domain_function.min)
@@ -33,9 +33,9 @@ void set_default_parameters_genetic()
     if (!parameters.domain_function.max)
         parameters.domain_function.max = 100;
     if (!parameters.mutation_rate)
-        parameters.mutation_rate = 15;//6; // %
+        parameters.mutation_rate = 15; // 6; // %
     if (!parameters.crossover_rate)
-        parameters.crossover_rate = 34;//21; // %
+        parameters.crossover_rate = 34; // 21; // %
     if (!parameters.evaluation_limit)
         parameters.evaluation_limit = 1490400;
     if (!parameters.seed)
@@ -206,6 +206,7 @@ populacao *crossover(populacao *populacao_original, populacao *populacao_mutada,
     populacao *nova_populacao = generate_island(1, populacao_original->size, dimension, parameters.domain_function, parameters.function_number);
     DEBUG(printf("\ncruzamento\n"););
     int i;
+    individuo *filho = generate_population(1, parameters.dimension, parameters.domain_function, parameters.function_number);
 
     for (i = 0; i < populacao_original->size; i++)
     {
@@ -219,42 +220,42 @@ populacao *crossover(populacao *populacao_original, populacao *populacao_mutada,
 
             individuo parent1 = *parents[0];
             individuo parent2 = *parents[1];
-            individuo filho;
             switch (3) // sempre usar o cruzamento de ponto de corte
             {
             case MEDIA:
-                filho = cruzamento_media(parent1, parent2, dimension);
+                cruzamento_media(parent1, parent2, dimension, filho);
             case METADE:
-                filho = cruzamento_metade(parent1, parent2, dimension);
+                cruzamento_metade(parent1, parent2, dimension, filho);
             case PONTO:
-                filho = cruzamento_ponto(parent1, parent2, dimension);
+                cruzamento_ponto(parent1, parent2, dimension, filho);
             case MEDIA_GEOMETRICA:
-                filho = cruzamento_ponto(parent1, parent2, dimension);
+                cruzamento_ponto(parent1, parent2, dimension, filho);
             case FLAT:
-                filho = cruzamento_flat(parent1, parent2, dimension);
+                cruzamento_flat(parent1, parent2, dimension, filho);
             case BLEND:
-                filho = cruzamento_blend(parent1, parent2, dimension);
+                cruzamento_blend(parent1, parent2, dimension, filho);
             default:
-                filho = cruzamento_media(parent1, parent2, dimension);
+                cruzamento_media(parent1, parent2, dimension, filho);
             }
 
-            fitness(&filho, dimension, parameters.function_number);
-            nova_populacao->individuos[i] = filho;
+            fitness(filho, dimension, parameters.function_number);
+            copy_individuo(filho, &nova_populacao->individuos[i], 10);
+        
         }
         else
         {
             clone_individue(&nova_populacao->individuos[i], &populacao_original->individuos[i], dimension);
         }
     }
+    destroy_population(filho, 1);
     // nova_populacao->individuos[populacao->size - 1] = populacao->individuos[populacao->size - 1];
     return nova_populacao;
 }
 
-
 populacao *genetic(populacao *population)
 {
     set_default_parameters_genetic();
-    //print_parameters(parameters);
+    // print_parameters(parameters);
 
     if (population == NULL)
     {
