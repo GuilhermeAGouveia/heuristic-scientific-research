@@ -170,7 +170,7 @@ populacao *clonalg(populacao *population)
             populacao_clones = generate_clones(population_main, parameters.clones, parameters.dimension, parameters.domain_function);
             populacao_clones_mutated = mutation_clones(populacao_clones, parameters.population_size, parameters.dimension, parameters.domain_function);
             union_populacao_clones_and_main(populacao_clones_mutated, population_main, parameters.population_size);
-            free_population(populacao_clones, parameters.population_size);
+            destroy_island(populacao_clones, parameters.population_size);
             qsort(population_main->individuos, population_main->size, sizeof(individuo), comparador_individuo);
             generation_count++;
             time(&time_now);

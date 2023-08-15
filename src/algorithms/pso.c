@@ -175,6 +175,7 @@ populacao *pso(populacao *population)
         }
     }
     copy_individuo_pso(individuo_best, &population->individuos[0], parameters.dimension);
+    destroy_island(population_best_current, 1);
     reset_parameters_pso();
     return population;
 }

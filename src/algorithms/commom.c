@@ -104,6 +104,7 @@ void destroy_population(individuo *population, int n_individuos)
     for (int i = 0; i < n_individuos; i++)
     {
         free(population[i].chromosome);
+        free(population[i].velocidade);
     }
     free(population);
 }
