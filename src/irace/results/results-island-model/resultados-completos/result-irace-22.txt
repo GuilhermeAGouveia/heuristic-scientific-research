@@ -1,0 +1,246 @@
+#------------------------------------------------------------------------------
+# irace: An implementation in R of (Elitist) Iterated Racing
+# Version: 3.5.6863679
+# Copyright (C) 2010-2020
+# Manuel Lopez-Ibanez     <manuel.lopez-ibanez@manchester.ac.uk>
+# Jeremie Dubois-Lacoste  
+# Leslie Perez Caceres    <leslie.perez.caceres@ulb.ac.be>
+#
+# This is free software, and you are welcome to redistribute it under certain
+# conditions.  See the GNU General Public License for details. There is NO
+# WARRANTY; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#
+# irace builds upon previous code from the race package:
+#     race: Racing methods for the selection of the best
+#     Copyright (C) 2003 Mauro Birattari
+#------------------------------------------------------------------------------
+# installed at: /home/discente/R/x86_64-pc-linux-gnu-library/4.1/irace
+# called with: 
+== irace == WARNING: A default scenario file '/home/discente/Downloads/IC/heuristic-scientific-research/src/irace/scenario.txt' has been found and will be read.
+# 2023-08-16 12:33:19 -03: Initialization
+# Elitist race
+# Elitist new instances: 1
+# Elitist limit: 2
+# nbIterations: 5
+# minNbSurvival: 5
+# nbParameters: 8
+# seed: 219237304
+# confidence level: 0.95
+# budget: 500
+# mu: 5
+# deterministic: FALSE
+
+# 2023-08-16 12:33:19 -03: Iteration 1 of 5
+# experimentsUsedSoFar: 0
+# remainingBudget: 500
+# currentBudget: 100
+# nbConfigurations: 16
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . All alive configurations are elite and nothing is discarded
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|          1|         16|          1|     300.0000000|         16|00:16:30|   NA|  NA|    NA|
+|x|          2|         16|         16|     750.7618250|         32|00:14:37|-0.17|0.42|1.0314|
+|x|          3|         16|         15|     668.4366050|         48|00:16:27|+0.02|0.35|0.8545|
+|x|          4|         16|         14|     630.1901630|         64|00:16:28|+0.16|0.37|0.6925|
+|-|          5|         12|         14|     564.1521304|         80|00:16:31|-0.06|0.16|0.5724|
+|=|          6|         12|         13|     673.9751948|         92|00:10:26|-0.00|0.16|0.6040|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+Best-so-far configuration:          13    mean value:      673.9751948
+Description of the best-so-far configuration:
+   .ID. num_migrations migration_size random_random num_pso num_genetico num_diferencial num_aco num_clonal .PARENT.
+13   13              6             53       0.29301      71           33              37      70         35       NA
+
+# 2023-08-16 14:04:22 -03: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+   num_migrations migration_size random_random num_pso num_genetico num_diferencial num_aco num_clonal
+13              6             53       0.29301      71           33              37      70         35
+15              4             48       0.27857      50           83              62       8         15
+16              6             12       0.72904      89            3              35      46         28
+14              6             84       0.20433      99           10              35      29         98
+1               6             42       0.90476      53           10              92      97         29
+# 2023-08-16 14:04:22 -03: Iteration 2 of 5
+# experimentsUsedSoFar: 92
+# remainingBudget: 408
+# currentBudget: 102
+# nbConfigurations: 18
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . All alive configurations are elite and nothing is discarded
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|          7|         18|         13|     300.0000000|         18|00:20:10|   NA|  NA|    NA|
+|x|          5|         18|         13|     300.0000000|         31|00:12:50|+0.72|0.86|0.5607|
+|x|          1|         18|         13|     300.0000000|         44|00:12:50|+0.81|0.87|0.3738|
+|x|          6|         18|         17|     529.0177002|         57|00:11:17|+0.27|0.45|0.6012|
+|=|          2|         18|         16|     664.5210762|         70|00:11:06|+0.14|0.31|0.7515|
+|-|          3|         16|         16|     637.1164897|         83|00:12:50|-0.08|0.10|0.6794|
+|=|          4|         16|         26|     620.2660220|         94|00:11:00|+0.03|0.17|0.6865|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+Best-so-far configuration:          26    mean value:      620.2660220
+Description of the best-so-far configuration:
+   .ID. num_migrations migration_size random_random num_pso num_genetico num_diferencial num_aco num_clonal .PARENT.
+26   26              5             86       0.48711      67           26              39      59         48       16
+
+# 2023-08-16 15:36:28 -03: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+   num_migrations migration_size random_random num_pso num_genetico num_diferencial num_aco num_clonal
+26              5             86       0.48711      67           26              39      59         48
+18              6            117       0.41048      96           59              79      76         90
+13              6             53       0.29301      71           33              37      70         35
+14              6             84       0.20433      99           10              35      29         98
+15              4             48       0.27857      50           83              62       8         15
+# 2023-08-16 15:36:28 -03: Iteration 3 of 5
+# experimentsUsedSoFar: 186
+# remainingBudget: 314
+# currentBudget: 104
+# nbConfigurations: 17
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . All alive configurations are elite and nothing is discarded
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|          8|         17|         33|     1203.180399|         17|00:19:00|   NA|  NA|    NA|
+|x|          4|         17|         26|     852.8188805|         29|00:11:02|+0.29|0.65|0.7389|
+|x|          2|         17|         26|     975.4604310|         41|00:10:41|+0.15|0.43|0.8806|
+|x|          1|         17|         26|     806.5953232|         53|00:11:04|+0.10|0.32|0.8799|
+|=|          3|         17|         18|     745.0179738|         65|00:11:02|+0.14|0.31|0.8482|
+|=|          7|         17|         18|     670.8483115|         77|00:11:05|+0.12|0.27|0.8078|
+|=|          6|         17|         39|     745.8780369|         89|00:10:46|+0.08|0.21|0.8786|
+|=|          5|         17|         39|     690.1432822|        101|00:11:05|+0.08|0.19|0.8319|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+Best-so-far configuration:          39    mean value:      690.1432822
+Description of the best-so-far configuration:
+   .ID. num_migrations migration_size random_random num_pso num_genetico num_diferencial num_aco num_clonal .PARENT.
+39   39              6             75        0.1489      81           74              54      80         28       13
+
+# 2023-08-16 17:12:16 -03: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+   num_migrations migration_size random_random num_pso num_genetico num_diferencial num_aco num_clonal
+39              6             75       0.14890      81           74              54      80         28
+18              6            117       0.41048      96           59              79      76         90
+26              5             86       0.48711      67           26              39      59         48
+14              6             84       0.20433      99           10              35      29         98
+13              6             53       0.29301      71           33              37      70         35
+# 2023-08-16 17:12:17 -03: Iteration 4 of 5
+# experimentsUsedSoFar: 287
+# remainingBudget: 213
+# currentBudget: 106
+# nbConfigurations: 16
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . All alive configurations are elite and nothing is discarded
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|          9|         16|         46|     500.0174360|         16|00:18:23|   NA|  NA|    NA|
+|x|          6|         16|         44|     851.6342670|         27|00:10:41|-0.43|0.29|1.3417|
+|x|          3|         16|         44|     734.4228463|         38|00:11:03|-0.04|0.30|1.0271|
+|x|          4|         16|         44|     675.8310313|         49|00:11:02|-0.04|0.22|1.0225|
+|=|          2|         16|         44|     784.9832322|         60|00:10:44|-0.07|0.14|1.0316|
+|=|          7|         16|         44|     704.1526935|         71|00:11:05|-0.06|0.12|0.8440|
+|=|          5|         16|         44|     646.4165944|         82|00:11:04|-0.05|0.10|0.7145|
+|=|          8|         16|         18|     718.2422026|         93|00:10:46|+0.00|0.13|0.7241|
+|=|          1|         16|         18|     671.7708468|        104|00:11:03|+0.00|0.11|0.6413|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+Best-so-far configuration:          18    mean value:      671.7708468
+Description of the best-so-far configuration:
+   .ID. num_migrations migration_size random_random num_pso num_genetico num_diferencial num_aco num_clonal .PARENT.
+18   18              6            117       0.41048      96           59              79      76         90       14
+
+# 2023-08-16 18:58:11 -03: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+   num_migrations migration_size random_random num_pso num_genetico num_diferencial num_aco num_clonal
+18              6            117       0.41048      96           59              79      76         90
+44              6             81       0.44307      68           11              19      16         38
+14              6             84       0.20433      99           10              35      29         98
+43              6            102       0.36962      82           73              71      74         14
+26              5             86       0.48711      67           26              39      59         48
+# 2023-08-16 18:58:11 -03: Iteration 5 of 5
+# experimentsUsedSoFar: 391
+# remainingBudget: 109
+# currentBudget: 109
+# nbConfigurations: 15
+# Markers:
+     x No test is performed.
+     c Configurations are discarded only due to capping.
+     - The test is performed and some configurations are discarded.
+     = The test is performed but no configuration is discarded.
+     ! The test is performed and configurations could be discarded but elite configurations are preserved.
+     . All alive configurations are elite and nothing is discarded
+
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+| |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+|x|         10|         15|         44|     1201.827235|         15|00:18:57|   NA|  NA|    NA|
+|x|          7|         15|         44|     750.9136175|         25|00:11:04|+0.00|0.50|0.4667|
+|x|          6|         15|         44|     901.6812133|         35|00:10:35|+0.18|0.45|0.4426|
+|x|          2|         15|         43|     979.6987205|         45|00:10:37|-0.00|0.25|0.5790|
+|=|          5|         15|         43|     843.7589764|         55|00:11:03|-0.00|0.20|0.4874|
+|=|          4|         15|         57|     787.8185908|         65|00:11:02|-0.06|0.12|0.6181|
+|=|          9|         15|         55|     747.0720506|         75|00:11:02|-0.07|0.08|0.7077|
+|=|          8|         15|         53|     806.4213073|         85|00:10:34|-0.05|0.08|0.7374|
+|=|          1|         15|         53|     750.1522731|         95|00:11:05|-0.04|0.07|0.6513|
+|=|          3|         15|         53|     725.1424748|        105|00:11:02|-0.02|0.08|0.6786|
++-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
+Best-so-far configuration:          53    mean value:      725.1424748
+Description of the best-so-far configuration:
+   .ID. num_migrations migration_size random_random num_pso num_genetico num_diferencial num_aco num_clonal .PARENT.
+53   53              5             78       0.55719      89           19              33      33         63       44
+
+# 2023-08-16 20:55:18 -03: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+   num_migrations migration_size random_random num_pso num_genetico num_diferencial num_aco num_clonal
+53              5             78       0.55719      89           19              33      33         63
+44              6             81       0.44307      68           11              19      16         38
+60              5             88       0.44250      74           14              14      24         40
+18              6            117       0.41048      96           59              79      76         90
+43              6            102       0.36962      82           73              71      74         14
+# 2023-08-16 20:55:18 -03: Stopped because there is not enough budget left to race more than the minimum (5)
+# You may either increase the budget or set 'minNbSurvival' to a lower value
+# Iteration: 6
+# nbIterations: 6
+# experimentsUsedSoFar: 496
+# timeUsed: 0
+# remainingBudget: 4
+# currentBudget: 4
+# number of elites: 5
+# nbConfigurations: 4
+# Total CPU user time: 269866.1, CPU sys time: 38.893, Wall-clock time: 30119.31
+# Best configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+   num_migrations migration_size random_random num_pso num_genetico num_diferencial num_aco num_clonal
+53              5             78       0.55719      89           19              33      33         63
+44              6             81       0.44307      68           11              19      16         38
+60              5             88       0.44250      74           14              14      24         40
+18              6            117       0.41048      96           59              79      76         90
+43              6            102       0.36962      82           73              71      74         14
+# Best configurations as commandlines (first number is the configuration ID; same order as above):
+53  -K5 -k78 -M0.55719 -Q89 -G19 -D33 -O33 -L63
+44  -K6 -k81 -M0.44307 -Q68 -G11 -D19 -O16 -L38
+60  -K5 -k88 -M0.4425 -Q74 -G14 -D14 -O24 -L40
+18  -K6 -k117 -M0.41048 -Q96 -G59 -D79 -O76 -L90
+43  -K6 -k102 -M0.36962 -Q82 -G73 -D71 -O74 -L14
+
+
+# Testing of elite configurations: 1 
+# Testing iteration configurations: FALSE 
+# 2023-08-16 20:55:18 -03: No test instances, skip testing
