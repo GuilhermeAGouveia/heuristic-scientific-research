@@ -1,3 +1,22 @@
+/**
+ * @brief Este algoritmo de ilha aceita que seja passado qual o conjunto de algoritmos que irá compor o conjunto de ilhas. Os parâmetros são:
+ * -A: conjunto de algoritmos que irão compor o conjunto de ilhas. 
+ * Exemplo: -A 1,2,3,4,5,2:
+ * Onde: 
+ * 1 - PSO
+ * 2 - GA
+ * 3 - DE
+ * 4 - ACO
+ * 5 - CLONALG
+ * 
+ * @author @gustavo1902
+ * @author @GuilhermeAGouveia
+ * @author @ViniciusBastoss
+ * @author @caioreius
+ * Orientador: Prof. Dr. @iagoac
+ * @date 2023-08-31
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "algorithms/genetic.h"
@@ -8,6 +27,7 @@
 #include "algorithms/parameters.h"
 #include "algorithms/commom.h"
 #include "libs/utils.h"
+
 
 #define DEBUG(x)
 

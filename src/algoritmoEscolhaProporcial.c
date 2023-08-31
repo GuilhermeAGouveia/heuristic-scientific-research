@@ -1,3 +1,20 @@
+/**
+ * @brief Este algoritmo de ilha seleciona os algoritmos que irão compor o conjunto de ilha com base na proporção de cada um, que é passada por parâmetro. Os parâmetros são:
+ * -Q: proporção do PSO
+ * -G: proporção do GA
+ * -D: proporção do DE
+ * -O: proporção do ACO
+ * -L: proporção do CLONALG
+ * O tamanho do conjunto de ilhas é passado por parâmetro com a flag -A.
+ * 
+ * @author @gustavo1902
+ * @author @GuilhermeAGouveia
+ * @author @ViniciusBastoss
+ * @author @caioreius
+ * Orientador: Prof. Dr. @iagoac
+ * @date 2023-08-31
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "algorithms/genetic.h"
@@ -11,6 +28,7 @@
 #include <math.h>
 
 #define DEBUG(x)
+
 
 
 void set_neighbours(populacao **populations, int island_size)

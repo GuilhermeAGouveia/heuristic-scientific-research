@@ -18,14 +18,16 @@ args parameters;
 void set_parameters(int argc, char *argv[])
 {
     int opt;
-    while ((opt = getopt(argc, argv, "A:f:F:t:i:p:d:l:u:g:m:c:k:s:v:z:C:P:e:a:K:M:Q:O:D:L:G:")) != -1)
+    while ((opt = getopt(argc, argv, "A:f:F:t:i:p:d:l:u:g:m:c:k:s:v:z:C:P:e:a:K:M:Q:O:D:L:G:N:")) != -1)
     {
         switch (opt)
         {
         case 'A':
-            //parameters.num_algorithms = size_of_array(optarg);
+            parameters.num_algorithms = size_of_array(optarg);
+            strcpy(parameters.algorithms, optarg);
+            break;
+        case 'N':
             parameters.num_algorithms = atoi(optarg);
-            //strcpy(parameters.algorithms, optarg);
             break;
         case 'f':
             parameters.function_number = atoi(optarg);
