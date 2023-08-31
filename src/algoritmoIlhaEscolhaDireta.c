@@ -12,9 +12,9 @@
  * Exemplo de execução: ./evol -A 1,2,3,4,2 -K 2 -k 3
  * 
  * @author @gustavo1902
- * @author @GuilhermeAGouveia
  * @author @ViniciusBastoss
  * @author @caioreius
+ * @author @GuilhermeAGouveia
  * Orientador: Prof. Dr. @iagoac
  * @date 2023-08-31
 */

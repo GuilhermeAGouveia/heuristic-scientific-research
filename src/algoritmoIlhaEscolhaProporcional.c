@@ -10,9 +10,9 @@
  * Exemplo de execução: ./evol -N 10 -Q 30 -G 0 -D 68 -O 0 -L 49 -K 2
  * 
  * @author @gustavo1902
- * @author @GuilhermeAGouveia
  * @author @ViniciusBastoss
  * @author @caioreius
+ * @author @GuilhermeAGouveia
  * Orientador: Prof. Dr. @iagoac
  * @date 2023-08-31
 */
