@@ -1,20 +1,7 @@
 /**
- * @brief Este algoritmo de ilha seleciona os algoritmos que irão compor o conjunto de ilha com base na proporção de cada um, que é passada por parâmetro. Os parâmetros são:
- * -Q: proporção do PSO
- * -G: proporção do GA
- * -D: proporção do DE
- * -O: proporção do ACO
- * -L: proporção do CLONALG
- * O tamanho do conjunto de ilhas é passado por parâmetro com a flag -N.
- * 
- * Exemplo de execução: ./evol -N 10 -Q 30 -G 0 -D 68 -O 0 -L 49 -K 2
- * 
- * @author @gustavo1902
- * @author @ViniciusBastoss
- * @author @caioreius
- * @author @GuilhermeAGouveia
- * Orientador: Prof. Dr. @iagoac
- * @date 2023-08-31
+ * Entra com o comando otimizado pelo irace e retorna um vetor com os algoritmos
+ * Entrada: ./evol -t 1 -K 2 -k 3 -Q 30 -G 0 -D 68 -O 0 -L 49 -N 10
+ * Saída: 1,1,1,1,1,3,3,3,0,0
 */
 
 #include <stdio.h>
