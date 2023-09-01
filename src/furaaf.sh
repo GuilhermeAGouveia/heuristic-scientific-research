@@ -3,8 +3,11 @@
 
 # Coloque _ no inicio do nome dos algoritmos que não deseja executar
 # Exemplo: _nome_do_algoritmo.sh
+./inputForFuraaf.sh 
+echo "Executando o make"
+export COD_NAME="algoritmoIlhaEscolhaDireta"
 make
-all_configurations=$(./combination 3 4 | tee)
+all_configurations=$(cat ilhas.txt)
 for config in $all_configurations; do
     rm results/tcc/result_[$config].txt
     clear

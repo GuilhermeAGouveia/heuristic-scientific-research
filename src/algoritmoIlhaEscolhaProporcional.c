@@ -127,12 +127,25 @@ void get_algoritms(int *result){
 
 }
 
+void print_arr_int(int *arr, int size){
+    for(int i = 0; i < size; i++){
+        if (i == size - 1)
+            printf("%d", arr[i]);
+        else
+        printf("%d,", arr[i]);
+    }
+    printf("\n");
+}
+
 int main(int argc, char *argv[])
 {
     // ./evol  -t 1 -K 2 -k 3 -Q 30 -G 0 -D 68 -O 0 -L 49 -A 10
     set_parameters(argc, argv); // Lê os parâmetros da linha de comando e repassa para as variáveis globais
     int *algoritmos = calloc(parameters.num_algorithms, sizeof(int *));;
     get_algoritms(algoritmos);
+    print_arr_int(algoritmos, parameters.num_algorithms);
+    
+    return 0;
     individuo *gbest_individuo = generate_population(1, 10, parameters.domain_function, 15);
     individuo *pbest_individuo = generate_population(1, 10, parameters.domain_function, 15);
     gbest_individuo->fitness = -10;
