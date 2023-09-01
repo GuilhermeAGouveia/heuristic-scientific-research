@@ -7,4 +7,4 @@ for i in $seq; do
 done;
 
 wait
-# shutdown -h now
+shutdown -h now
