@@ -143,9 +143,7 @@ int main(int argc, char *argv[])
     set_parameters(argc, argv); // Lê os parâmetros da linha de comando e repassa para as variáveis globais
     int *algoritmos = calloc(parameters.num_algorithms, sizeof(int *));;
     get_algoritms(algoritmos);
-    print_arr_int(algoritmos, parameters.num_algorithms);
     
-    return 0;
     individuo *gbest_individuo = generate_population(1, 10, parameters.domain_function, 15);
     individuo *pbest_individuo = generate_population(1, 10, parameters.domain_function, 15);
     gbest_individuo->fitness = -10;
