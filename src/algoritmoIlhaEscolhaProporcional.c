@@ -147,7 +147,7 @@ int main(int argc, char *argv[])
     individuo *gbest_individuo = generate_population(1, 10, parameters.domain_function, 15);
     individuo *pbest_individuo = generate_population(1, 10, parameters.domain_function, 15);
     gbest_individuo->fitness = -10;
-    populacao **populations = calloc(25, sizeof(populacao *));
+    populacao **populations = calloc(parameters.num_algorithms, sizeof(populacao *));
     //int *alg_set = convert_parameter_to_array(parameters.algorithms);
     //printf("Algorithms: ");
     //printVector(alg_set, parameters.num_algorithms);
