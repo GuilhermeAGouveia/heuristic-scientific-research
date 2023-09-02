@@ -82,6 +82,9 @@ int main(int argc, char *argv[])
     gbest_individuo->fitness = INFINITY;
 
     populacao **populations = calloc(10, sizeof(populacao *));
+    individuo *gbest_individuo = NULL;
+    individuo *pbest_individuo = NULL;
+    populacao **populations = calloc(parameters.num_algorithms, sizeof(populacao *));
     int *alg_set = convert_parameter_to_array(parameters.algorithms);
     printf("Algorithms: ");
     printVector(alg_set, parameters.num_algorithms);
