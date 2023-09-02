@@ -13,6 +13,8 @@
 
 #ifndef TYPES_H
 #define TYPES_H
+#include <math.h>
+
 
 enum algorithm
 {

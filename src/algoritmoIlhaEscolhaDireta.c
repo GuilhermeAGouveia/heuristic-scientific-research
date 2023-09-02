@@ -77,8 +77,10 @@ int main(int argc, char *argv[])
 {
     set_parameters(argc, argv); // Lê os parâmetros da linha de comando e repassa para as variáveis globais
 
-    individuo *gbest_individuo = NULL;
-    individuo *pbest_individuo = NULL;
+    individuo *gbest_individuo = generate_population(1, 10, parameters.domain_function, 15);
+    individuo *pbest_individuo = generate_population(1, 10, parameters.domain_function, 15);
+    gbest_individuo->fitness = INFINITY;
+
     populacao **populations = calloc(10, sizeof(populacao *));
     int *alg_set = convert_parameter_to_array(parameters.algorithms);
     printf("Algorithms: ");
@@ -116,11 +118,11 @@ int main(int argc, char *argv[])
                 exit(1);
             }
 
-            pbest_individuo = get_best_of_population(*populations[alg_pos]);
+            copy_individuo(get_best_of_population(*populations[alg_pos]),pbest_individuo, parameters.dimension);
             print_individuo(*pbest_individuo, parameters.dimension, alg_pos);
-            if (gbest_individuo == NULL || pbest_individuo->fitness < gbest_individuo->fitness)
+            if (pbest_individuo->fitness < gbest_individuo->fitness)
             {
-                gbest_individuo = pbest_individuo;
+                copy_individuo(pbest_individuo,gbest_individuo, parameters.dimension);
             }
         }
         set_neighbours(populations, parameters.num_algorithms);
