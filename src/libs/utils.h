@@ -35,5 +35,6 @@ void printVector(int arr[], int n);
 char *translateIntToAlg(enum algorithm alg);
 int size_of_array(char *parameter);
 int *convert_parameter_to_array(char *parameter);
+int *get_algorithms(int *vet, int total);
 
 #endif /* UTILS_H */

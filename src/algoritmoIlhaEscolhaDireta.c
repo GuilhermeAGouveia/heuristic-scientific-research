@@ -2,7 +2,8 @@
  * @brief Este algoritmo de ilha aceita que seja passado qual o conjunto de algoritmos que irá compor o conjunto de ilhas. Os parâmetros são:
  * -A: conjunto de algoritmos que irão compor o conjunto de ilhas. 
  * Exemplo: -A 1,2,3,4,2:
- * Onde: 
+ * Cada valor representa a quantidade de ilhas para cada algoritmo
+ * Ordem: 
  * 0 - PSO
  * 1 - DE
  * 2 - ACO
@@ -83,6 +84,7 @@ int main(int argc, char *argv[])
     
     populacao **populations = calloc(parameters.num_algorithms, sizeof(populacao *));
     int *alg_set = convert_parameter_to_array(parameters.algorithms);
+    alg_set = get_algorithms(alg_set, parameters.num_algorithms);
     printf("Algorithms: ");
     printVector(alg_set, parameters.num_algorithms);
 
