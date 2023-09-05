@@ -1,6 +1,6 @@
 #codname = algoritmoIlhaEscolhaProporcional
  codname = algoritmoIlhaEscolhaDireta
-# codname = getInputForFuraaf
+#codname = getInputForFuraaf
 # codname = ${COD_NAME}
 
 compil:;

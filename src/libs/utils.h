@@ -36,5 +36,5 @@ char *translateIntToAlg(enum algorithm alg);
 int size_of_array(char *parameter);
 int *convert_parameter_to_array(char *parameter);
 int *get_algorithms(int *vet, int total);
-
+int comparador_quantidade_alg(const void *a, const void *b);
 #endif /* UTILS_H */

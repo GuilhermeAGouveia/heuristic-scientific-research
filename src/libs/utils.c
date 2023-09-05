@@ -4,6 +4,7 @@
 #include "utils.h"
 #include <math.h>
 
+
 void free_population(populacao *populations, int n_populations)
 {
     for (int i = 0; i < n_populations; i++)
@@ -150,30 +151,49 @@ Array generateComb(int n)
  */
 int size_of_array(char *parameter)
 {
-    int i = 0;
+    int i = 0, total = 0;
     char parameters_copy[256];
     strcpy(parameters_copy, parameter);
     char *token = strtok(parameters_copy, ",");
     while (token != NULL)
     {
         i += atoi(token);
+        total++;
         token = strtok(NULL, ",");
     }
+    if(total > 5){
+        puts("Número de algoritmos inválido");
+        exit(0);
+    }
+      
     return i;
 }
 
-int *get_algorithms(int *vet, int total)
+int comparador_quantidade_alg(const void *a, const void *b)
 {
+    proporcao_alg *v1 = (proporcao_alg *)a;
+    proporcao_alg *v2 = (proporcao_alg *)b;
+
+    return v1->total_islands < v2->total_islands;
+}
+
+int *get_algorithms(int *quantidade_islands, int total)
+{
+    proporcao_alg proporcoes[5];
     int *result = calloc(total, sizeof(int));
+    for (int i = 0; i < 5; i++){
+        proporcoes[i].total_islands = quantidade_islands[i];
+        proporcoes[i].alg = i;
+    }   
+    qsort(&proporcoes, 5, sizeof(proporcao_alg), comparador_quantidade_alg);
     int cont = 0;
-    for (int i = 0; i < 5; i++)
-    {
-        for (int j = 0; j < vet[i]; j++, cont++)
-        {
-            result[cont] = i;
+    
+    for(int i = 0; i < 5; i++){
+        for(int j = 0; j < proporcoes[i].total_islands; j++, cont++){
+            result[cont] = proporcoes[i].alg;
         }
     }
-    puts("antes");
+
     return result;
 }
 
@@ -192,3 +212,4 @@ int *convert_parameter_to_array(char *parameter)
     }
     return array;
 }
+
