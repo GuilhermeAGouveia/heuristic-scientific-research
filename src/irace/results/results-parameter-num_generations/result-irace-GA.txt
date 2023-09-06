@@ -17,20 +17,20 @@
 # installed at: /home/discente/R/x86_64-pc-linux-gnu-library/4.1/irace
 # called with: 
 == irace == WARNING: A default scenario file '/home/discente/Downloads/IC/heuristic-scientific-research/src/irace/scenario.txt' has been found and will be read.
-# 2023-09-06 13:25:50 -03: Initialization
+# 2023-09-06 15:13:15 -03: Initialization
 # Elitist race
 # Elitist new instances: 1
 # Elitist limit: 2
 # nbIterations: 4
 # minNbSurvival: 4
 # nbParameters: 4
-# seed: 661131096
+# seed: 641120523
 # confidence level: 0.95
 # budget: 500
 # mu: 5
 # deterministic: FALSE
 
-# 2023-09-06 13:25:50 -03: Iteration 1 of 4
+# 2023-09-06 15:13:15 -03: Iteration 1 of 4
 # experimentsUsedSoFar: 0
 # remainingBudget: 500
 # currentBudget: 125
@@ -46,28 +46,30 @@
 +-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
 | |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
 +-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
-|x|          1|         20|          7|     1225.406498|         20|00:00:19|   NA|  NA|    NA|
-|x|          2|         20|          7|     863.1118470|         40|00:00:20|+0.09|0.55|0.8759|
-|x|          3|         20|          7|     676.2728183|         60|00:00:20|+0.27|0.51|0.6628|
-|x|          4|         20|          7|     814.4827393|         80|00:00:20|+0.38|0.53|0.5647|
-|-|          5|          4|          7|     712.2498726|        100|00:00:21|+0.82|0.86|0.1866|
+|x|          1|         20|         17|     500.7323460|         20|00:00:20|   NA|  NA|    NA|
+|x|          2|         20|         16|     863.5475280|         40|00:00:19|+0.40|0.70|0.5759|
+|x|          3|         20|         12|     678.1905787|         60|00:00:20|+0.29|0.53|0.6766|
+|x|          4|         20|         16|     816.9622010|         80|00:00:20|+0.40|0.55|0.5772|
+|-|          5|          8|         16|     715.1887450|        100|00:00:20|+0.06|0.25|0.7519|
+|=|          6|          8|         16|     679.4521733|        108|00:00:10|+0.10|0.25|0.7438|
+|-|          7|          4|         16|     653.9530116|        116|00:00:10|-0.07|0.09|0.7742|
 +-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
-Best-so-far configuration:           7    mean value:      712.2498726
+Best-so-far configuration:          16    mean value:      653.9530116
 Description of the best-so-far configuration:
-  .ID. population_size mutation_rate crossover_rate num_generations .PARENT.
-7    7             792            20             42            1790       NA
+   .ID. population_size mutation_rate crossover_rate num_generations .PARENT.
+16   16            7751            18             13             551       NA
 
-# 2023-09-06 13:27:32 -03: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+# 2023-09-06 15:15:17 -03: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
    population_size mutation_rate crossover_rate num_generations
-7              792            20             42            1790
-16             609            43             67             999
-20            7465            27             17            1106
-13            2370            61             74             125
-# 2023-09-06 13:27:32 -03: Iteration 2 of 4
-# experimentsUsedSoFar: 100
-# remainingBudget: 400
-# currentBudget: 133
-# nbConfigurations: 21
+16            7751            18             13             551
+15            1023            63             66             134
+12             570            29             94             219
+6             5707            17             15             602
+# 2023-09-06 15:15:17 -03: Iteration 2 of 4
+# experimentsUsedSoFar: 116
+# remainingBudget: 384
+# currentBudget: 128
+# nbConfigurations: 19
 # Markers:
      x No test is performed.
      c Configurations are discarded only due to capping.
@@ -79,27 +81,32 @@ Description of the best-so-far configuration:
 +-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
 | |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
 +-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
-|x|          6|         21|         34|     500.3668770|         21|00:00:19|   NA|  NA|    NA|
-|x|          3|         21|         34|     401.1619705|         38|00:00:19|+0.46|0.73|0.3543|
-|x|          5|         21|         34|     368.3724337|         55|00:00:20|+0.62|0.74|0.2584|
-|x|          4|         21|         34|     583.2096128|         72|00:00:19|+0.58|0.69|0.4086|
-|-|          2|          6|         34|     566.6497036|         89|00:00:20|+0.91|0.93|0.1351|
-|-|          1|          2|         34|     678.7959855|         91|00:00:09|+0.33|0.44|0.3333|
+|x|          8|         19|         30|     1223.778559|         19|00:00:19|   NA|  NA|    NA|
+|x|          7|         19|         33|     863.4975275|         34|00:00:19|+0.53|0.77|0.3458|
+|x|          3|         19|         33|     678.0559257|         49|00:00:20|+0.33|0.56|0.6807|
+|x|          6|         19|         33|     633.7801188|         64|00:00:19|+0.34|0.50|0.6882|
+|-|          4|         11|         33|     753.8512244|         79|00:00:19|-0.04|0.17|0.9532|
+|=|          1|         11|         33|     711.6997862|         86|00:00:10|-0.03|0.14|0.9409|
+|=|          2|         11|         33|     784.8486489|         93|00:00:09|+0.04|0.18|0.8812|
+|=|          5|         11|         33|     725.0728920|        100|00:00:10|+0.05|0.16|0.8738|
+|=|          9|         11|         33|     678.7157289|        111|00:00:10|+0.08|0.18|0.8621|
 +-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
-Best-so-far configuration:          34    mean value:      678.7959855
+Best-so-far configuration:          33    mean value:      678.7157289
 Description of the best-so-far configuration:
    .ID. population_size mutation_rate crossover_rate num_generations .PARENT.
-34   34            1314             9             44            1366       16
+33   33            6776             4             24             514       16
 
-# 2023-09-06 13:29:22 -03: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+# 2023-09-06 15:17:37 -03: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
    population_size mutation_rate crossover_rate num_generations
-34            1314             9             44            1366
-7              792            20             42            1790
-# 2023-09-06 13:29:22 -03: Iteration 3 of 4
-# experimentsUsedSoFar: 191
-# remainingBudget: 309
-# currentBudget: 154
-# nbConfigurations: 20
+33            6776             4             24             514
+30            4229             5             24             520
+25            5818             6             18             567
+12             570            29             94             219
+# 2023-09-06 15:17:37 -03: Iteration 3 of 4
+# experimentsUsedSoFar: 227
+# remainingBudget: 273
+# currentBudget: 136
+# nbConfigurations: 17
 # Markers:
      x No test is performed.
      c Configurations are discarded only due to capping.
@@ -111,31 +118,36 @@ Description of the best-so-far configuration:
 +-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
 | |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
 +-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
-|x|          7|         20|         47|     301.3182530|         20|00:00:20|   NA|  NA|    NA|
-|x|          4|         20|         48|     763.8530755|         38|00:00:19|+0.27|0.63|0.4783|
-|x|          1|         20|         49|     915.7592703|         56|00:00:19|+0.46|0.64|0.3378|
-|x|          6|         20|         49|     812.0151235|         74|00:00:20|+0.43|0.57|0.3900|
-|-|          5|         14|         55|     709.7102056|         92|00:00:20|-0.17|0.06|1.0632|
-|=|          3|         14|         39|     645.5237675|        104|00:00:10|-0.13|0.06|1.0249|
-|=|          2|         14|         39|     624.8155057|        116|00:00:09|-0.05|0.10|0.9531|
-|=|          8|         14|         39|     700.0156914|        130|00:00:19|-0.06|0.08|0.9259|
+|x|         10|         17|         45|     500.5890650|         17|00:00:19|   NA|  NA|    NA|
+|x|          7|         17|         45|     500.7845240|         30|00:00:19|+0.15|0.57|0.8754|
+|x|          6|         17|         45|     500.7203117|         43|00:00:19|+0.23|0.48|0.7427|
+|x|          3|         17|         45|     452.4066065|         56|00:00:20|+0.37|0.52|0.6706|
+|-|          9|          8|         45|     423.2852226|         69|00:00:20|+0.23|0.38|0.7550|
+|=|          5|          8|         45|     403.5943707|         73|00:00:09|+0.07|0.23|0.8239|
+|=|          2|          8|         48|     520.4344246|         77|00:00:09|+0.13|0.25|0.7768|
+|=|          8|          8|         45|     608.3997024|         81|00:00:09|+0.13|0.24|0.8197|
+|=|          1|          8|         45|     596.4001116|         85|00:00:10|+0.09|0.19|0.8564|
+|=|          4|          8|         45|     659.3512170|         89|00:00:09|+0.11|0.20|0.8430|
+|-|         11|          5|         45|     627.2434988|         97|00:00:10|-0.05|0.05|0.8449|
+|=|         12|          5|         45|     677.1272548|        102|00:00:09|-0.02|0.07|0.8168|
+|=|         13|          5|         45|     663.5281508|        107|00:00:10|-0.02|0.06|0.7930|
 +-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
-Best-so-far configuration:          39    mean value:      700.0156914
+Best-so-far configuration:          45    mean value:      663.5281508
 Description of the best-so-far configuration:
    .ID. population_size mutation_rate crossover_rate num_generations .PARENT.
-39   39             599            19             40            1282       34
+45   45            4519             6             18             463       25
 
-# 2023-09-06 13:31:42 -03: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+# 2023-09-06 15:20:37 -03: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
    population_size mutation_rate crossover_rate num_generations
-39             599            19             40            1282
-34            1314             9             44            1366
-51            1034            20             38            1792
-49            1116            18             49            1700
-# 2023-09-06 13:31:42 -03: Iteration 4 of 4
-# experimentsUsedSoFar: 321
-# remainingBudget: 179
-# currentBudget: 179
-# nbConfigurations: 23
+45            4519             6             18             463
+48            6503            15             13             510
+30            4229             5             24             520
+38            4293             3             14             619
+# 2023-09-06 15:20:37 -03: Iteration 4 of 4
+# experimentsUsedSoFar: 334
+# remainingBudget: 166
+# currentBudget: 166
+# nbConfigurations: 15
 # Markers:
      x No test is performed.
      c Configurations are discarded only due to capping.
@@ -147,32 +159,37 @@ Description of the best-so-far configuration:
 +-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
 | |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
 +-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
-|x|          9|         23|         73|     500.1894200|         23|00:00:20|   NA|  NA|    NA|
-|x|          1|         23|         69|     861.7189475|         42|00:00:19|+0.11|0.56|0.8994|
-|x|          5|         23|         56|     676.4980547|         61|00:00:20|+0.14|0.43|0.7944|
-|x|          7|         23|         73|     582.8493885|         80|00:00:20|+0.27|0.45|0.6341|
-|-|          8|         14|         73|     710.7466838|         99|00:00:19|+0.05|0.24|0.8130|
-|=|          4|         14|         73|     797.6832042|        109|00:00:10|+0.00|0.17|0.8999|
-|=|          3|         14|         73|     727.0374756|        119|00:00:10|-0.04|0.11|0.9446|
-|=|          2|         14|         73|     698.6937238|        129|00:00:09|-0.01|0.12|0.9194|
-|=|          6|         14|         73|     676.6618910|        139|00:00:10|-0.02|0.10|0.9321|
-|=|         10|         14|         73|     659.0489226|        153|00:00:19|+0.00|0.10|0.9136|
+|x|         14|         15|         59|     1224.009862|         15|00:00:19|   NA|  NA|    NA|
+|x|          3|         15|         55|     765.7961000|         26|00:00:10|-0.36|0.32|1.1923|
+|x|          6|         15|         55|     677.5252113|         37|00:00:09|-0.13|0.24|1.0705|
+|x|         11|         15|         55|     584.6879680|         48|00:00:10|-0.04|0.22|1.0005|
+|=|          9|         15|         45|     529.9573726|         59|00:00:10|+0.10|0.28|0.8491|
+|=|          1|         15|         45|     525.0317080|         70|00:00:09|+0.12|0.27|0.8239|
+|-|         10|          9|         45|     521.5399019|         81|00:00:09|-0.02|0.12|0.9102|
+|=|         12|          9|         45|     609.5784855|         86|00:00:09|-0.05|0.08|0.9211|
+|=|          2|          9|         45|     677.8812421|         91|00:00:10|-0.04|0.07|0.9224|
+|=|          5|          9|         45|     640.6071290|         96|00:00:10|-0.03|0.07|0.9116|
+|=|          8|          9|         45|     693.3999445|        101|00:00:09|+0.01|0.10|0.8790|
+|=|          7|          9|         45|     677.3649477|        106|00:00:10|-0.02|0.07|0.9081|
+|=|          4|          9|         45|     719.5608107|        111|00:00:09|-0.03|0.05|0.9146|
+|=|         13|          9|         45|     703.9021029|        116|00:00:10|-0.01|0.06|0.8929|
+|=|         15|          9|         45|     677.3876065|        125|00:00:10|+0.00|0.07|0.8735|
 +-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
-Best-so-far configuration:          73    mean value:      659.0489226
+Best-so-far configuration:          45    mean value:      677.3876065
 Description of the best-so-far configuration:
    .ID. population_size mutation_rate crossover_rate num_generations .PARENT.
-73   73            1025            13             33            1226       39
+45   45            4519             6             18             463       25
 
-# 2023-09-06 13:34:22 -03: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+# 2023-09-06 15:23:17 -03: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
    population_size mutation_rate crossover_rate num_generations
-73            1025            13             33            1226
-56             577            13             42            1339
-62             781             6             43            1371
-69            1156            18             50            1216
-# 2023-09-06 13:34:22 -03: Iteration 5 of 5
-# experimentsUsedSoFar: 474
-# remainingBudget: 26
-# currentBudget: 26
+45            4519             6             18             463
+55            3589             5              7             489
+51            3888            10             28             437
+38            4293             3             14             619
+# 2023-09-06 15:23:17 -03: Iteration 5 of 5
+# experimentsUsedSoFar: 459
+# remainingBudget: 41
+# currentBudget: 41
 # nbConfigurations: 6
 # Markers:
      x No test is performed.
@@ -185,53 +202,52 @@ Description of the best-so-far configuration:
 +-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
 | |   Instance|      Alive|       Best|       Mean best| Exp so far|  W time|  rho|KenW|  Qvar|
 +-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
-|x|         11|          6|         56|     301.6362110|          6|00:00:10|   NA|  NA|    NA|
-|x|          3|          6|         75|     302.0141020|          8|00:00:10|+0.26|0.63|0.5634|
-|x|          1|          6|         56|     610.5577297|         10|00:00:09|+0.01|0.34|0.9149|
-|x|          9|          6|         56|     582.9996028|         12|00:00:10|+0.12|0.34|0.7588|
-|=|          2|          6|         56|     566.4824818|         14|00:00:09|+0.05|0.24|0.7654|
-|=|          5|          6|         56|     522.3293608|         16|00:00:10|+0.17|0.31|0.6465|
-|=|          8|          6|         73|     622.5776144|         18|00:00:09|+0.18|0.30|0.6261|
-|-|          7|          5|         73|     582.4511816|         20|00:00:10|-0.03|0.10|0.7785|
-|=|          4|          5|         73|     654.6639177|         21|00:00:09|-0.08|0.04|0.8343|
-|=|          6|          5|         73|     639.2382488|         22|00:00:09|-0.08|0.03|0.8376|
-|=|         10|          5|         73|     626.6286086|         23|00:00:10|-0.05|0.05|0.8088|
+|x|         16|          6|         61|     303.8930300|          6|00:00:09|   NA|  NA|    NA|
+|x|          8|          6|         61|     763.0949700|          8|00:00:09|-0.31|0.34|1.3368|
+|x|          5|          6|         61|     610.2075460|         10|00:00:10|-0.33|0.11|1.1593|
+|x|          2|          6|         61|     763.5826218|         12|00:00:09|-0.11|0.16|1.0082|
+|=|          6|          6|         60|     711.5186462|         14|00:00:10|+0.03|0.23|0.8789|
+|=|          7|          6|         60|     676.3365922|         16|00:00:09|+0.02|0.18|0.8658|
+|=|          3|          6|         60|     623.1790730|         18|00:00:10|+0.11|0.23|0.7827|
+|!|         15|          6|         60|     583.2739328|         20|00:00:10|+0.19|0.29|0.7216|
+|!|         11|          6|         60|     552.2415503|         22|00:00:09|+0.23|0.32|0.6742|
+|!|          9|          6|         60|     527.3422090|         24|00:00:09|+0.28|0.35|0.6211|
+|!|         14|          6|         60|     590.4864494|         26|00:00:09|+0.31|0.37|0.6014|
+|!|         10|          6|         60|     582.9755677|         28|00:00:10|+0.35|0.40|0.5789|
+|!|          1|          6|         60|     576.6209799|         30|00:00:10|+0.37|0.42|0.5728|
+|!|         12|          6|         60|     623.0296251|         32|00:00:09|+0.33|0.38|0.6182|
+|!|          4|          6|         60|     663.2396094|         34|00:00:10|+0.27|0.32|0.6367|
+|-|         13|          2|         60|     653.0545084|         36|00:00:10|+0.00|0.06|0.5000|
 +-+-----------+-----------+-----------+----------------+-----------+--------+-----+----+------+
-Best-so-far configuration:          73    mean value:      626.6286086
+Best-so-far configuration:          60    mean value:      653.0545084
 Description of the best-so-far configuration:
    .ID. population_size mutation_rate crossover_rate num_generations .PARENT.
-73   73            1025            13             33            1226       39
+60   60            3229            13              8             529       55
 
-# 2023-09-06 13:36:11 -03: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
+# 2023-09-06 15:25:57 -03: Elite configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
    population_size mutation_rate crossover_rate num_generations
-73            1025            13             33            1226
-75             787            11             34            1226
-56             577            13             42            1339
-62             781             6             43            1371
-# 2023-09-06 13:36:11 -03: Stopped because there is not enough budget left to race more than the minimum (4)
+60            3229            13              8             529
+61            3704             0             18             531
+# 2023-09-06 15:25:57 -03: Stopped because there is not enough budget left to race more than the minimum (4)
 # You may either increase the budget or set 'minNbSurvival' to a lower value
 # Iteration: 6
 # nbIterations: 6
-# experimentsUsedSoFar: 497
+# experimentsUsedSoFar: 495
 # timeUsed: 0
-# remainingBudget: 3
-# currentBudget: 3
-# number of elites: 4
-# nbConfigurations: 3
-# Total CPU user time: 4798.936, CPU sys time: 6.236, Wall-clock time: 620.291
+# remainingBudget: 5
+# currentBudget: 5
+# number of elites: 2
+# nbConfigurations: 2
+# Total CPU user time: 4825.215, CPU sys time: 5.663, Wall-clock time: 762.018
 # Best configurations (first number is the configuration ID; listed from best to worst according to the sum of ranks):
    population_size mutation_rate crossover_rate num_generations
-73            1025            13             33            1226
-75             787            11             34            1226
-56             577            13             42            1339
-62             781             6             43            1371
+60            3229            13              8             529
+61            3704             0             18             531
 # Best configurations as commandlines (first number is the configuration ID; same order as above):
-73  -p1025 -m13 -c33 -g1226
-75  -p787 -m11 -c34 -g1226
-56  -p577 -m13 -c42 -g1339
-62  -p781 -m6 -c43 -g1371
+60  -p3229 -m13 -c8 -g529
+61  -p3704 -m0 -c18 -g531
 
 
 # Testing of elite configurations: 1 
 # Testing iteration configurations: FALSE 
-# 2023-09-06 13:36:11 -03: No test instances, skip testing
+# 2023-09-06 15:25:57 -03: No test instances, skip testing

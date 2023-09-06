@@ -16,7 +16,7 @@
 #define STATISTICS(x)
 #define DEBUG(x)
 #define LOG(x)
-
+/*5.505.098*/
 void set_default_parameters_pso()
 {
     if (!parameters.function_number)
@@ -24,7 +24,7 @@ void set_default_parameters_pso()
     if (!parameters.time_limit)
         parameters.time_limit = 10; // seconds
     if (!parameters.population_size)
-        parameters.population_size = 6430;
+        parameters.population_size = 9111;
     if (!parameters.dimension)
         parameters.dimension = 10; // 10 or 30
     if (!parameters.domain_function.min)
@@ -32,13 +32,13 @@ void set_default_parameters_pso()
     if (!parameters.domain_function.max)
         parameters.domain_function.max = 100;
     if (!parameters.num_generations_per_epoca)
-        parameters.num_generations_per_epoca = 1424;
+        parameters.num_generations_per_epoca = (int)(5505098/9111);//153;
     if (!parameters.seed)
         parameters.seed = time(NULL);
     if (!parameters.c1)
-        parameters.c1 = 1.32281;
+        parameters.c1 = 0.61845;
     if (!parameters.c2)
-        parameters.c2 = 0.20272;
+        parameters.c2 = 0.74494;
     srand(parameters.seed);
 }
 

@@ -24,7 +24,7 @@ void set_default_parameters_clonalg()
     if (!parameters.time_limit)
         parameters.time_limit = 10; // seconds
     if (!parameters.population_size)
-        parameters.population_size = 84;
+        parameters.population_size = 46;
     if (!parameters.dimension)
         parameters.dimension = 10; // 10 or 30
     if (!parameters.domain_function.min)
@@ -32,9 +32,9 @@ void set_default_parameters_clonalg()
     if (!parameters.domain_function.max)
         parameters.domain_function.max = 100;
     if (!parameters.num_generations_per_epoca)
-        parameters.num_generations_per_epoca = 1811;
+        parameters.num_generations_per_epoca =  (int)(5505098/46);//615;
     if (!parameters.clones)
-        parameters.clones = 68;
+        parameters.clones = 72;
     if (!parameters.seed)
         parameters.seed = time(NULL);
     srand(parameters.seed);

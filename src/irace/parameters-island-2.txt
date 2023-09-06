@@ -1,12 +1,10 @@
 # Parameter file for the ACOTSP software
 # name            switch    type    values
 num_migrations     "-K"    i        (1, 10) 
-migration_size     "-k"    i         (1,124)
+migration_size     "-k"    i         (1,46)
 random_random      "-M"     r        (0.1, 1)
 num_pso            "-Q"    i        (0,100)     
 num_genetico       "-G"   i         (0,100)     
 num_diferencial    "-D"   i         (0,100)    
 num_aco            "-O"   i         (0,100)    
 num_clonal         "-L"   i         (0,100)   
-
-
