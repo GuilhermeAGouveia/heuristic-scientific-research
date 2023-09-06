@@ -25,13 +25,13 @@ individuo *candidates;
 void set_default_parameters_ant()
 {
     if (!parameters.num_ants)
-        parameters.num_ants = 5252; // 5252;
+        parameters.num_ants = 1056; // 5252;
     if (!parameters.num_generations_per_epoca)
-        parameters.num_generations_per_epoca = 2000;
+        parameters.num_generations_per_epoca = 1057;
     if (!parameters.tax_evaporate)
-        parameters.tax_evaporate = 0.31458;
+        parameters.tax_evaporate = 0.95319;
     if (!parameters.num_candidates)
-        parameters.num_candidates = 9;
+        parameters.num_candidates = 25;
     if (!parameters.p_exploitation)
         parameters.p_exploitation = 0.25;
     if (!parameters.function_number)
