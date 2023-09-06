@@ -40,7 +40,8 @@ void set_default_parameters_clonalg()
     srand(parameters.seed);
 }
 
-void reset_parameters_clonalg(){
+void reset_parameters_clonalg()
+{
     parameters.population_size = 0;
     parameters.num_generations_per_epoca = 0;
     parameters.clones = 0;
@@ -137,12 +138,13 @@ void union_populacao_clones_and_main(populacao *populacao_clones, populacao *pop
 populacao *clonalg(populacao *population)
 {
     set_default_parameters_clonalg();
-    //print_parameters(parameters);
-    if(population == NULL){
-        population = generate_island(1,parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
+    // print_parameters(parameters);
+    if (population == NULL)
+    {
+        population = generate_island(1, parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
     }
     DEBUG(printf("\nevolution\n"););
-    //populacao *population_main = generate_island(1, parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
+    // populacao *population_main = generate_island(1, parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
     populacao *population_main = population;
     qsort(population_main->individuos, population_main->size, sizeof(individuo), comparador_individuo);
     populacao *populacao_clones;
@@ -155,40 +157,24 @@ populacao *clonalg(populacao *population)
     //  while (difftime(time_now, time_init) < parameters.time_limit)
     // {
 
-    int max_inter_add = 50;
-    int max_inter = 100;
-    int cont_or_stop = 1;
-    while (cont_or_stop && difftime(time_now, time_init) < parameters.time_limit)
+    while (generation_count < parameters.num_generations_per_epoca && difftime(time_now, time_init) < parameters.time_limit)
     {
-        double best_anter = population_main->individuos[population_main->size - 1].fitness;
-        while (generation_count < max_inter && difftime(time_now, time_init) < parameters.time_limit)
-        {
-            STATISTICS(print_coords(&population_main->individuos[population_main->size - 1], 1, generation_count, parameters.num_generations););
+        STATISTICS(print_coords(&population_main->individuos[population_main->size - 1], 1, generation_count, parameters.num_generations););
 
-            DEBUG(printf("Populacao principal na geracao %d:\n", generation_count););
-            DEBUG(print_population(population_main->individuos, population_main->size, parameters.dimension, 1););
-            populacao_clones = generate_clones(population_main, parameters.clones, parameters.dimension, parameters.domain_function);
-            populacao_clones_mutated = mutation_clones(populacao_clones, parameters.population_size, parameters.dimension, parameters.domain_function);
-            union_populacao_clones_and_main(populacao_clones_mutated, population_main, parameters.population_size);
-            destroy_island(populacao_clones, parameters.population_size);
-            qsort(population_main->individuos, population_main->size, sizeof(individuo), comparador_individuo);
-            generation_count++;
-            time(&time_now);
-        }
-        // double desv = desvio_padrao(population_main->individuos, parameters.population_size);
-        // printf("Desvio_P: %lf\n", desv);
-        // printf("Anterior: %lf, Atual_best:%lf\n", best_anter, population_main->individuos[population_main->size - 1].fitness);
-
-        if (doubleEqual(best_anter, population_main->individuos[population_main->size - 1].fitness, 2))
-        {
-            cont_or_stop = 0;
-        }
-
-        else
-        {
-            max_inter += max_inter_add;
-        }
+        DEBUG(printf("Populacao principal na geracao %d:\n", generation_count););
+        DEBUG(print_population(population_main->individuos, population_main->size, parameters.dimension, 1););
+        populacao_clones = generate_clones(population_main, parameters.clones, parameters.dimension, parameters.domain_function);
+        populacao_clones_mutated = mutation_clones(populacao_clones, parameters.population_size, parameters.dimension, parameters.domain_function);
+        union_populacao_clones_and_main(populacao_clones_mutated, population_main, parameters.population_size);
+        destroy_island(populacao_clones, parameters.population_size);
+        qsort(population_main->individuos, population_main->size, sizeof(individuo), comparador_individuo);
+        generation_count++;
+        time(&time_now);
     }
+    // double desv = desvio_padrao(population_main->individuos, parameters.population_size);
+    // printf("Desvio_P: %lf\n", desv);
+    // printf("Anterior: %lf, Atual_best:%lf\n", best_anter, population_main->individuos[population_main->size - 1].fitness);
+
     reset_parameters_clonalg();
     return population_main;
 }

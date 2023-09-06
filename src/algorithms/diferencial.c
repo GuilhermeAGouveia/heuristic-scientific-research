@@ -170,7 +170,7 @@ populacao *diferencial(populacao *population)
     populacao *mutation_population;
     int generation_count = 0;
 
-    while (evaluation_count < parameters.evaluation_limit && difftime(time_now, time_init) < parameters.time_limit)
+    while (generation_count < parameters.num_generations_per_epoca && difftime(time_now, time_init) < parameters.time_limit)
     {
         mutation_population = mutation_diferencial(original_population, parameters.dimension, parameters.domain_function);
         cross_population = crossover_diferencial(original_population, mutation_population, parameters.dimension);
@@ -181,7 +181,6 @@ populacao *diferencial(populacao *population)
         STATISTICS(print_coords(&original_population->individuos[original_population->size - 1], 1, generation_count, parameters.num_generations_per_epoca););
         DEBUG(printf("\nGeração: %d\n", generation_count););
         generation_count++;
-        evaluation_count += original_population->size;
         time(&time_now);
     }
     reset_parameters_diferencial();

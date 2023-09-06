@@ -22,6 +22,8 @@ void set_default_parameters_genetic()
 
     if (!parameters.function_number)
         parameters.function_number = 3;
+    if (!parameters.num_generations_per_epoca)
+        parameters.num_generations_per_epoca = 0;
     if (!parameters.time_limit)
         parameters.time_limit = 10; // seconds
     if (!parameters.population_size)
@@ -49,6 +51,7 @@ void reset_parameters_genetic()
     parameters.mutation_rate = 0;
     parameters.crossover_rate = 0;
     parameters.seed = 0;
+    parameters.num_generations_per_epoca = 0;
 }
 
 void print_roleta(int *roleta, int roleta_size, int ball1, int ball2)
@@ -277,7 +280,7 @@ populacao *genetic(populacao *population)
     populacao *mutation_population;
     int generation_count = 0;
 
-    while (evaluation_count < parameters.evaluation_limit && difftime(time_now, time_init) < parameters.time_limit)
+    while (generation_count < parameters.num_generations_per_epoca && difftime(time_now, time_init) < parameters.time_limit)
     {
 
         cross_population = crossover(original_population, mutation_population, parameters.dimension);
