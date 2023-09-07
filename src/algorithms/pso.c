@@ -103,7 +103,7 @@ void copy_individuo_pso(individuo *original, individuo *copia, int dimension)
     }
 }
 
-populacao *pso(populacao *population)
+populacao *pso(populacao *population, int epoca_num, int population_num)
 {
     set_default_parameters_pso();
     // print_parameters(parameters);
@@ -153,6 +153,8 @@ populacao *pso(populacao *population)
             atualiza_posicao(&population->individuos[i], parameters.dimension);
             fitness(&population->individuos[i], parameters.dimension, parameters.function_number);
         }
+        write_population_log(epoca_num, population_num, generation_count, *population, parameters);
+
         time(&time_now);
         generation_count++;
     }

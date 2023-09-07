@@ -16,6 +16,6 @@
 
 #define PSO_H
 
-populacao *pso(populacao *population);
+populacao *pso(populacao *population, int epoca_num, int population_num);
 
 #endif /* PSO_H */

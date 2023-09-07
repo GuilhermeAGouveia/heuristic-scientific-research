@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
     printVector(alg_set, parameters.num_algorithms);
 
 
-    for (int i = 0; i < parameters.num_epocas; i++)
+    for (int epoca = 0; epoca < parameters.num_epocas; epoca++)
     {
 
         for (int alg_pos = 0; alg_pos < parameters.num_algorithms; alg_pos++)
@@ -101,10 +101,10 @@ int main(int argc, char *argv[])
             switch (alg)
             {
             case PSO:
-                populations[alg_pos] = pso(populations[alg_pos]);
+                populations[alg_pos] = pso(populations[alg_pos], epoca, alg_pos);
                 break;
             case GA:
-                populations[alg_pos] = genetic(populations[alg_pos], i, alg_pos);
+                populations[alg_pos] = genetic(populations[alg_pos], epoca, alg_pos);
                 break;
             case DE:
                 populations[alg_pos] = diferencial(populations[alg_pos]);
