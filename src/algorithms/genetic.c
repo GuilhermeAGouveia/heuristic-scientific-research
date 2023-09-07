@@ -15,7 +15,7 @@
 #include "commom.h"
 #define STATISTICS(x)
 #define DEBUG(x)
-#define LOG(x)
+#define LOG(x) x
 
 
 void set_default_parameters_genetic()
@@ -256,7 +256,7 @@ populacao *crossover(populacao *populacao_original, populacao *populacao_mutada,
     return nova_populacao;
 }
 
-populacao *genetic(populacao *population)
+populacao *genetic(populacao *population, int epoca_num, int population_num)
 {
     set_default_parameters_genetic();
     // print_parameters(parameters);
@@ -270,7 +270,6 @@ populacao *genetic(populacao *population)
     individuo bestIndividuo = {.fitness = INFINITY};
     time_t time_init, time_now;
     int evaluation_count = 0;
-    int epoca_count = 0;
     // double best_ep_ant = bestIndividuo.fitness;
     time(&time_init);
     time(&time_now);
@@ -289,7 +288,7 @@ populacao *genetic(populacao *population)
         original_population = selection(original_population, cross_population, parameters.dimension);
 
         // print_individuo(original_population->individuos[original_population->size - 1], dimension, 1);
-        LOG(write_population_log(epoca_count, i, generation_count, *original_population, parameters););
+        write_population_log(epoca_num, population_num, generation_count, *original_population, parameters);
         STATISTICS(print_coords(&original_population->individuos[original_population->size - 1], 1, generation_count, parameters.num_generations_per_epoca););
         DEBUG(printf("\nGeração: %d\n", generation_count););
         generation_count++;

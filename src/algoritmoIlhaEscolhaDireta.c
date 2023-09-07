@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
                 populations[alg_pos] = pso(populations[alg_pos]);
                 break;
             case GA:
-                populations[alg_pos] = genetic(populations[alg_pos]);
+                populations[alg_pos] = genetic(populations[alg_pos], i, alg_pos);
                 break;
             case DE:
                 populations[alg_pos] = diferencial(populations[alg_pos]);
