@@ -21,7 +21,7 @@
 
 void set_default_parameters_diferencial()
 {
-
+    parameters.current_algorithm = DE;
     if (!parameters.F)
         parameters.F = 0.82787;
     if (!parameters.function_number)

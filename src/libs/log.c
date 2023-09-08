@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "log.h"
 #include "types.h"
+#include "utils.h"
 #define DEBUG(x)
 
 static int first_time = 1;
@@ -15,7 +16,7 @@ void write_parameters(int epoca, int population, args parameters)
 
     FILE *parameters_log_file = fopen(file_path, "w");
     fprintf(parameters_log_file, "Parameters:");
-    fprintf(parameters_log_file, "\n function_number: %d,\n F: %lf,\n time_limit: %d,\n island_size: %d,\n population_size: %d,\n dimension: %d,\n domain function interval: [%lf, %lf],\n num_generations: %d,\n mutation_rate: %d,\n crossover_rate: %d,\n num_migrations: %d,\n num_epocas: %d\n", parameters.function_number, parameters.F, parameters.time_limit, parameters.island_size, parameters.population_size, parameters.dimension, parameters.domain_function.min, parameters.domain_function.max, parameters.num_generations_per_epoca, parameters.mutation_rate, parameters.crossover_rate, parameters.num_migrations, parameters.num_epocas + 1);
+    fprintf(parameters_log_file, "\n algorithm: %s,\n function_number: %d,\n F: %lf,\n time_limit: %d,\n island_size: %d,\n population_size: %d,\n dimension: %d,\n domain function interval: [%lf, %lf],\n num_generations: %d,\n mutation_rate: %d,\n crossover_rate: %d,\n num_migrations: %d,\n num_epocas: %d\n", translateIntToAlg(parameters.current_algorithm), parameters.function_number, parameters.F, parameters.time_limit, parameters.island_size, parameters.population_size, parameters.dimension, parameters.domain_function.min, parameters.domain_function.max, parameters.num_generations_per_epoca, parameters.mutation_rate, parameters.crossover_rate, parameters.num_migrations, parameters.num_epocas + 1);
     DEBUG(printf("\nwrite_parameters: end\n"););
     fclose(parameters_log_file);
 }

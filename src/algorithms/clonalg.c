@@ -19,6 +19,7 @@
 
 void set_default_parameters_clonalg()
 {
+    parameters.current_algorithm = CLONALG;
     if (!parameters.function_number)
         parameters.function_number = 3;
     if (!parameters.time_limit)

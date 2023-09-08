@@ -34,7 +34,7 @@ typedef struct args_
     double num_candidates;
     double p_exploitation;
     int num_ants;
-
+    enum algorithm current_algorithm;
 } args;
 
 int create_population_and_epoca_dir(int, int);

@@ -19,6 +19,7 @@
 /*5.505.098*/
 void set_default_parameters_pso()
 {
+    parameters.current_algorithm = PSO;
     if (!parameters.function_number)
         parameters.function_number = 3;
     if (!parameters.time_limit)

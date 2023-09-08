@@ -20,7 +20,7 @@
 
 void set_default_parameters_genetic()
 {
-
+    parameters.current_algorithm = GA;
     if (!parameters.function_number)
         parameters.function_number = 3;
     if (!parameters.num_generations_per_epoca)

@@ -24,6 +24,7 @@ individuo *candidates;
 
 void set_default_parameters_ant()
 {
+    parameters.current_algorithm = ACO;
     if (!parameters.num_ants)
         parameters.num_ants = 2828; // 5252;
     if (!parameters.num_generations_per_epoca)
