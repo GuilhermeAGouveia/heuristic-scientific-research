@@ -107,7 +107,7 @@ int main(int argc, char *argv[])
                 populations[alg_pos] = genetic(populations[alg_pos], epoca, alg_pos);
                 break;
             case DE:
-                populations[alg_pos] = diferencial(populations[alg_pos]);
+                populations[alg_pos] = diferencial(populations[alg_pos], epoca, alg_pos);
                 break;
             case ACO:
                 populations[alg_pos] = aco(populations[alg_pos], epoca, alg_pos);

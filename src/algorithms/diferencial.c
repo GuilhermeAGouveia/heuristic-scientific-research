@@ -147,7 +147,7 @@ populacao *crossover_diferencial(populacao *populacao_original, populacao *popul
     return nova_populacao;
 }
 
-populacao *diferencial(populacao *population)
+populacao *diferencial(populacao *population, int epoca_num, int population_num)
 {
     set_default_parameters_diferencial();
     //print_parameters(parameters);
@@ -179,7 +179,8 @@ populacao *diferencial(populacao *population)
         selection_diferencial(original_population, cross_population, parameters.dimension);
 
         // print_individuo(original_population->individuos[original_population->size - 1], dimension, 1);
-        LOG(write_population_log(epoca_count, i, generation_count, *original_population, parameters););
+        
+        write_population_log(epoca_num, population_num, generation_count, *original_population, parameters);
         STATISTICS(print_coords(&original_population->individuos[original_population->size - 1], 1, generation_count, parameters.num_generations_per_epoca););
         DEBUG(printf("\nGeração: %d\n", generation_count););
         generation_count++;
