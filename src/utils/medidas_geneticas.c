@@ -7,6 +7,7 @@
 #include "./libs/types.h"
 #include "./libs/log.h"
 #include "./libs/utils.h"
+#include "./algorithms/commom.h"
 #include <dirent.h>
 #include <string.h>
 
@@ -20,37 +21,6 @@ typedef struct files_list_
     int num_files;
 } files_list;
 
-individuo *generate_population(int n_individuos, int dimension, domain domain_function)
-{
-    DEBUG(printf("\ngenerate_population\n"););
-    individuo *population = malloc(n_individuos * sizeof(individuo));
-    for (int i = 0; i < n_individuos; i++)
-    {
-        population[i].chromosome = (double *)malloc(dimension * sizeof(double));
-        for (int j = 0; j < dimension; j++)
-        {
-            population[i].chromosome[j] = random_double(domain_function.min, domain_function.max);
-        }
-    }
-    return population;
-}
-
-populacao *generate_island(int island_size, int population_size, int dimension, domain domain_function)
-{
-    DEBUG(printf("\ngenerate_island\n"););
-    populacao *populations = malloc(island_size * sizeof(populacao));
-    populacao **neighbours = calloc(4, sizeof(populacao *));
-    for (int i = 0; i < island_size; i++)
-    {
-        populations[i].individuos = generate_population(population_size, dimension, domain_function);
-        populations[i].size = population_size;
-        populations[i].crossover = rand() % 6;
-        populations[i].neighbours = calloc(4, sizeof(populacao *));
-        populations[i].neighbours[0] = &populations[(i + 1) % island_size]; // talvez isso dê problema
-        populations[i].neighbours[1] = &populations[(i + 3) % island_size]; // talvez isso dê problema
-    }
-    return populations;
-}
 
 void print_string_vector(char **files, int num)
 {
@@ -133,9 +103,10 @@ files_list filter_file_list_by(files_list files_list_original, int epoca, int ge
     return filtered_files;
 }
 
-individuo *read_population_from_generation_file(char *filename, int population_size, int dimension)
+populacao *read_population_from_generation_file(char *filename, int epoca, int population)
 {
-    individuo *generation = generate_population(population_size, dimension, (domain){0, 0});
+    read_parameters_file(epoca, population);
+    populacao *population_ = generate_island(1, parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
 
     FILE *file = fopen(filename, "r");
     char line[1024];
@@ -148,30 +119,30 @@ individuo *read_population_from_generation_file(char *filename, int population_s
         // printf("primeira parte: %s\n", chromossome_string);
         char *fitness_string = strtok(NULL, ">");
         // printf("segunda parte: %s\n", fitness_string);
-        generation[i].fitness = atof(fitness_string);
+        population_->individuos[i].fitness = atof(fitness_string);
         char *chromossome_value_string = strtok(chromossome_string, " ");
         int j = 0;
         while (chromossome_value_string)
         {
-            generation[i].chromosome[j++] = atof(chromossome_value_string);
+            population_->individuos[i].chromosome[j++] = atof(chromossome_value_string);
             chromossome_value_string = strtok(NULL, " ");
         }
         i++;
         free(tmp);
     }
     fclose(file);
-    return generation;
+    return population_;
 }
 
-populacao *mount_populations(files_list files)
+populacao *mount_populations(files_list files, int epoca, int generation)
 {
     DEBUG(printf("\nmount_populations\n"););
     int population_size = parameters.population_size;
-    populacao *populations = generate_island(files.num_files, population_size, 10, (domain){0, 0});
+    populacao **populations = calloc(files.num_files, sizeof(populacao*));
     for (int i = 0; i < files.num_files; i++)
     {
         DEBUG(printf("file: %s\n", files.files[i]););
-        populations[i].individuos = read_population_from_generation_file(files.files[i], population_size, 10);
+        populations[i] = read_population_from_generation_file(files.files[i], epoca, generation );
     }
     return populations;
 }
@@ -302,8 +273,10 @@ void clean_metric_dir()
     system("rm -rf log/metricas/*");
 }
 
-void read_parameters_file(char *parameters_filename)
+void read_parameters_file(int epoca, int population)
 {
+    char parameters_filename[1024];
+    sprintf(parameters_filename, "log/data/epoca_%d/population_%d/_parametros.dat", epoca, population);
     FILE *file = fopen(parameters_filename, "r");
     char line[1024];
     int i = 0;
@@ -337,7 +310,7 @@ void read_parameters_file(char *parameters_filename)
 
 void write_metrics_for_each_files()
 {
-    read_parameters_file("./log/data/_parametros.dat");
+    read_parameters_file(0, 0);
     clean_metric_dir();
     printf("population_size: %d\n", parameters.population_size);
     printf("num_epocas: %d\n", parameters.num_epocas);
@@ -358,7 +331,7 @@ void write_metrics_for_each_files()
         {
             files_list filtered_files = filter_file_list_by(all_files, i, j);
             DEBUG(print_string_vector(filtered_files.files, filtered_files.num_files););
-            populacao *populations = mount_populations(filtered_files);
+            populacao *populations = mount_populations(filtered_files, i, j);
             double *densityPopulationResult = densityPopulation(populations, filtered_files.num_files);
             double densityWorldResult = densityWorld(populations, filtered_files.num_files);
             // Criar pasta
