@@ -135,7 +135,7 @@ void union_populacao_clones_and_main(populacao *populacao_clones, populacao *pop
     }
 }
 
-populacao *clonalg(populacao *population)
+populacao *clonalg(populacao *population, int epoca_num, int population_num)
 {
     set_default_parameters_clonalg();
     // print_parameters(parameters);
@@ -168,6 +168,8 @@ populacao *clonalg(populacao *population)
         union_populacao_clones_and_main(populacao_clones_mutated, population_main, parameters.population_size);
         destroy_island(populacao_clones, parameters.population_size);
         qsort(population_main->individuos, population_main->size, sizeof(individuo), comparador_individuo);
+        write_population_log(epoca_num, population_num, generation_count, *population_main, parameters);
+
         generation_count++;
         time(&time_now);
     }

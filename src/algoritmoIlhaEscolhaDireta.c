@@ -113,7 +113,7 @@ int main(int argc, char *argv[])
                 populations[alg_pos] = aco(populations[alg_pos]);
                 break;
             case CLONALG:
-                populations[alg_pos] = clonalg(populations[alg_pos]);
+                populations[alg_pos] = clonalg(populations[alg_pos], epoca, alg_pos);
                 break;
             default:
                 printf("Invalid algorithm. Please use one of the following: p, g, d, a, c\n");
