@@ -355,7 +355,7 @@ double desvio_padrao_individuo(individuo *individuos, int individuos_size)
 }
 
 // The main ACO function
-populacao *aco(populacao *population)
+populacao *aco(populacao *population, int epoca_num, int population_num)
 {
     set_default_parameters_ant();
     // print_parameters(parameters);
@@ -422,6 +422,7 @@ populacao *aco(populacao *population)
         // Update the pheromone matrix with the best individuo's path
         update_pheromones(pheromones, individuos, parameters.num_ants, d, best_individuo);
         update_sigma(individuos, d, best_individuo);
+        write_population_log(epoca_num, population_num, generations_count, *population, parameters);
         time(&time_now);
         generations_count++;
     }
