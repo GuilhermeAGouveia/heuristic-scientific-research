@@ -1,16 +1,6 @@
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <time.h>
-#include <math.h>
-#define NO_RECORDING
-#include "../libs/types.h"
 
-#include "../libs/parameters.h"
-#include "../libs/utils.h"
 #include "../libs/commom.h"
 #include <dirent.h>
-#include <string.h>
 
 #define DEBUG(x) x
 
