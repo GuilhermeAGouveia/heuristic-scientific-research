@@ -1,22 +1,5 @@
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <getopt.h>
-#include <time.h>
-#include <math.h>
-#define NO_RECORDING
-#include "../libs/funcoes_cec_2015/cec15_test_func.h"
-#include "../libs/statistics.h"
-#include "../libs/types.h"
-#include "../libs/utils.h"
-#include "../libs/crossover.h"
-#include "../libs/log.h"
-#include "parameters.h"
-#include "commom.h"
-#define STATISTICS(x)
-#define DEBUG(x)
-#define LOG(x) x
 
+#include "../libs/commom.h"
 
 void set_default_parameters_genetic()
 {
@@ -143,11 +126,11 @@ populacao *union_populations(populacao *populacao1, populacao *populacao2)
     populacao *populacao_unida = generate_island(1, size, parameters.dimension, parameters.domain_function, parameters.function_number);
     for (int i = 0; i < populacao1->size; i++)
     {
-        clone_individue(&populacao_unida->individuos[i], &populacao1->individuos[i], parameters.dimension);
+        copy_individuo(&populacao1->individuos[i], &populacao_unida->individuos[i], parameters.dimension);
     }
     for (int i = 0; i < populacao2->size; i++)
     {
-        clone_individue(&populacao_unida->individuos[i + populacao1->size], &populacao2->individuos[i], parameters.dimension);
+        copy_individuo( &populacao2->individuos[i], &populacao_unida->individuos[i + populacao1->size],parameters.dimension);
     }
     return populacao_unida;
 }
@@ -158,7 +141,7 @@ populacao *slice_population(populacao *population, int start, int end)
     populacao *sliced_population = generate_island(1, end - start, parameters.dimension, parameters.domain_function, parameters.function_number);
     for (int i = 0; i < end - start; i++)
     {
-        clone_individue(&sliced_population->individuos[i], &population->individuos[i + start], parameters.dimension);
+        copy_individuo(&population->individuos[i + start],&sliced_population->individuos[i],  parameters.dimension);
     }
     return sliced_population;
 }
@@ -248,7 +231,7 @@ populacao *crossover(populacao *populacao_original, populacao *populacao_mutada,
         }
         else
         {
-            clone_individue(&nova_populacao->individuos[i], &populacao_original->individuos[i], dimension);
+            copy_individuo(&populacao_original->individuos[i], &nova_populacao->individuos[i], dimension);
         }
     }
     destroy_population(filho, 1);
@@ -288,7 +271,7 @@ populacao *genetic(populacao *population, int epoca_num, int population_num)
         original_population = selection(original_population, cross_population, parameters.dimension);
 
         // print_individuo(original_population->individuos[original_population->size - 1], dimension, 1);
-        write_population_log(epoca_num, population_num, generation_count, *original_population, parameters);
+        LOG(write_population_log(epoca_num, population_num, generation_count, *original_population, parameters););
         STATISTICS(print_coords(&original_population->individuos[original_population->size - 1], 1, generation_count, parameters.num_generations_per_epoca););
         DEBUG(printf("\nGeração: %d\n", generation_count););
         generation_count++;

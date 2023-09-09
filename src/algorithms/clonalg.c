@@ -1,21 +1,4 @@
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <getopt.h>
-#include <time.h>
-#include <math.h>
-#define NO_RECORDING
-#include "../libs/funcoes_cec_2015/cec15_test_func.h"
-#include "../libs/statistics.h"
-#include "../libs/types.h"
-#include "../libs/utils.h"
-#include "../libs/crossover.h"
-#include "../libs/log.h"
-#include "commom.h"
-#include "parameters.h"
-
-#define STATISTICS(x)
-#define DEBUG(x)
+#include "../libs/commom.h"
 
 void set_default_parameters_clonalg()
 {
@@ -101,7 +84,7 @@ populacao *generate_clones(populacao *population_main, int clone_number, int dim
         populacao_clones[i].size = clone_number;
         for (int j = 0; j < clone_number; j++)
         {
-            clone_individue(&populacao_clones[i].individuos[j], &population_main->individuos[i], dimension);
+            copy_individuo(&population_main->individuos[i], &populacao_clones[i].individuos[j], dimension);
         }
         DEBUG(printf("Clone %d:\n", i););
         DEBUG(print_population(populacao_clones[i].individuos, clone_number, dimension, 1););
@@ -131,7 +114,7 @@ void union_populacao_clones_and_main(populacao *populacao_clones, populacao *pop
         individuo *best_clone = get_best_of_population(populacao_clones[i]);
         if (best_clone->fitness < population_main->individuos[i].fitness)
         {
-            clone_individue(&population_main->individuos[i], best_clone, parameters.dimension);
+            copy_individuo(best_clone, &population_main->individuos[i], parameters.dimension);
         }
     }
 }
@@ -169,7 +152,7 @@ populacao *clonalg(populacao *population, int epoca_num, int population_num)
         union_populacao_clones_and_main(populacao_clones_mutated, population_main, parameters.population_size);
         destroy_island(populacao_clones, parameters.population_size);
         qsort(population_main->individuos, population_main->size, sizeof(individuo), comparador_individuo);
-        write_population_log(epoca_num, population_num, generation_count, *population_main, parameters);
+        LOG(write_population_log(epoca_num, population_num, generation_count, *population_main, parameters););
 
         generation_count++;
         time(&time_now);

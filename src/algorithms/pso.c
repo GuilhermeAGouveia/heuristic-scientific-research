@@ -1,21 +1,4 @@
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <getopt.h>
-#include <time.h>
-#include <math.h>
-#define NO_RECORDING
-#include "../libs/funcoes_cec_2015/cec15_test_func.h"
-#include "../libs/statistics.h"
-#include "../libs/types.h"
-#include "../libs/utils.h"
-#include "../libs/crossover.h"
-#include "../libs/log.h"
-#include "parameters.h"
-#include "commom.h"
-#define STATISTICS(x)
-#define DEBUG(x)
-#define LOG(x)
+#include "../libs/commom.h"
 /*5.505.098*/
 void set_default_parameters_pso()
 {
@@ -154,7 +137,7 @@ populacao *pso(populacao *population, int epoca_num, int population_num)
             atualiza_posicao(&population->individuos[i], parameters.dimension);
             fitness(&population->individuos[i], parameters.dimension, parameters.function_number);
         }
-        write_population_log(epoca_num, population_num, generation_count, *population, parameters);
+        LOG(write_population_log(epoca_num, population_num, generation_count, *population, parameters););
 
         time(&time_now);
         generation_count++;

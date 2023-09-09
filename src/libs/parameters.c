@@ -4,9 +4,8 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
-#include "../libs/utils.h"
-#include "../libs/log.h"
-#include "./parameters.h"
+#include "utils.h"
+#include "parameters.h"
 
 void print_usage()
 {
@@ -18,7 +17,7 @@ args parameters;
 void set_parameters(int argc, char *argv[])
 {
     int opt;
-    while ((opt = getopt(argc, argv, "A:f:F:t:i:p:d:l:u:g:m:c:k:s:v:z:C:P:e:a:K:M:Q:O:D:L:G:N:")) != -1)
+    while ((opt = getopt(argc, argv, "A:f:F:t:i:p:d:l:u:g:m:c:k:s:v:z:C:P:e:K:M:Q:O:D:L:G:N:")) != -1)
     {
         switch (opt)
         {
@@ -83,9 +82,6 @@ void set_parameters(int argc, char *argv[])
         case 'C':
             parameters.clones = atoi(optarg);
             break;
-        case 'a':
-            parameters.num_ants = atoi(optarg);
-            break;
         case 'e':
             parameters.tax_evaporate = atof(optarg);
             break;
@@ -134,7 +130,6 @@ void print_parameters(args parameters)
     printf("C1: %f\n", parameters.c1);
     printf("C2: %f\n", parameters.c2);
     printf("Clones: %d\n", parameters.clones);
-    printf("Number of ants: %d\n", parameters.num_ants);
     printf("Tax evaporate: %f\n", parameters.tax_evaporate);
     printf("P exploitation: %f\n", parameters.p_exploitation);
 }

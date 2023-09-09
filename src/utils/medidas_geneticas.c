@@ -4,16 +4,17 @@
 #include <time.h>
 #include <math.h>
 #define NO_RECORDING
-#include "./libs/types.h"
-#include "./libs/log.h"
-#include "./libs/utils.h"
-#include "./algorithms/commom.h"
+#include "../libs/types.h"
+
+#include "../libs/parameters.h"
+#include "../libs/utils.h"
+#include "../libs/commom.h"
 #include <dirent.h>
 #include <string.h>
 
-#define DEBUG(x)
+#define DEBUG(x) x
 
-static args parameters;
+void read_parameters_file(int epoca, int population);
 
 typedef struct files_list_
 {
@@ -106,8 +107,9 @@ files_list filter_file_list_by(files_list files_list_original, int epoca, int ge
 populacao *read_population_from_generation_file(char *filename, int epoca, int population)
 {
     read_parameters_file(epoca, population);
+    print_parameters(parameters);
     populacao *population_ = generate_island(1, parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
-
+    print_population(population_->individuos, population_->size, parameters.dimension, 1);
     FILE *file = fopen(filename, "r");
     char line[1024];
     int i = 0;
@@ -134,10 +136,10 @@ populacao *read_population_from_generation_file(char *filename, int epoca, int p
     return population_;
 }
 
-populacao *mount_populations(files_list files, int epoca, int generation)
+populacao **mount_populations(files_list files, int epoca, int generation)
 {
     DEBUG(printf("\nmount_populations\n"););
-    int population_size = parameters.population_size;
+    
     populacao **populations = calloc(files.num_files, sizeof(populacao*));
     for (int i = 0; i < files.num_files; i++)
     {
@@ -158,13 +160,13 @@ double euclidian(individuo firstIndividuo, individuo secondIndividuo, int dimens
     return distance;
 }
 
-double *densityPopulation(populacao *populations, int island_size)
+double *densityPopulation(populacao **populations, int island_size)
 {
     double average = 0;
     double sd = 0;
     double *sum = (double *)calloc(island_size, sizeof(double));
     double sumIndividual;
-    int nIndividuals = populations[0].size;
+    int nIndividuals = populations[0]->size;
     double multiplier = 2 / (nIndividuals - 1);
     double *result = malloc(2 * sizeof(double));
     // for all populations
@@ -177,7 +179,7 @@ double *densityPopulation(populacao *populations, int island_size)
             for (int k = j + 1; k < nIndividuals; k++)
             {
                 // sums with the norm-2 of individual j and k
-                sum[i] += euclidian(populations[i].individuos[j], populations[i].individuos[k], 10);
+                sum[i] += euclidian(populations[i]->individuos[j], populations[i]->individuos[k], 10);
             }
         }
     }
@@ -207,11 +209,11 @@ double *densityPopulation(populacao *populations, int island_size)
 
 // implements the same diversity metric of the density population
 // extends it to the entire "world"
-double densityWorld(populacao *populations, int island_size)
+double densityWorld(populacao **populations, int island_size)
 {
     double total;
     double sum[island_size][island_size];
-    int nIndividuals = populations[0].size;
+    int nIndividuals = populations[0]->size;
 
     // for all populations
     for (int i = 0; i < island_size; i++)
@@ -226,7 +228,7 @@ double densityWorld(populacao *populations, int island_size)
                 for (int l = j + 1; l < nIndividuals; l++)
                 {
                     // sums with the norm-2 of individual j and k
-                    sum[i][j] += euclidian(populations[i].individuos[k], populations[j].individuos[l], 10);
+                    sum[i][j] += euclidian(populations[i]->individuos[k], populations[j]->individuos[l], 10);
                 }
             }
         }
@@ -275,6 +277,7 @@ void clean_metric_dir()
 
 void read_parameters_file(int epoca, int population)
 {
+    DEBUG(printf("\nread_parameters_file\n"););
     char parameters_filename[1024];
     sprintf(parameters_filename, "log/data/epoca_%d/population_%d/_parametros.dat", epoca, population);
     FILE *file = fopen(parameters_filename, "r");
@@ -306,6 +309,8 @@ void read_parameters_file(int epoca, int population)
             sscanf(line, " num_generations: %d", &parameters.num_generations_per_epoca);
         }
     }
+    fclose(file);
+    DEBUG(printf("\n[end] read_parameters_file\n"););
 }
 
 void write_metrics_for_each_files()
@@ -331,7 +336,7 @@ void write_metrics_for_each_files()
         {
             files_list filtered_files = filter_file_list_by(all_files, i, j);
             DEBUG(print_string_vector(filtered_files.files, filtered_files.num_files););
-            populacao *populations = mount_populations(filtered_files, i, j);
+            populacao **populations = mount_populations(filtered_files, i, j);
             double *densityPopulationResult = densityPopulation(populations, filtered_files.num_files);
             double densityWorldResult = densityWorld(populations, filtered_files.num_files);
             // Criar pasta

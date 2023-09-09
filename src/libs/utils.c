@@ -5,16 +5,6 @@
 #include <math.h>
 
 
-void free_population(populacao *populations, int n_populations)
-{
-    for (int i = 0; i < n_populations; i++)
-    {
-        free(populations[i].individuos);
-        free(populations[i].neighbours);
-    }
-    free(populations);
-}
-
 void print_individuo(individuo individuo, int dimension, int id)
 {
     DEBUG(printf("\nprint_individuo\n"););
@@ -67,15 +57,6 @@ double desvio_padrao(individuo *population, int population_size)
         sum += pow(population[i].fitness - mean, 2);
     }
     return sqrt(sum / population_size);
-}
-
-void copy_individuo(individuo *original, individuo *copia, int dimension)
-{
-    copia->fitness = original->fitness;
-    for (int i = 0; i < dimension; i++)
-    {
-        copia->chromosome[i] = original->chromosome[i];
-    }
 }
 
 char *translateIntToAlg(enum algorithm alg)

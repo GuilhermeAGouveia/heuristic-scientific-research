@@ -20,19 +20,12 @@
  * @date 2023-08-31
 */
 
-#include <stdio.h>
-#include <stdlib.h>
 #include "algorithms/genetic.h"
 #include "algorithms/pso.h"
 #include "algorithms/clonalg.h"
 #include "algorithms/aco.h"
 #include "algorithms/diferencial.h"
-#include "algorithms/parameters.h"
-#include "algorithms/commom.h"
-#include "libs/utils.h"
-
-
-#define DEBUG(x)
+#include "libs/commom.h"
 
 void set_neighbours(populacao **populations, int island_size)
 {

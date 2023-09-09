@@ -1,23 +1,4 @@
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <getopt.h>
-#include <time.h>
-#include <math.h>
-#define NO_RECORDING
-#include "../libs/funcoes_cec_2015/cec15_test_func.h"
-#include "../libs/statistics.h"
-#include "../libs/types.h"
-#include "../libs/utils.h"
-#include "../libs/crossover.h"
-#include "../libs/log.h"
-#include "commom.h"
-#include "parameters.h"
-#define STATISTICS(x)
-#define DEBUG(x)
-#define LOG(x)
-
-
+#include "../libs/commom.h"
 
 void set_default_parameters_diferencial()
 {
@@ -180,7 +161,7 @@ populacao *diferencial(populacao *population, int epoca_num, int population_num)
 
         // print_individuo(original_population->individuos[original_population->size - 1], dimension, 1);
         
-        write_population_log(epoca_num, population_num, generation_count, *original_population, parameters);
+        LOG(write_population_log(epoca_num, population_num, generation_count, *original_population, parameters););
         STATISTICS(print_coords(&original_population->individuos[original_population->size - 1], 1, generation_count, parameters.num_generations_per_epoca););
         DEBUG(printf("\nGeração: %d\n", generation_count););
         generation_count++;

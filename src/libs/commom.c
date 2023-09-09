@@ -1,20 +1,6 @@
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <getopt.h>
-#include <time.h>
-#include <math.h>
-#define NO_RECORDING
-#include "../libs/funcoes_cec_2015/cec15_test_func.h"
-#include "../libs/statistics.h"
-#include "../libs/types.h"
-#include "../libs/utils.h"
-#include "../libs/crossover.h"
+#include "commom.h"
 
-#include "../libs/log.h"
-#define STATISTICS(x)
-#define DEBUG(x) 
-#define LOG(x)
+
 
 void fitness(individuo *individuo, int dimension, int function_number)
 {
@@ -89,13 +75,14 @@ individuo *get_worst_of_population(individuo *population, int n_populacoes)
     return &population[0];
 }
 
-void clone_individue(individuo *clone, individuo *original, int dimension)
+
+void copy_individuo(individuo *original, individuo *copia, int dimension)
 {
+    copia->fitness = original->fitness;
     for (int i = 0; i < dimension; i++)
     {
-        clone->chromosome[i] = original->chromosome[i];
+        copia->chromosome[i] = original->chromosome[i];
     }
-    clone->fitness = original->fitness;
 }
 
 void destroy_population(individuo *population, int n_individuos)
@@ -145,10 +132,10 @@ void migrate(populacao **populations, int island_size, int num_migrations, int d
                 if (melhor_individuo_da_populacao->fitness > pior_indivuduo_do_vizinho->fitness)
                 {
                     individuo *new_worst = generate_population(1, dimension, domain_function, function_number);
-                    clone_individue(new_worst, melhor_individuo_da_populacao, dimension);
+                    copy_individuo(new_worst, pior_indivuduo_do_vizinho, dimension);
                 }
                 else
-                    clone_individue(pior_indivuduo_do_vizinho, melhor_individuo_da_populacao, dimension);
+                    copy_individuo(melhor_individuo_da_populacao, pior_indivuduo_do_vizinho, dimension);
             }
         }
     }
