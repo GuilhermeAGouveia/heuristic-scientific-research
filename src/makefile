@@ -1,5 +1,5 @@
-# codname = algoritmoIlhaEscolhaProporcional
-codname = algoritmoIlhaEscolhaDireta
+codname = algoritmoIlhaEscolhaProporcional
+# codname = algoritmoIlhaEscolhaDireta
 #codname = getInputForFuraaf
 # codname = utils/medidas_geneticas
 # codname = ${COD_NAME}

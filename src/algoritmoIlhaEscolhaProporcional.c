@@ -17,19 +17,13 @@
  * @date 2023-08-31
 */
 
-#include <stdio.h>
-#include <stdlib.h>
+
 #include "algorithms/genetic.h"
 #include "algorithms/pso.h"
 #include "algorithms/clonalg.h"
 #include "algorithms/aco.h"
 #include "algorithms/diferencial.h"
-#include "algorithms/parameters.h"
-#include "algorithms/commom.h"
-#include "libs/utils.h"
-#include <math.h>
-
-#define DEBUG(x)
+#include "libs/commom.h"
 
 
 
@@ -152,7 +146,7 @@ int main(int argc, char *argv[])
     //printf("Algorithms: ");
     //printVector(alg_set, parameters.num_algorithms);
 
-    for (int i = 0; i < parameters.num_epocas; i++)
+    for (int epoca = 0; epoca < parameters.num_epocas; epoca++)
     {
 
         for (int alg_pos = 0; alg_pos < parameters.num_algorithms; alg_pos++)
@@ -165,19 +159,19 @@ int main(int argc, char *argv[])
             switch (alg)
             {
             case PSO:
-                populations[alg_pos] = pso(populations[alg_pos]);
+                populations[alg_pos] = pso(populations[alg_pos], epoca, alg_pos);
                 break;
             case GA:
-                populations[alg_pos] = genetic(populations[alg_pos]);
+                populations[alg_pos] = genetic(populations[alg_pos], epoca, alg_pos);
                 break;
             case DE:
-                populations[alg_pos] = diferencial(populations[alg_pos]);
+                populations[alg_pos] = diferencial(populations[alg_pos], epoca, alg_pos);
                 break;
             case ACO:
-                populations[alg_pos] = aco(populations[alg_pos]);
+                populations[alg_pos] = aco(populations[alg_pos], epoca, alg_pos);
                 break;
             case CLONALG:
-                populations[alg_pos] = clonalg(populations[alg_pos]);
+                populations[alg_pos] = clonalg(populations[alg_pos], epoca, alg_pos);
                 break;
             default:
                 printf("Invalid algorithm. Please use one of the following: p, g, d, a, c\n");
