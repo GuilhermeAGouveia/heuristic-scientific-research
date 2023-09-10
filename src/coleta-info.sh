@@ -8,30 +8,33 @@ time_limit=10 # Default value
 translate_alg_int_to_alg_name() {
     config_alg=$1
     string_result="["
+    count=0
     for i in $(echo $config_alg | tr "," "\n"); do
-
-        case $i in
-            0)
-                string_result="$string_result PSO"
-                ;;
-          
-            1)
-                string_result="$string_result DE"
-                ;;
-            2)
-                string_result="$string_result ACO"
-                ;;
-            3)
-                string_result="$string_result CLONALG"
-                ;;
-            4)
-                string_result="$string_result GA"
-                ;;
-            *)
-                echo "Algoritmo desconhecido ???"
-                exit 1
-                ;;
-        esac
+        for j in $(seq 1 $i); do
+            case $count in
+                0)
+                    string_result="$string_result PSO"
+                    ;;
+            
+                1)
+                    string_result="$string_result DE"
+                    ;;
+                2)
+                    string_result="$string_result ACO"
+                    ;;
+                3)
+                    string_result="$string_result CLONALG"
+                    ;;
+                4)
+                    string_result="$string_result GA"
+                    ;;
+                *)
+                    echo "Algoritmo desconhecido ???"
+                    exit 1
+                    ;;
+            esac;
+        done;
+        count=$((count+1))
     done;
     string_result="$string_result ]"
     echo -e $string_result
