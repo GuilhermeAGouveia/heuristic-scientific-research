@@ -121,7 +121,6 @@ extract_param() {
 
 define_command_evol() {
     echo "./evol $alg_config -f $function_number -t $time_limit"
-    exit 0
 }
 
 show_indicator_algorithm() {

@@ -4,17 +4,7 @@
  * Saída: 1,1,1,1,1,3,3,3,0,0
 */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include "algorithms/genetic.h"
-#include "algorithms/pso.h"
-#include "algorithms/clonalg.h"
-#include "algorithms/aco.h"
-#include "algorithms/diferencial.h"
-#include "algorithms/parameters.h"
-#include "algorithms/commom.h"
-#include "libs/utils.h"
-#include <math.h>
+#include "libs/commom.h"
 
 #define DEBUG(x)
 

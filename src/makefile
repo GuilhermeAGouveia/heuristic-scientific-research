@@ -1,6 +1,6 @@
 # codname = algoritmoIlhaEscolhaProporcional
 # codname = algoritmoIlhaEscolhaDireta
-#codname = getInputForFuraaf
+# codname = getInputForFuraaf
 # codname = utils/medidas_geneticas
 codname = ${COD_NAME}
 
@@ -18,3 +18,7 @@ statistics: compil; \
 	rm -rf ./statistics/*.dat; \
 	./evol
 	./scripts/sh/gerar_todas_estatisticas.sh; \
+
+furaaf: prepare;
+	./scripts/sh/verificar_params.sh; \
+	./furaaf.sh; \
