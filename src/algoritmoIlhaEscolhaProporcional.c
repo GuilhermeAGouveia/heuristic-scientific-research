@@ -73,7 +73,7 @@ void print_combinations(Array combinations, int nAlgorithms)
     }
 }
 
-void return_total_algoritmos(int *vet , int size){
+void return_evol(int *vet , int size){
     int totais[5];
     totais[0] = 0;
     totais[1] = 0;
@@ -90,8 +90,8 @@ void return_total_algoritmos(int *vet , int size){
         }
 
     }
-    printf("-A %d,%d,%d,%d,%d\n", totais[0], totais[1], totais[2], totais[3], totais[4]);
-
+    //printf("./evol -K %d -k %d -M %lf -A %d,%d,%d,%d,%d\n", parameters.num_epocas, parameters.num_migrations, parameters.choice_random_migrate, totais[0], totais[1], totais[2], totais[3], totais[4]);
+    printf("%d,%d,%d,%lf,%d,%d,%d,%d,%d\n",parameters.num_algorithms, parameters.num_epocas, parameters.num_migrations, parameters.choice_random_migrate, totais[0], totais[1], totais[2], totais[3], totais[4]);
 }
 void get_algoritms(int *result){
 
@@ -144,7 +144,7 @@ void get_algoritms(int *result){
         }
     }
     printVector(result, parameters.num_algorithms);
-    return_total_algoritmos(result, parameters.num_algorithms);
+    //return_evol(result, parameters.num_algorithms);
 
 }
 

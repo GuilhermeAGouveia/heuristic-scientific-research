@@ -55,7 +55,7 @@ fi
 
 ##echo -e "Valor da variável FUNCTION:irace$FUNCTION\n\n\n\n\n\n\n\n\n\n"
 ##$EXE  -f $FUNCTION -s $SEED -K 1 -k 0 -A 4 $CONFIG_PARAMS > "$STDOUT" 2> "$STDERR"
-$EXE  -f $FUNCTION -s $SEED -N 44 -t 5 $CONFIG_PARAMS > "$STDOUT" 2> "$STDERR"
+$EXE  -f $FUNCTION -s $SEED -A 0,1,0,0,0 -k 0 -K 1 $CONFIG_PARAMS > "$STDOUT" 2> "$STDERR"
 
 # Verificar se ocorreram erros durante a execução
 if [ $? -ne 0 ]; then

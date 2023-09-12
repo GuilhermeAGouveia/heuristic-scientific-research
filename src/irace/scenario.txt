@@ -17,8 +17,8 @@
 ##parameterFile = "./parameters-ant.txt"
 ##parameterFile = "./parameters-evol_mpop _diferencial.txt"
 ##parameterFile = "./parameters-genetic.txt"
-parameterFile = "./parameters-island-2.txt"
-##parameterFile = "./parameters-diferencial.txt"
+##parameterFile = "./parameters-island-2.txt"
+parameterFile = "./parameters-diferencial.txt"
 ## Directory where the programs will be run.
 execDir = "../"
 
