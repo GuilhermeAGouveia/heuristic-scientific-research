@@ -73,6 +73,26 @@ void print_combinations(Array combinations, int nAlgorithms)
     }
 }
 
+void return_total_algoritmos(int *vet , int size){
+    int totais[5];
+    totais[0] = 0;
+    totais[1] = 0;
+    totais[2] = 0;
+    totais[3] = 0;
+    totais[4] = 0;
+    for(int i = 0; i < 5; i++){
+        for(int j = 0; j < size; j++){
+            while (vet[j] != i && j+1 < size){
+                j++;
+            }
+            if(vet[j] == i)
+               totais[i] += 1;
+        }
+
+    }
+    printf("-A %d,%d,%d,%d,%d\n", totais[0], totais[1], totais[2], totais[3], totais[4]);
+
+}
 void get_algoritms(int *result){
 
     double soma_proporcoes = parameters.num_pso + parameters.num_aco + parameters.num_clonal + parameters.num_diferencial + parameters.num_genetico;
@@ -124,6 +144,7 @@ void get_algoritms(int *result){
         }
     }
     printVector(result, parameters.num_algorithms);
+    return_total_algoritmos(result, parameters.num_algorithms);
 
 }
 
