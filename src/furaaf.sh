@@ -18,10 +18,10 @@ for config in $all_params; do
     clear
     for func in $(seq 1 1); do
         rm results/tcc/result_[$parcial_name][f$1].txt
-        ./coleta-info.sh -n 20 -c "$new_config" -f $1 -t 1 | tee output-coleta-info.dat
-        result=$(cat output-coleta-info.dat | tail -n 6)
+        ./coleta-info.sh -n 20 -c "$new_config" -f $1 -t 1 | tee output-coleta-info[$parcial_name][f$1].dat
+        result=$(cat output-coleta-info[$parcial_name][f$1].dat | tail -n 6)
         echo -e $result >> results/tcc/result_[$parcial_name][f$1].txt
-        rm output-coleta-info.dat
+        rm output-coleta-info[$parcial_name][f$1].dat
         tput reset
     done;
 done;
