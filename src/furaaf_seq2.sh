@@ -6,7 +6,5 @@ furaaf.sh 4
 
 wait
 
-furaaf.sh 5
 
-wait
-shutdown -h now
+shutdown -h +15
