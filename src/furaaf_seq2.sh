@@ -4,5 +4,4 @@ wait
 
 furaaf.sh 4
 
-wait
 
