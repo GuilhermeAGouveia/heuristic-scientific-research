@@ -97,15 +97,20 @@ files_list filter_file_list_by(files_list files_list_original, int epoca, int ge
 populacao *read_population_from_generation_file(char *filename, int epoca, int population)
 {
     read_parameters_file(epoca, population);
-    print_parameters(parameters);
-    populacao *population_ = generate_island(1, parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
-    print_population(population_->individuos, population_->size, parameters.dimension, 1);
+    // print_parameters(parameters);
+    populacao *population_ = generate_clean_island(1, parameters.population_size, parameters.dimension);
+    // print_population(population_->individuos, population_->size, parameters.dimension, 1);
     FILE *file = fopen(filename, "r");
+    if (file == NULL)
+    {
+        printf("Error opening file!\n");
+        exit(1);
+    }
     char line[1024];
     int i = 0;
     while (fgets(line, 1024, file))
     {
-
+        // printf("read line: %d\n", i);
         char *tmp = strdup(line);
         char *chromossome_string = strtok(tmp, ">");
         // printf("primeira parte: %s\n", chromossome_string);
@@ -120,10 +125,26 @@ populacao *read_population_from_generation_file(char *filename, int epoca, int p
             chromossome_value_string = strtok(NULL, " ");
         }
         i++;
+        // printf("poa\n");
         free(tmp);
     }
+
     fclose(file);
+    DEBUG(printf("\n[end] read_population_from_generation_file\n"););
     return population_;
+}
+
+int get_population_from_filename(char *filename)
+{
+    char *tmp = strdup(filename);
+    char *population_string = strtok(tmp, "/");
+    population_string = strtok(NULL, "/");
+    population_string = strtok(NULL, "/");
+    population_string = strtok(NULL, "/");
+    population_string = strtok(NULL, "/");
+    population_string = strtok(population_string, "_");
+    population_string = strtok(NULL, "_");
+    return atoi(population_string);
 }
 
 populacao **mount_populations(files_list files, int epoca, int generation)
@@ -134,8 +155,14 @@ populacao **mount_populations(files_list files, int epoca, int generation)
     for (int i = 0; i < files.num_files; i++)
     {
         DEBUG(printf("file: %s\n", files.files[i]););
-        populations[i] = read_population_from_generation_file(files.files[i], epoca, generation );
+        int population = get_population_from_filename(files.files[i]);
+
+        populations[i] = read_population_from_generation_file(files.files[i], epoca, population);
+        printf("epoca: %d\n", epoca);
+        printf("generation: %d\n", generation);
+        printf("population: %d\n", population);
     }
+    printf("acabou");
     return populations;
 }
 
@@ -156,12 +183,12 @@ double *densityPopulation(populacao **populations, int island_size)
     double sd = 0;
     double *sum = (double *)calloc(island_size, sizeof(double));
     double sumIndividual;
-    int nIndividuals = populations[0]->size;
-    double multiplier = 2 / (nIndividuals - 1);
     double *result = malloc(2 * sizeof(double));
     // for all populations
     for (int i = 0; i < island_size; i++)
     {
+        int nIndividuals = populations[i]->size;
+
         // for all individuals from population i
         for (int j = 0; j < nIndividuals - 1; j++)
         {
@@ -330,6 +357,8 @@ void write_metrics_for_each_files()
             double *densityPopulationResult = densityPopulation(populations, filtered_files.num_files);
             double densityWorldResult = densityWorld(populations, filtered_files.num_files);
             // Criar pasta
+            printf("densityPopulationResult: %lf %lf\n", densityPopulationResult[0], densityPopulationResult[1]);
+            printf("densityWorldResult: %lf\n", densityWorldResult);
 
             if (output_metric == NULL)
             {

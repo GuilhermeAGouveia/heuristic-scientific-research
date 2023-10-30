@@ -62,6 +62,41 @@ populacao *generate_island(int island_size, int population_size, int dimension, 
     return populations;
 }
 
+individuo *generate_clean_population(int n_individuos, int dimension)
+{
+    DEBUG(printf("\ngenerate_population\n"););
+    individuo *population = malloc(n_individuos * sizeof(individuo));
+    for (int i = 0; i < n_individuos; i++)
+    {
+        population[i].chromosome = (double *)malloc(dimension * sizeof(double));
+        population[i].velocidade = (double *)malloc(dimension * sizeof(double));
+        for (int j = 0; j < dimension; j++)
+        {
+            population[i].chromosome[j] = 0;
+            population[i].velocidade[j] = 0;
+        }
+        population[i].fitness = 0;
+    }
+    return population;
+}
+
+populacao *generate_clean_island(int island_size, int population_size, int dimension)
+{
+    DEBUG(printf("\ngenerate_island\n"););
+    populacao *populations = malloc(island_size * sizeof(populacao));
+    for (int i = 0; i < island_size; i++)
+    {
+        populations[i].individuos = generate_clean_population(population_size, dimension);
+        populations[i].size = population_size;
+        populations[i].crossover = rand() % 6;
+        populations[i].neighbours = calloc(4, sizeof(populacao *));
+        populations[i].neighbours[0] = &populations[(i + 1) % island_size]; // talvez isso dê problema
+        populations[i].neighbours[1] = &populations[(i + 3) % island_size]; // talvez isso dê problema
+    }
+    return populations;
+}
+
+
 individuo *get_best_of_population(populacao populacao)
 {
     DEBUG(printf("\nget_best_of_population\n"););

@@ -31,7 +31,7 @@
 #define NO_RECORDING
 #define STATISTICS(x)
 #define DEBUG(x) 
-#define LOG(x) 
+#define LOG(x) x
 
 
 #define COMMOM_H
@@ -40,6 +40,8 @@ void fitness(individuo *individuo, int dimension, int function_number);
 int comparador_individuo(const void *a, const void *b);
 void copy_individuo(individuo *original, individuo *copia, int dimension);
 individuo *generate_population(int n_individuos, int dimension, domain domain_function, int function_number);
+populacao *generate_clean_island(int island_size, int population_size, int dimension);
+individuo *generate_clean_population(int n_individuos, int dimension);
 void destroy_population(individuo *population, int n_individuos);
 populacao *generate_island(int island_size, int population_size, int dimension, domain domain_function, int function_number);
 void destroy_island(populacao *populations, int island_size);
