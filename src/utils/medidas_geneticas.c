@@ -144,8 +144,10 @@ int get_population_from_filename(char *filename)
     population_string = strtok(NULL, "/");
     population_string = strtok(population_string, "_");
     population_string = strtok(NULL, "_");
+    free(tmp);
     return atoi(population_string);
 }
+
 
 populacao **mount_populations(files_list files, int epoca, int generation)
 {
@@ -162,9 +164,12 @@ populacao **mount_populations(files_list files, int epoca, int generation)
         printf("generation: %d\n", generation);
         printf("population: %d\n", population);
     }
-    printf("acabou");
+
     return populations;
 }
+
+
+
 
 double euclidian(individuo firstIndividuo, individuo secondIndividuo, int dimension)
 {
@@ -179,6 +184,7 @@ double euclidian(individuo firstIndividuo, individuo secondIndividuo, int dimens
 
 double *densityPopulation(populacao **populations, int island_size)
 {
+    DEBUG(printf("\ndensityPopulation\n"););
     double average = 0;
     double sd = 0;
     double *sum = (double *)calloc(island_size, sizeof(double));
@@ -228,9 +234,9 @@ double *densityPopulation(populacao **populations, int island_size)
 // extends it to the entire "world"
 double densityWorld(populacao **populations, int island_size)
 {
+    DEBUG(printf("\ndensityWorld\n"););
     double total;
     double sum[island_size][island_size];
-    int nIndividuals = populations[0]->size;
 
     // for all populations
     for (int i = 0; i < island_size; i++)
@@ -238,11 +244,14 @@ double densityWorld(populacao **populations, int island_size)
         // in comparison with all other populations
         for (int j = i; j < island_size; j++)
         {
+            int nIndividualsI = populations[i]->size;
+            int nIndividualsJ = populations[j]->size;
+
             // for all individuals from population i
-            for (int k = 0; k < nIndividuals - 1; k++)
+            for (int k = 0; k < nIndividualsI - 1; k++)
             {
                 // against all individuals from the same population
-                for (int l = j + 1; l < nIndividuals; l++)
+                for (int l = j + 1; l < nIndividualsJ; l++)
                 {
                     // sums with the norm-2 of individual j and k
                     sum[i][j] += euclidian(populations[i]->individuos[k], populations[j]->individuos[l], 10);
@@ -347,7 +356,7 @@ void write_metrics_for_each_files()
         system(cmd);
         char filename[1024];
         sprintf(filename, "log/metricas/epoca_%d/metrics_for_each_generation.dat", i);
-        output_metric = fopen(filename, "w");
+        output_metric = fopen(filename, "w+");
 
         for (int j = 0; j < parameters.num_generations_per_epoca; j++)
         {
