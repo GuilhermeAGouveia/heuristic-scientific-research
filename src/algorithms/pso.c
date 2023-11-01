@@ -16,7 +16,7 @@ void set_default_parameters_pso()
     if (!parameters.domain_function.max)
         parameters.domain_function.max = 100;
     if (!parameters.num_generations_per_epoca)
-        parameters.num_generations_per_epoca = (int)(5505098/9111);//153;
+        parameters.num_generations_per_epoca = (int)(5505098/parameters.population_size);//153;
     if (!parameters.seed)
         parameters.seed = time(NULL);
     if (!parameters.c1)
@@ -28,11 +28,9 @@ void set_default_parameters_pso()
 
 void reset_parameters_pso()
 {
-    parameters.population_size = 0;
-    parameters.num_generations_per_epoca = 0;
-    parameters.c1 = 0;
-    parameters.c2 = 0;
-    parameters.seed = 0;
+    // reset_parameters("s:p:g:v:z:"); antigo
+    reset_parameters("s:");
+    DEBUG(print_parameters(parameters));
 }
 
 void verifica_limites(individuo *individuo, int dimension)

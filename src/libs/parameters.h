@@ -54,5 +54,6 @@ extern args parameters;
 
 void set_parameters(int argc, char *argv[]);
 void print_parameters(args parameters);
+void reset_parameters(char* parameters_to_reset);
 
 #endif /* PARAMETERS_H */

@@ -16,7 +16,7 @@ void set_default_parameters_clonalg()
     if (!parameters.domain_function.max)
         parameters.domain_function.max = 100;
     if (!parameters.num_generations_per_epoca)
-        parameters.num_generations_per_epoca =  (int)(5505098/46);//615;
+        parameters.num_generations_per_epoca =  (int)(5505098/parameters.population_size);//615;
     if (!parameters.clones)
         parameters.clones = 72;
     if (!parameters.seed)
@@ -26,10 +26,9 @@ void set_default_parameters_clonalg()
 
 void reset_parameters_clonalg()
 {
-    parameters.population_size = 0;
-    parameters.num_generations_per_epoca = 0;
-    parameters.clones = 0;
-    parameters.seed = 0;
+    // reset_parameters("s:p:g:c:"); antigo
+    reset_parameters("s:");
+    DEBUG(print_parameters(parameters));
 }
 
 void mutation_n_genes(populacao *populacao_clones, int n_genes, int dimension, domain domain_function)

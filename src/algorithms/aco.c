@@ -12,7 +12,7 @@ void set_default_parameters_ant()
     if (!parameters.population_size)
         parameters.population_size = 2828; // 5252;
     if (!parameters.num_generations_per_epoca)
-        parameters.num_generations_per_epoca = (int)(5505098/2828); //423;
+        parameters.num_generations_per_epoca = (int)(5505098/parameters.population_size); //423;
     if (!parameters.tax_evaporate)
         parameters.tax_evaporate = 0.63855 ;
     if (!parameters.num_candidates)
@@ -36,12 +36,9 @@ void set_default_parameters_ant()
 
 void reset_parameters_ant()
 {
-    parameters.population_size = 0;
-    parameters.num_generations_per_epoca = 0;
-    parameters.tax_evaporate = 0;
-    parameters.num_candidates = 0;
-    parameters.p_exploitation = 0;
-    parameters.seed = 0;
+    // reset_parameters("s:e:n:P:g:p"); antigo
+    reset_parameters("s:");
+    DEBUG(print_parameters(parameters););
 }
 
 void print_individuos(individuo *individuo, int dimension)

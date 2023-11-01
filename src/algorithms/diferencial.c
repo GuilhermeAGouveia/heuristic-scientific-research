@@ -20,7 +20,7 @@ void set_default_parameters_diferencial()
     if (!parameters.domain_function.max)
         parameters.domain_function.max = 100;
     if (!parameters.num_generations_per_epoca)
-        parameters.num_generations_per_epoca = (int)(5505098/1665);//676 ;
+        parameters.num_generations_per_epoca = (int)(5505098/parameters.population_size);//676 ;
     if (!parameters.mutation_rate)
         parameters.mutation_rate = 5;//4; // %
     if (!parameters.seed)
@@ -31,11 +31,9 @@ void set_default_parameters_diferencial()
 }
 
 void reset_parameters_diferencial() {
-    parameters.population_size = 0;
-    parameters.num_generations_per_epoca = 0;
-    parameters.mutation_rate = 0;
-    parameters.F = 0;
-    parameters.seed = 0;
+    // reset_parameters("s:p:g:m:F:"); antigo
+    reset_parameters("s:m:F:");
+    DEBUG(print_parameters(parameters));
 }
 
 populacao *mutation_diferencial(populacao *populacao_original, int dimension, domain domain_function)

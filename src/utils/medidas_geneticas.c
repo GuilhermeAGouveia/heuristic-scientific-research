@@ -356,7 +356,7 @@ void write_metrics_for_each_files()
         system(cmd);
         char filename[1024];
         sprintf(filename, "log/metricas/epoca_%d/metrics_for_each_generation.dat", i);
-        output_metric = fopen(filename, "w+");
+        output_metric = fopen(filename, "w");
 
         for (int j = 0; j < parameters.num_generations_per_epoca; j++)
         {

@@ -17,7 +17,7 @@ args parameters;
 void set_parameters(int argc, char *argv[])
 {
     int opt;
-    while ((opt = getopt(argc, argv, "A:f:F:t:i:p:d:l:u:g:m:c:k:s:v:z:C:P:e:K:M:Q:O:D:L:G:N:")) != -1)
+    while ((opt = getopt(argc, argv, "A:f:F:t:i:p:d:l:u:g:m:c:k:s:v:z:C:P:e:K:M:Q:O:D:L:G:N:n")) != -1)
     {
         switch (opt)
         {
@@ -85,6 +85,9 @@ void set_parameters(int argc, char *argv[])
         case 'e':
             parameters.tax_evaporate = atof(optarg);
             break;
+        case 'n':
+            parameters.num_candidates = atof(optarg);
+            break;
         case 'Q':
             parameters.num_pso = atoi(optarg);
             break;
@@ -132,4 +135,106 @@ void print_parameters(args parameters)
     printf("Clones: %d\n", parameters.clones);
     printf("Tax evaporate: %f\n", parameters.tax_evaporate);
     printf("P exploitation: %f\n", parameters.p_exploitation);
+}
+
+/**
+ * @brief Reset parameters in parameters_to_reset
+ * Example: reset_parameters("p:d:s");
+ * Isso vai resetar population_size, dimension e seed
+ */
+
+void reset_parameters(char *parameters_to_reset)
+{
+    char *tmp = strdup(parameters_to_reset);
+    char *parameter = strtok(tmp, ":");
+    while (parameter != NULL)
+    {
+        switch (parameter[0])
+        {
+        case 'f':
+            parameters.function_number = 0;
+            break;
+        case 't':
+            parameters.time_limit = 0;
+            break;
+        case 'i':
+            parameters.island_size = 0;
+            break;
+        case 'p':
+            parameters.population_size = 0;
+            break;
+        case 'd':
+            parameters.dimension = 0;
+            break;
+        case 'l':
+            parameters.domain_function.min = 0;
+            break;
+        case 'u':
+            parameters.domain_function.max = 0;
+            break;
+        case 'g':
+            parameters.num_generations_per_epoca = 0;
+            break;
+        case 'm':
+            parameters.mutation_rate = 0;
+            break;
+        case 'c':
+            parameters.crossover_rate = 0;
+            break;
+        case 'k':
+            parameters.num_migrations = 0;
+            break;
+        case 'K':
+            parameters.num_epocas = 0;
+            break;
+        case 'M':
+            parameters.choice_random_migrate = 0.0;
+            break;
+        case 'F':
+            parameters.F = 0.0;
+            break;
+        case 's':
+            parameters.seed = 0;
+            break;
+        case 'v':
+            parameters.c1 = 0.0;
+            break;
+        case 'z':
+            parameters.c2 = 0.0;
+            break;
+        case 'C':
+            parameters.clones = 0;
+            break;
+        case 'e':
+            parameters.tax_evaporate = 0.0;
+            break;
+        case 'n':
+            parameters.num_candidates = 0;
+            break;
+        case 'Q':
+            parameters.num_pso = 0;
+            break;
+        case 'L':
+            parameters.num_clonal = 0;
+            break;
+        case 'O':
+            parameters.num_aco = 0;
+            break;
+        case 'G':
+            parameters.num_genetico = 0;
+            break;
+        case 'D':
+            parameters.num_diferencial = 0;
+            break;
+        case 'P':
+            parameters.p_exploitation = 0.0;
+            break;
+        default:
+            printf("Invalid option: %s\n", parameter);
+            print_usage();
+            exit(1);
+            break;
+        }
+        parameter = strtok(NULL, ":");
+    }
 }

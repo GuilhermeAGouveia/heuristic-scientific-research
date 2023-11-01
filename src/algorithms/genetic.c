@@ -6,12 +6,12 @@ void set_default_parameters_genetic()
     parameters.current_algorithm = GA;
     if (!parameters.function_number)
         parameters.function_number = 3;
-    if (!parameters.num_generations_per_epoca)
-        parameters.num_generations_per_epoca = (int)(5505098/3229);//529;
-    if (!parameters.time_limit)
-        parameters.time_limit = 10; // seconds
     if (!parameters.population_size)
         parameters.population_size = 3229; // 507;
+    if (!parameters.num_generations_per_epoca)
+        parameters.num_generations_per_epoca = (int)(5505098/parameters.population_size);//529;
+    if (!parameters.time_limit)
+        parameters.time_limit = 10; // seconds
     if (!parameters.dimension)
         parameters.dimension = 10; // 10 or 30
     if (!parameters.domain_function.min)
@@ -31,11 +31,9 @@ void set_default_parameters_genetic()
 
 void reset_parameters_genetic()
 {
-    parameters.population_size = 0;
-    parameters.mutation_rate = 0;
-    parameters.crossover_rate = 0;
-    parameters.seed = 0;
-    parameters.num_generations_per_epoca = 0;
+    // reset_parameters("s:m:c:g:p:"); antigo
+    reset_parameters("s:m:c:");
+    DEBUG(print_parameters(parameters));
 }
 
 void print_roleta(int *roleta, int roleta_size, int ball1, int ball2)
