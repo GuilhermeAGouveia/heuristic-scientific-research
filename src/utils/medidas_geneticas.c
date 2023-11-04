@@ -146,17 +146,14 @@ int get_metainfo_from_filename(char *filename, enum MetaInfo meta_info)
     char *population_string = strtok(tmp, "/");
     char compareStrings [3][20] = {"epoca_", "generation_", "population_"};
 
-    
-
     while (strstr(population_string, compareStrings[meta_info]) == NULL)
         population_string = strtok(NULL, "/");
 
     population_string = strtok(population_string, "_");
     population_string = strtok(NULL, "_");
     population_string = strtok(population_string, ".");
-    printf("population_string: %s\n", population_string);
+    DEBUG(printf("population_string: %s\n", population_string););
     free(tmp);
-    exit(0);
     return atoi(population_string);
 }
 
@@ -170,11 +167,12 @@ populacao **mount_populations(files_list files)
         DEBUG(printf("file: %s\n", files.files[i]););
         int population = get_metainfo_from_filename(files.files[i], POPULATION);
         int epoca = get_metainfo_from_filename(files.files[i], EPOCA);
+        int generation = get_metainfo_from_filename(files.files[i], GENERATION);
 
         populations[i] = read_population_from_generation_file(files.files[i], epoca, population);
-        DEBUG(printf("epoca: %d\n", epoca););
-        DEBUG(printf("generation: %d\n", generation););
-        DEBUG(printf("population: %d\n", population););
+        printf("epoca: %d\n", epoca);;
+        printf("population: %d\n", population);
+        printf("generation: %d\n", generation);
     }
 
     return populations;
@@ -358,17 +356,17 @@ void write_metrics_for_each_files()
     FILE *output_metric;
     files_list all_files = list_all_files_in_dir("./log");
     char cmd[1024];
-    for (int i = 0; i < parameters.num_epocas; i++)
+    for (int epoca = 0; epoca < parameters.num_epocas; epoca++)
     {
-        sprintf(cmd, "mkdir -p log/metricas/epoca_%d/", i);
+        sprintf(cmd, "mkdir -p log/metricas/epoca_%d/", epoca);
         system(cmd);
         char filename[1024];
-        sprintf(filename, "log/metricas/epoca_%d/metrics_for_each_generation.dat", i);
+        sprintf(filename, "log/metricas/epoca_%d/metrics_for_each_generation.dat", epoca);
         output_metric = fopen(filename, "w");
 
-        for (int j = 0; j < parameters.num_generations_per_epoca; j++)
+        for (int generation = 0; generation < parameters.num_generations_per_epoca; generation++)
         {
-            files_list filtered_files = filter_file_list_by(all_files, i, j);
+            files_list filtered_files = filter_file_list_by(all_files, epoca, generation);
             DEBUG(print_string_vector(filtered_files.files, filtered_files.num_files););
             populacao **populations = mount_populations(filtered_files);
             double *densityPopulationResult = densityPopulation(populations, filtered_files.num_files);
