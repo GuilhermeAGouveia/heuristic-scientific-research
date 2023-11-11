@@ -111,7 +111,7 @@ set_color_progress() {
 }
 
 define_command_evol() {
-    echo "./evol -A $alg_config -f $function_number -t $time_limit -k 3" 
+    echo "./evol -A $alg_config -f $function_number -t $time_limit -K 1" 
 }
 
 show_indicator_algorithm() {

@@ -2,6 +2,7 @@
 # name              switch  type    values
 ##num_ant           "-a"    c       (20,50,80,100,130,150,180,210,240,260,300)
 num_ant             "-a"    i       (30,10000)
-num_candidates      "-c"    i       (5,30)
+num_candidates      "-c"    i       (3,30)
 tax_evaporate       "-e"    r       (0,1)
-##p_exploitation    "-p"    r       (0,1)
+num_generations     "-g"    i       (10, 2000)
+##p_exploitation    "-p"    r       (0,1) 

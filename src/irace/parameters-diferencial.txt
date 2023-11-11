@@ -1,0 +1,6 @@
+# Parameter file for the ACOTSP software
+# name            switch    type    values
+population_size   "-p"      i       (30,10000)
+mutation_rate     "-m"      i       (0,100)
+F_differencial    "-F"      r       (0, 2)
+num_generations     "-g"    i       (10, 800)
