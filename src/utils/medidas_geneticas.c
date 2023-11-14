@@ -17,9 +17,9 @@ void print_string_vector(char **files, int num)
     int i = 0;
     for (int i = 0; i < num; i++)
     {
-        DEBUG(printf("file: %s\n", files[i]););
+        printf("file: %s\n", files[i]);
     }
-    DEBUG(printf("num_files: %d\n", num););
+    printf("num_files: %d\n", num);
 }
 
 char **alocc_string_matrix(int num_strings, int size_for_each_string)
@@ -71,26 +71,77 @@ files_list list_all_files_in_dir(char *dirname)
     return files_list;
 }
 
-files_list filter_file_list_by(files_list files_list_original, int epoca, int generation)
+
+
+files_list filter_file_list_by(files_list files_list_original, int epoca, int generation, int population)
 {
     DEBUG(printf("\nfilter_file_list_by\n"););
     files_list filtered_files;
+    char current_file[257];
     filtered_files.num_files = 0;
-    filtered_files.files = alocc_string_matrix(10, 257);
+    filtered_files.files = alocc_string_matrix(files_list_original.num_files, 257);
 
     for (int i = 0; i < files_list_original.num_files; i++)
     {
         char epoca_str[257];
         char generation_str[257];
+        char population_str[257];
+
+        // Filter by epoca
         sprintf(epoca_str, "epoca_%d", epoca);
-        sprintf(generation_str, "generation_%d.log", generation);
-        if (strstr(files_list_original.files[i], epoca_str) && strstr(files_list_original.files[i], generation_str))
+        if (epoca < 0)
+            strcpy(current_file, files_list_original.files[i]);
+        else if (strstr(files_list_original.files[i], epoca_str))
         {
             DEBUG(printf("file: %s\n", files_list_original.files[i]););
-            strcpy(filtered_files.files[filtered_files.num_files++], files_list_original.files[i]);
+            strcpy(current_file, files_list_original.files[i]);
         }
+        else
+            current_file[0] = '\0';
+
+        // Filter by generation
+        sprintf(generation_str, "generation_%d.log", generation);
+        if (generation >= 0)
+        {
+            if (strstr(current_file, generation_str))
+            {
+                DEBUG(printf("file: %s\n", files_list_original.files[i]););
+            }
+            else
+                current_file[0] = '\0';
+        }
+
+        sprintf(population_str, "population_%d", population);
+        if (population >= 0)
+        {
+            if (strstr(current_file, population_str))
+            {
+                DEBUG(printf("file: %s\n", files_list_original.files[i]););
+            }
+            else
+                current_file[0] = '\0';
+        }
+
+        // Add to filtered_files
+        if (current_file[0] != '\0')
+            strcpy(filtered_files.files[filtered_files.num_files++], current_file);
     }
+
     return filtered_files;
+}
+
+int extract_min_generations_from_epoca(files_list files_list_original, int epoca) {
+    int n_populations = filter_file_list_by(files_list_original, epoca, 0, -1).num_files;
+    int min = (int) INFINITY;
+    int current_value;
+
+    for (int i = 0; i < n_populations; i++) {
+        current_value = filter_file_list_by(files_list_original, epoca, -1, i).num_files;
+        if (current_value < min)
+            min = current_value;
+    }
+
+    return min;
 }
 
 populacao *read_population_from_generation_file(char *filename, int epoca, int population)
@@ -144,7 +195,7 @@ int get_metainfo_from_filename(char *filename, enum MetaInfo meta_info)
 {
     char *tmp = strdup(filename);
     char *population_string = strtok(tmp, "/");
-    char compareStrings [3][20] = {"epoca_", "generation_", "population_"};
+    char compareStrings[3][20] = {"epoca_", "generation_", "population_"};
 
     while (strstr(population_string, compareStrings[meta_info]) == NULL)
         population_string = strtok(NULL, "/");
@@ -170,7 +221,8 @@ populacao **mount_populations(files_list files)
         int generation = get_metainfo_from_filename(files.files[i], GENERATION);
 
         populations[i] = read_population_from_generation_file(files.files[i], epoca, population);
-        printf("epoca: %d\n", epoca);;
+        printf("epoca: %d\n", epoca);
+        ;
         printf("population: %d\n", population);
         printf("generation: %d\n", generation);
     }
@@ -363,10 +415,11 @@ void write_metrics_for_each_files()
         char filename[1024];
         sprintf(filename, "log/metricas/epoca_%d/metrics_for_each_generation.dat", epoca);
         output_metric = fopen(filename, "w");
+        int min_generations = extract_min_generations_from_epoca(all_files, epoca);
 
-        for (int generation = 0; generation < parameters.num_generations_per_epoca; generation++)
+        for (int generation = 0; generation < min_generations; generation++)
         {
-            files_list filtered_files = filter_file_list_by(all_files, epoca, generation);
+            files_list filtered_files = filter_file_list_by(all_files, epoca, generation, -1);
             DEBUG(print_string_vector(filtered_files.files, filtered_files.num_files););
             populacao **populations = mount_populations(filtered_files);
             double *densityPopulationResult = densityPopulation(populations, filtered_files.num_files);
