@@ -72,7 +72,17 @@ files_list list_all_files_in_dir(char *dirname)
 }
 
 
-
+/**
+ * @brief Filter a files_list by epoca, generation and population
+ * Se epoca < 0, não filtra por epoca
+ * Se generation < 0, não filtra por generation
+ * Se population < 0, não filtra por population
+ * @param files_list_original lista original dos arquivos para filtrar
+ * @param epoca valor da epoca para filtrar
+ * @param generation valor da generation para filtrar
+ * @param population valor da population para filtrar
+ * @return files_list 
+ */
 files_list filter_file_list_by(files_list files_list_original, int epoca, int generation, int population)
 {
     DEBUG(printf("\nfilter_file_list_by\n"););
