@@ -13,7 +13,7 @@
 
 #include "../libs/log.h"
 #define STATISTICS(x)
-#define DEBUG(x)
+#define DEBUG(x) 
 #define LOG(x)
 
 void fitness(individuo *individuo, int dimension, int function_number)
@@ -24,6 +24,14 @@ void fitness(individuo *individuo, int dimension, int function_number)
     // double y = individuo->chromosome[1];
     // individuo->fitness = pow(x, 2) + pow(y, 2) - cos(18 * x) - cos(18 * y);
     // printf("fitness: %f\n", individuo->fitness);
+}
+
+int comparador_proporcoes_alg(const void *a, const void *b)
+{
+    proporcao_alg *v1 = (proporcao_alg *)a;
+    proporcao_alg *v2 = (proporcao_alg *)b;
+
+    return v1->proporcao < v2->proporcao;
 }
 
 int comparador_individuo(const void *a, const void *b)
@@ -96,6 +104,7 @@ void destroy_population(individuo *population, int n_individuos)
     for (int i = 0; i < n_individuos; i++)
     {
         free(population[i].chromosome);
+        free(population[i].velocidade);
     }
     free(population);
 }

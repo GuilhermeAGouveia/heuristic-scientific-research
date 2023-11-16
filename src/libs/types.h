@@ -13,6 +13,8 @@
 
 #ifndef TYPES_H
 #define TYPES_H
+#include <math.h>
+
 
 enum algorithm
 {
@@ -39,6 +41,13 @@ typedef struct population_
     enum algorithm algorithm;
 
 } populacao;
+
+typedef struct proporcao_alg_
+{
+    int alg;
+    int proporcao;
+    int total_islands;
+}proporcao_alg;
 
 typedef struct domain
 {

@@ -2,13 +2,20 @@
 #include "types.h"
 #define LOG_H
 
+
 typedef struct args_
 {
     int function_number;
     domain domain_function;
-    char algorithms[100];
+    float choice_random_migrate;
+    char algorithms[250];
     int num_algorithms;
     double F;
+    int num_pso;
+    int num_aco;
+    int num_genetico;
+    int num_clonal;
+    int num_diferencial;
     int time_limit;
     int island_size;
     int population_size;

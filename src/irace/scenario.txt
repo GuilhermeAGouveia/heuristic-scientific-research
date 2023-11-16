@@ -13,9 +13,12 @@
 ##parameterFile = "./parameters-pso.txt"
 ##parameterFile = "./parameters-evol_mpop.txt"
 ##parameterFile = "./parameters-evol_simples.txt"
-parameterFile = "./parameters-evol_simples_num_g.txt"
+##parameterFile = "./parameters-evol_simples_num_g.txt"
 ##parameterFile = "./parameters-ant.txt"
 ##parameterFile = "./parameters-evol_mpop _diferencial.txt"
+##parameterFile = "./parameters-genetic.txt"
+##parameterFile = "./parameters-island-2.txt"
+parameterFile = "./parameters-diferencial.txt"
 ## Directory where the programs will be run.
 execDir = "../"
 
@@ -49,7 +52,7 @@ debugLevel = 0
 ## computer, the calls to targetRunner, by means of the parallel R package. For example,
 ## adding --parallel N to the command line of irace will launch in parallel up to N calls of
 ## the target algorithm.
-parallel = 8
+parallel = 12
 
 ## END of scenario file
 ############################################################################

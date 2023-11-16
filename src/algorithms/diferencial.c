@@ -17,10 +17,13 @@
 #define DEBUG(x)
 #define LOG(x)
 
+
+
 void set_default_parameters_diferencial()
 {
+
     if (!parameters.F)
-        parameters.F = 0.76811;
+        parameters.F = 0.82787;
     if (!parameters.function_number)
         parameters.function_number = 3;
     if (!parameters.time_limit)
@@ -28,7 +31,7 @@ void set_default_parameters_diferencial()
     if (!parameters.island_size)
         parameters.island_size = 1;
     if (!parameters.population_size)
-        parameters.population_size = 58;
+        parameters.population_size = 1665; //58;
     if (!parameters.dimension)
         parameters.dimension = 10; // 10 or 30
     if (!parameters.domain_function.min)
@@ -36,15 +39,22 @@ void set_default_parameters_diferencial()
     if (!parameters.domain_function.max)
         parameters.domain_function.max = 100;
     if (!parameters.num_generations_per_epoca)
-        parameters.num_generations_per_epoca = 300;
+        parameters.num_generations_per_epoca = (int)(5505098/1665);//676 ;
     if (!parameters.mutation_rate)
-        parameters.mutation_rate = 4; // %
-    if (!parameters.crossover_rate)
-        parameters.crossover_rate = 54; // %
+        parameters.mutation_rate = 5;//4; // %
     if (!parameters.seed)
         parameters.seed = time(NULL);
     if (!parameters.evaluation_limit)
         parameters.evaluation_limit = 1490400;
+    srand(parameters.seed);
+}
+
+void reset_parameters_diferencial() {
+    parameters.population_size = 0;
+    parameters.num_generations_per_epoca = 0;
+    parameters.mutation_rate = 0;
+    parameters.F = 0;
+    parameters.seed = 0;
 }
 
 populacao *mutation_diferencial(populacao *populacao_original, int dimension, domain domain_function)
@@ -94,9 +104,11 @@ void selection_diferencial(populacao *population_original, populacao *population
     for (int i = 0; i < population_mutation->size; i++)
     {
         if (population_mutation->individuos[i].fitness < population_original->individuos[i].fitness)
-            population_original->individuos[i] = population_mutation->individuos[i];
+            copy_individuo(&population_mutation->individuos[i], &population_original->individuos[i], parameters.dimension);
+            //population_original->individuos[i] = population_mutation->individuos[i];
     }
     qsort(population_original->individuos, population_original->size, sizeof(individuo), comparador_individuo);
+    destroy_island(population_mutation, 1);
     DEBUG(printf("População selecionada\n"););
     DEBUG(print_population(population_original->individuos, population_original->size, dimension, 1););
 }
@@ -131,13 +143,14 @@ populacao *crossover_diferencial(populacao *populacao_original, populacao *popul
         }
         fitness(&nova_populacao->individuos[i], dimension, parameters.function_number);
     }
+    destroy_island(populacao_mutada, 1);
     return nova_populacao;
 }
 
 populacao *diferencial(populacao *population)
 {
     set_default_parameters_diferencial();
-
+    //print_parameters(parameters);
     if(population == NULL){
         population = generate_island(1,parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
     }
@@ -159,7 +172,7 @@ populacao *diferencial(populacao *population)
     populacao *mutation_population;
     int generation_count = 0;
 
-    while (evaluation_count < parameters.evaluation_limit && difftime(time_now, time_init) < parameters.time_limit)
+    while (generation_count < parameters.num_generations_per_epoca && difftime(time_now, time_init) < parameters.time_limit)
     {
         mutation_population = mutation_diferencial(original_population, parameters.dimension, parameters.domain_function);
         cross_population = crossover_diferencial(original_population, mutation_population, parameters.dimension);
@@ -170,26 +183,8 @@ populacao *diferencial(populacao *population)
         STATISTICS(print_coords(&original_population->individuos[original_population->size - 1], 1, generation_count, parameters.num_generations_per_epoca););
         DEBUG(printf("\nGeração: %d\n", generation_count););
         generation_count++;
-        evaluation_count += original_population->size;
         time(&time_now);
     }
-   // individuo *bestCurrent = get_best_of_population(*original_population);
-    // puts("\nMelhor de toda a população:");
-    // print_individuo(*bestCurrent, dimension);
-    // printf("%lf\n", bestCurrent->fitness);
-    //if (bestCurrent->fitness < bestIndividuo.fitness)
-     //   bestIndividuo = *bestCurrent;
-
-    // migrate(populations, parameters.island_size, dimension, domain_function);
-
-    // Verifica se um best_Individuo foi encontrado em relaçao a epoca anterior
-    //  if(doubleEqual(bestIndividuo.fitness, best_ep_ant, 2)){
-    //      total_epocs_s_m++;
-    //  }
-    //  else
-    //    total_epocs_s_m = 0;
-    //  //Se o limite de epocas sem melhora for atingido é finalizada a evolucao
-    //  if(total_epocs_s_m == limit_epocs)
-    //     continue_evol = 0;
+    reset_parameters_diferencial();
     return original_population;
 }

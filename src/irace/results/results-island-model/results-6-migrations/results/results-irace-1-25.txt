@@ -1,0 +1,52 @@
+# 2 ilhas 
+   .ID. num_migrations migration_size random_random num_pso num_genetico num_diferencial num_aco num_clonal .PARENT.
+51   51              5             91       0.45432      62           41              75       7         27       42
+
+# 3 ilhas 
+   .ID. num_migrations migration_size random_random num_pso num_genetico num_diferencial num_aco num_clonal .PARENT.
+56   56              3             40       0.50308      77           25              58      12          5       29
+
+# 4 ilhas 
+   .ID. num_migrations migration_size random_random num_pso num_genetico num_diferencial num_aco num_clonal .PARENT.
+50   50              5             33       0.63752      96           20              94       8          1       24
+
+# 5 ilhas 
+   .ID. num_migrations migration_size random_random num_pso num_genetico num_diferencial num_aco num_clonal .PARENT.
+29   29              4             13       0.74775      48           34              73      56         65       14
+
+# 6 ilhas 
+   .ID. num_migrations migration_size random_random num_pso num_genetico num_diferencial num_aco num_clonal .PARENT.
+41   41              5             75       0.53623      78           18              31      34         50       35
+
+# 7 ilhas 
+   .ID. num_migrations migration_size random_random num_pso num_genetico num_diferencial num_aco num_clonal .PARENT.
+13   13              4            117       0.34365      50           66              97      65         82       NA
+
+# 8 ilhas 
+ID. num_migrations migration_size random_random num_pso num_genetico num_diferencial num_aco num_clonal .PARENT.
+55   55              6             72       0.82492      93           19              72      11         41       48
+
+# 9 ilhas 
+.ID. num_migrations migration_size random_random num_pso num_genetico num_diferencial num_aco num_clonal .PARENT.
+19   19              6              6       0.87297      77           28              69       1         31       11
+
+# 10 ilhas 
+.ID. num_migrations migration_size random_random num_pso num_genetico num_diferencial num_aco num_clonal .PARENT.
+12   12              5             19       0.47056      61           32              19      89         95       NA
+
+# 11 ilhas
+.ID. num_migrations migration_size random_random num_pso num_genetico num_diferencial num_aco num_clonal .PARENT.
+12   12              6              7       0.68644      35           20              16      36         95       NA
+
+# 12 ilhas 
+.ID. num_migrations migration_size random_random num_pso num_genetico num_diferencial num_aco num_clonal .PARENT.
+52   52              6            113       0.76578      84            1              54      27         64       24
+
+# 13 ilhas 
+.ID. num_migrations migration_size random_random num_pso num_genetico num_diferencial num_aco num_clonal .PARENT.
+12   12              6            104       0.70817      41           93              37      94         42       NA
+
+# 14 ilhas 
+.ID. num_migrations migration_size random_random num_pso num_genetico num_diferencial num_aco num_clonal .PARENT.
+56   56              6             59       0.38974      98           91              31      13         16       15
+

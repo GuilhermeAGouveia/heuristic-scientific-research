@@ -17,16 +17,18 @@
 #define DEBUG(x)
 #define LOG(x)
 
+
 void set_default_parameters_genetic()
 {
+
     if (!parameters.function_number)
         parameters.function_number = 3;
+    if (!parameters.num_generations_per_epoca)
+        parameters.num_generations_per_epoca = (int)(5505098/3229);//529;
     if (!parameters.time_limit)
         parameters.time_limit = 10; // seconds
-    if (!parameters.island_size)
-        parameters.island_size = 1;
     if (!parameters.population_size)
-        parameters.population_size = 100;
+        parameters.population_size = 3229; // 507;
     if (!parameters.dimension)
         parameters.dimension = 10; // 10 or 30
     if (!parameters.domain_function.min)
@@ -34,15 +36,23 @@ void set_default_parameters_genetic()
     if (!parameters.domain_function.max)
         parameters.domain_function.max = 100;
     if (!parameters.mutation_rate)
-        parameters.mutation_rate = 25; // %
+        parameters.mutation_rate = 13; // 6; // %
     if (!parameters.crossover_rate)
-        parameters.crossover_rate = 62; // %
-    if (!parameters.num_migrations)
-        parameters.num_migrations = 0;
+        parameters.crossover_rate = 8; // 21; // %
     if (!parameters.evaluation_limit)
         parameters.evaluation_limit = 1490400;
     if (!parameters.seed)
         parameters.seed = time(NULL);
+    srand(parameters.seed);
+}
+
+void reset_parameters_genetic()
+{
+    parameters.population_size = 0;
+    parameters.mutation_rate = 0;
+    parameters.crossover_rate = 0;
+    parameters.seed = 0;
+    parameters.num_generations_per_epoca = 0;
 }
 
 void print_roleta(int *roleta, int roleta_size, int ball1, int ball2)
@@ -114,8 +124,13 @@ populacao *mutation_commom(populacao *populacao, int dimension, domain domain_fu
     DEBUG(printf("\nmutation\n"););
     for (int i = 0; i < populacao->size - 1; i++)
     {
-        int mutation_point = rand() % dimension;
-        populacao->individuos[i].chromosome[mutation_point] = random_double(domain_function.min, domain_function.max);
+        for (int j = 0; j < dimension; j++)
+        {
+            if (rand() % 100 < parameters.mutation_rate)
+            {
+                populacao->individuos[i].chromosome[j] = random_double(domain_function.min, domain_function.max);
+            }
+        }
         fitness(&populacao->individuos[i], dimension, parameters.function_number);
     }
     return populacao;
@@ -195,39 +210,48 @@ populacao *crossover(populacao *populacao_original, populacao *populacao_mutada,
     populacao *nova_populacao = generate_island(1, populacao_original->size, dimension, parameters.domain_function, parameters.function_number);
     DEBUG(printf("\ncruzamento\n"););
     int i;
+    individuo *filho = generate_population(1, parameters.dimension, parameters.domain_function, parameters.function_number);
 
     for (i = 0; i < populacao_original->size; i++)
     {
         individuo *parents[2];
-        if (0)
-            select_parents(*populacao_mutada, parents);
-        else
-            select_parents(*populacao_original, parents);
-
-        individuo parent1 = *parents[0];
-        individuo parent2 = *parents[1];
-        individuo filho;
-        switch (3)
+        if (rand() % 100 < parameters.crossover_rate)
         {
-        case MEDIA:
-            filho = cruzamento_media(parent1, parent2, dimension);
-        case METADE:
-            filho = cruzamento_metade(parent1, parent2, dimension);
-        case PONTO:
-            filho = cruzamento_ponto(parent1, parent2, dimension);
-        case MEDIA_GEOMETRICA:
-            filho = cruzamento_ponto(parent1, parent2, dimension);
-        case FLAT:
-            filho = cruzamento_flat(parent1, parent2, dimension);
-        case BLEND:
-            filho = cruzamento_blend(parent1, parent2, dimension);
-        default:
-            filho = cruzamento_media(parent1, parent2, dimension);
-        }
+            if (0) // sempre escolher da população original
+                select_parents(*populacao_mutada, parents);
+            else
+                select_parents(*populacao_original, parents);
 
-        fitness(&filho, dimension, parameters.function_number);
-        nova_populacao->individuos[i] = filho;
+            individuo parent1 = *parents[0];
+            individuo parent2 = *parents[1];
+            switch (3) // sempre usar o cruzamento de ponto de corte
+            {
+            case MEDIA:
+                cruzamento_media(parent1, parent2, dimension, filho);
+            case METADE:
+                cruzamento_metade(parent1, parent2, dimension, filho);
+            case PONTO:
+                cruzamento_ponto(parent1, parent2, dimension, filho);
+            case MEDIA_GEOMETRICA:
+                cruzamento_ponto(parent1, parent2, dimension, filho);
+            case FLAT:
+                cruzamento_flat(parent1, parent2, dimension, filho);
+            case BLEND:
+                cruzamento_blend(parent1, parent2, dimension, filho);
+            default:
+                cruzamento_media(parent1, parent2, dimension, filho);
+            }
+
+            fitness(filho, dimension, parameters.function_number);
+            copy_individuo(filho, &nova_populacao->individuos[i], 10);
+        
+        }
+        else
+        {
+            clone_individue(&nova_populacao->individuos[i], &populacao_original->individuos[i], dimension);
+        }
     }
+    destroy_population(filho, 1);
     // nova_populacao->individuos[populacao->size - 1] = populacao->individuos[populacao->size - 1];
     return nova_populacao;
 }
@@ -235,14 +259,15 @@ populacao *crossover(populacao *populacao_original, populacao *populacao_mutada,
 populacao *genetic(populacao *population)
 {
     set_default_parameters_genetic();
+    // print_parameters(parameters);
 
-    if(population == NULL){
-        population = generate_island(1,parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
+    if (population == NULL)
+    {
+        population = generate_island(1, parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
     }
     DEBUG(printf("\nevolution\n"););
     individuo *parents[2];
     individuo bestIndividuo = {.fitness = INFINITY};
-    //populacao *populations = generate_island(parameters.island_size, parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
     time_t time_init, time_now;
     int evaluation_count = 0;
     int epoca_count = 0;
@@ -256,7 +281,7 @@ populacao *genetic(populacao *population)
     populacao *mutation_population;
     int generation_count = 0;
 
-    while (evaluation_count < parameters.evaluation_limit && difftime(time_now, time_init) < parameters.time_limit)
+    while (generation_count < parameters.num_generations_per_epoca && difftime(time_now, time_init) < parameters.time_limit)
     {
 
         cross_population = crossover(original_population, mutation_population, parameters.dimension);
@@ -271,24 +296,7 @@ populacao *genetic(populacao *population)
         evaluation_count += original_population->size;
         time(&time_now);
     }
-    // individuo *bestCurrent = get_best_of_population(*original_population);
-    //  puts("\nMelhor de toda a população:");
-    //  print_individuo(*bestCurrent, dimension);
-    //  printf("%lf\n", bestCurrent->fitness);
-    // if (bestCurrent->fitness < bestIndividuo.fitness)
-    //  bestIndividuo = *bestCurrent;
 
-    // migrate(populations, parameters.island_size, dimension, domain_function);
-
-    // Verifica se um best_Individuo foi encontrado em relaçao a epoca anterior
-    //  if(doubleEqual(bestIndividuo.fitness, best_ep_ant, 2)){
-    //      total_epocs_s_m++;
-    //  }
-    //  else
-    //    total_epocs_s_m = 0;
-    //  //Se o limite de epocas sem melhora for atingido é finalizada a evolucao
-    //  if(total_epocs_s_m == limit_epocs)
-    //     continue_evol = 0;
-
+    reset_parameters_genetic();
     return original_population;
 }

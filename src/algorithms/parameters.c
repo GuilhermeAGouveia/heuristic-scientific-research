@@ -10,7 +10,7 @@
 
 void print_usage()
 {
-    printf("Usage: ./evolucao_mpop -f <function_number> -t <time_limit> -i <island_size> -p <population_size> -d <dimension> -l <bounds_lower> -u <bounds_upper> -g <num_generations> -m <mutation_probability>");
+    printf("Usage: ./evolucao_mpop -f <function_number> -t <time_limit> -i <island_size> -p <population_size> -d <dimension> -l <bounds_lower> -u <bounds_upper> -g <num_generations> -m <mutation_probability> -k");
 }
 
 args parameters;
@@ -18,14 +18,16 @@ args parameters;
 void set_parameters(int argc, char *argv[])
 {
     int opt;
-    while ((opt = getopt(argc, argv, "A:f:F:t:i:p:d:l:u:g:m:c:k:s:v:z:C:p:e:a:")) != -1)
+    while ((opt = getopt(argc, argv, "A:f:F:t:i:p:d:l:u:g:m:c:k:s:v:z:C:P:e:a:K:M:Q:O:D:L:G:N:")) != -1)
     {
         switch (opt)
         {
         case 'A':
-
             parameters.num_algorithms = size_of_array(optarg);
             strcpy(parameters.algorithms, optarg);
+            break;
+        case 'N':
+            parameters.num_algorithms = atoi(optarg);
             break;
         case 'f':
             parameters.function_number = atoi(optarg);
@@ -60,11 +62,17 @@ void set_parameters(int argc, char *argv[])
         case 'k':
             parameters.num_migrations = atoi(optarg);
             break;
+        case 'K':
+            parameters.num_epocas = atoi(optarg);
+            break;
+        case 'M':
+            parameters.choice_random_migrate = atof(optarg);
+            break;
         case 'F':
             parameters.F = atof(optarg);
             break;
         case 's':
-            parameters.seed = atoi(optarg);
+            parameters.seed = atoi(optarg); // não funciona momento, os algoritmos vão definir uma semente própria
             break;
         case 'v':
             parameters.c1 = atof(optarg);
@@ -80,6 +88,21 @@ void set_parameters(int argc, char *argv[])
             break;
         case 'e':
             parameters.tax_evaporate = atof(optarg);
+            break;
+        case 'Q':
+            parameters.num_pso = atoi(optarg);
+            break;
+        case 'L':
+            parameters.num_clonal = atoi(optarg);
+            break;
+        case 'O':
+            parameters.num_aco = atoi(optarg);
+            break;
+        case 'G':
+            parameters.num_genetico = atoi(optarg);
+            break;
+        case 'D':
+            parameters.num_diferencial = atoi(optarg);
             break;
         case 'P':
             parameters.p_exploitation = atof(optarg);
