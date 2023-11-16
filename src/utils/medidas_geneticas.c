@@ -71,7 +71,6 @@ files_list list_all_files_in_dir(char *dirname)
     return files_list;
 }
 
-
 /**
  * @brief Filter a files_list by epoca, generation and population
  * Se epoca < 0, não filtra por epoca
@@ -81,7 +80,7 @@ files_list list_all_files_in_dir(char *dirname)
  * @param epoca valor da epoca para filtrar
  * @param generation valor da generation para filtrar
  * @param population valor da population para filtrar
- * @return files_list 
+ * @return files_list
  */
 files_list filter_file_list_by(files_list files_list_original, int epoca, int generation, int population)
 {
@@ -140,12 +139,14 @@ files_list filter_file_list_by(files_list files_list_original, int epoca, int ge
     return filtered_files;
 }
 
-int extract_min_generations_from_epoca(files_list files_list_original, int epoca) {
+int extract_min_generations_from_epoca(files_list files_list_original, int epoca)
+{
     int n_populations = filter_file_list_by(files_list_original, epoca, 0, -1).num_files;
-    int min = (int) INFINITY;
+    int min = (int)INFINITY;
     int current_value;
 
-    for (int i = 0; i < n_populations; i++) {
+    for (int i = 0; i < n_populations; i++)
+    {
         current_value = filter_file_list_by(files_list_original, epoca, -1, i).num_files;
         if (current_value < min)
             min = current_value;
@@ -231,10 +232,10 @@ populacao **mount_populations(files_list files)
         int generation = get_metainfo_from_filename(files.files[i], GENERATION);
 
         populations[i] = read_population_from_generation_file(files.files[i], epoca, population);
-        printf("epoca: %d\n", epoca);
-        ;
-        printf("population: %d\n", population);
-        printf("generation: %d\n", generation);
+        // printf("file: %s\n", files.files[i]);
+        // printf("epoca: %d\n", epoca);
+        // printf("population: %d\n", population);
+        // printf("generation: %d\n", generation);
     }
 
     return populations;
@@ -251,16 +252,16 @@ double euclidian(individuo firstIndividuo, individuo secondIndividuo, int dimens
     return distance;
 }
 
-double *densityPopulation(populacao **populations, int island_size)
+double *densityPopulation(populacao **populations, int island_number)
 {
     DEBUG(printf("\ndensityPopulation\n"););
     double average = 0;
     double sd = 0;
-    double *sum = (double *)calloc(island_size, sizeof(double));
+    double *sum = (double *)calloc(island_number, sizeof(double));
     double sumIndividual;
     double *result = malloc(2 * sizeof(double));
     // for all populations
-    for (int i = 0; i < island_size; i++)
+    for (int i = 0; i < island_number; i++)
     {
         int nIndividuals = populations[i]->size;
 
@@ -276,19 +277,19 @@ double *densityPopulation(populacao **populations, int island_size)
         }
     }
 
-    for (int i = 0; i < island_size; i++)
+    for (int i = 0; i < island_number; i++)
     {
         average += sum[i];
         // DEBUG(printf("%lf"););
     }
 
-    average /= island_size;
+    average /= island_number;
 
-    for (int i = 0; i < island_size; i++)
+    for (int i = 0; i < island_number; i++)
     {
         sd += (sum[i] - average) * (sum[i] - average);
     }
-    sd /= island_size;
+    sd /= island_number;
     sd = sqrt(sd);
 
     // cout << average << ";" << sd << ";";
@@ -301,17 +302,26 @@ double *densityPopulation(populacao **populations, int island_size)
 
 // implements the same diversity metric of the density population
 // extends it to the entire "world"
-double densityWorld(populacao **populations, int island_size)
+double densityWorld(populacao **populations, int island_number)
 {
     DEBUG(printf("\ndensityWorld\n"););
     double total;
-    double sum[island_size][island_size];
+    double **sum = (double **)calloc(island_number, sizeof(double *));
+
+    for (int i = 0; i < island_number; i++)
+    {
+        sum[i] = (double *)calloc(island_number, sizeof(double));
+    }
+
+    // print_population(populations[1]->individuos, populations[1]->size, 10, 1);
+    // // print_population(populations[13]->individuos, populations[13]->size, 10, 1);
+    // exit(0);
 
     // for all populations
-    for (int i = 0; i < island_size; i++)
+    for (int i = 0; i < island_number; i++)
     {
         // in comparison with all other populations
-        for (int j = i; j < island_size; j++)
+        for (int j = i; j < island_number; j++)
         {
             int nIndividualsI = populations[i]->size;
             int nIndividualsJ = populations[j]->size;
@@ -326,12 +336,14 @@ double densityWorld(populacao **populations, int island_size)
                     sum[i][j] += euclidian(populations[i]->individuos[k], populations[j]->individuos[l], 10);
                 }
             }
+
+            printf("sum[%d][%d] += %lf\n", i, j, sum[i][j]);
         }
     }
 
-    for (int i = 0; i < island_size; i++)
+    for (int i = 0; i < island_number; i++)
     {
-        for (int j = i; j < island_size; j++)
+        for (int j = i; j < island_number; j++)
         {
             total += sum[i][j];
         }
