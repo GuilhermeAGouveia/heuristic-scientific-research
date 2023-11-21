@@ -3,9 +3,7 @@ ilha_proporcional_output = prop
 ilha_direta_output = dire
 medidas_geneticas_output = metrics
 
-compil:;
-	gcc -o evol $(codname).c $(commom_libs); \
-	gcc utils/combinationK.c -o combination; \
+all: genetic_metrics direct proportional; \
 
 run: compil;
 	./evol; \
@@ -27,7 +25,7 @@ direct: ;
 proportional: ;
 	gcc -o $(ilha_proporcional_output) algoritmoIlhaEscolhaProporcional.c $(commom_libs); \
 
-all: genetic_metrics direct proportional; \
+
 	
 furaaf: prepare;
 	./scripts/sh/verificar_params.sh; \
