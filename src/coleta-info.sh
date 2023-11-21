@@ -120,7 +120,7 @@ extract_param() {
 }
 
 define_command_evol() {
-    echo "./evol $alg_config -f $function_number -t $time_limit"
+    echo "./dire $alg_config -f $function_number -t $time_limit"
 }
 
 show_indicator_algorithm() {
