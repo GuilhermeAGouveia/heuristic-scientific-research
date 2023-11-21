@@ -333,7 +333,7 @@ double densityWorld(populacao **populations, int island_number)
                 for (int l = j + 1; l < nIndividualsJ; l++)
                 {
                     // sums with the norm-2 of individual j and k
-                    sum[i][j] += euclidian(populations[i]->individuos[k], populations[j]->individuos[l], 10);
+                    sum[i][j] += euclidian(populations[i]->individuos[k], populations[j]->individuos[l], parameters.dimension);
                 }
             }
 

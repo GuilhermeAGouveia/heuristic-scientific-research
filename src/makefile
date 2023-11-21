@@ -1,7 +1,7 @@
 # codname = algoritmoIlhaEscolhaProporcional
-#  codname = algoritmoIlhaEscolhaDireta
+ codname = algoritmoIlhaEscolhaDireta
 # codname = getInputForFuraaf
-codname = utils/medidas_geneticas
+# codname = utils/medidas_geneticas
 #codname = ${COD_NAME}
 
 compil:;
@@ -19,6 +19,10 @@ statistics: compil; \
 	./evol
 	./scripts/sh/gerar_todas_estatisticas.sh; \
 
+genetic: ;
+	gcc -o medidas utils/medidas_geneticas.c ./libs/statistics.c ./libs/log.c ./libs/crossover.c ./libs/types.c ./libs/utils.c ./libs/funcoes_cec_2015/cec15_test_func.c ./libs/funcoes_cec_2015/ecr_iml.c ./libs/funcoes_cec_2015/evaluation_count_iml.c ./libs/funcoes_cec_2015/record_result_iml.c ./libs/funcoes_cec_2015/rp_iml.c ./algorithms/genetic.c ./algorithms/pso.c ./libs/parameters.c ./libs/commom.c ./algorithms/clonalg.c ./algorithms/aco.c ./algorithms/diferencial.c -lm; \
+
+	
 furaaf: prepare;
 	./scripts/sh/verificar_params.sh; \
 	./furaaf.sh; \
