@@ -25,8 +25,6 @@ direct: ;
 proportional: ;
 	gcc -o $(ilha_proporcional_output) algoritmoIlhaEscolhaProporcional.c $(commom_libs); \
 
-
-	
 furaaf: prepare;
 	./scripts/sh/verificar_params.sh; \
 	./furaaf.sh; \
