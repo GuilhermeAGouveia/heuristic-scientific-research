@@ -65,7 +65,7 @@ files_list list_all_files_in_dir(char *dirname)
 {
     DEBUG(printf("\nlist_all_files_in_dir\n"););
     files_list files_list;
-    files_list.files = alocc_string_matrix(10000, 257);
+    files_list.files = alocc_string_matrix(100000, 257);
     list_all_files_in_dir_(dirname, files_list.files);
     files_list.num_files = i;
     return files_list;
@@ -321,16 +321,17 @@ double densityWorld(populacao **populations, int island_number)
     for (int i = 0; i < island_number; i++)
     {
         // in comparison with all other populations
-        for (int j = i; j < island_number; j++)
+        for (int j = i + 1; j < island_number; j++)
         {
             int nIndividualsI = populations[i]->size;
             int nIndividualsJ = populations[j]->size;
 
             // for all individuals from population i
-            for (int k = 0; k < nIndividualsI - 1; k++)
+            for (int k = 0; k < nIndividualsI; k++)
             {
                 // against all individuals from the same population
-                for (int l = j + 1; l < nIndividualsJ; l++)
+
+                for (int l = 0; l < nIndividualsJ; l++)
                 {
                     // sums with the norm-2 of individual j and k
                     sum[i][j] += euclidian(populations[i]->individuos[k], populations[j]->individuos[l], parameters.dimension);
