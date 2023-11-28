@@ -338,6 +338,8 @@ double densityWorld(populacao **populations, int island_number)
                 }
             }
 
+            sum[i][j] = sqrt(sum[i][j]);
+
             printf("sum[%d][%d] += %lf\n", i, j, sum[i][j]);
         }
     }
