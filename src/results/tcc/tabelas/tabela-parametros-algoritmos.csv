@@ -1,0 +1,6 @@
+Algoritmo,population_size,num_generations,mutation_rate,c1,c2,F_differencial,num_candidates,tax_evaporate,crossover_rate,clones
+PSO,9111,153,null,0.61845,0.74494,null,null,null,null,null
+DE,1665,676,5,null,null,0.82787,null,null,null,null
+ACO,2828,423,null,null,null,null,20,0.63855,null,null
+CLONAL,46,615,null,null,null,null,null,null,null,72
+GA,3229,529,13,null,null,null,null,null,8,null

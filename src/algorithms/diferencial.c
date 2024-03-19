@@ -1,27 +1,8 @@
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <getopt.h>
-#include <time.h>
-#include <math.h>
-#define NO_RECORDING
-#include "../libs/funcoes_cec_2015/cec15_test_func.h"
-#include "../libs/statistics.h"
-#include "../libs/types.h"
-#include "../libs/utils.h"
-#include "../libs/crossover.h"
-#include "../libs/log.h"
-#include "commom.h"
-#include "parameters.h"
-#define STATISTICS(x)
-#define DEBUG(x)
-#define LOG(x)
-
-
+#include "../libs/commom.h"
 
 void set_default_parameters_diferencial()
 {
-
+    parameters.current_algorithm = DE;
     if (!parameters.F)
         parameters.F = 0.82787;
     if (!parameters.function_number)
@@ -39,7 +20,7 @@ void set_default_parameters_diferencial()
     if (!parameters.domain_function.max)
         parameters.domain_function.max = 100;
     if (!parameters.num_generations_per_epoca)
-        parameters.num_generations_per_epoca = (int)(5505098/1665);//676 ;
+        parameters.num_generations_per_epoca = (int)(5505098/parameters.population_size);//676 ;
     if (!parameters.mutation_rate)
         parameters.mutation_rate = 5;//4; // %
     if (!parameters.seed)
@@ -50,11 +31,9 @@ void set_default_parameters_diferencial()
 }
 
 void reset_parameters_diferencial() {
-    parameters.population_size = 0;
-    parameters.num_generations_per_epoca = 0;
-    parameters.mutation_rate = 0;
-    parameters.F = 0;
-    parameters.seed = 0;
+    // reset_parameters("s:p:g:m:F:"); antigo
+    reset_parameters("s:m:F:");
+    DEBUG(print_parameters(parameters));
 }
 
 populacao *mutation_diferencial(populacao *populacao_original, int dimension, domain domain_function)
@@ -147,7 +126,7 @@ populacao *crossover_diferencial(populacao *populacao_original, populacao *popul
     return nova_populacao;
 }
 
-populacao *diferencial(populacao *population)
+populacao *diferencial(populacao *population, int epoca_num, int population_num)
 {
     set_default_parameters_diferencial();
     //print_parameters(parameters);
@@ -179,7 +158,8 @@ populacao *diferencial(populacao *population)
         selection_diferencial(original_population, cross_population, parameters.dimension);
 
         // print_individuo(original_population->individuos[original_population->size - 1], dimension, 1);
-        LOG(write_population_log(epoca_count, i, generation_count, *original_population, parameters););
+        
+        LOG(write_population_log(epoca_num, population_num, generation_count, *original_population, parameters););
         STATISTICS(print_coords(&original_population->individuos[original_population->size - 1], 1, generation_count, parameters.num_generations_per_epoca););
         DEBUG(printf("\nGeração: %d\n", generation_count););
         generation_count++;

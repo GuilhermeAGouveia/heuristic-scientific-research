@@ -1,0 +1,1 @@
+Resultado para função 9: Minimo: 900.234106 Maximo: 901.197843 Média: 900.76555965000000000000 Desvio padrão: .30500658217606960358

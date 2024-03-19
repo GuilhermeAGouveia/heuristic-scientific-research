@@ -1,24 +1,8 @@
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <getopt.h>
-#include <time.h>
-#include <math.h>
-#define NO_RECORDING
-#include "../libs/funcoes_cec_2015/cec15_test_func.h"
-#include "../libs/statistics.h"
-#include "../libs/types.h"
-#include "../libs/utils.h"
-#include "../libs/crossover.h"
-#include "../libs/log.h"
-#include "parameters.h"
-#include "commom.h"
-#define STATISTICS(x)
-#define DEBUG(x)
-#define LOG(x)
+#include "../libs/commom.h"
 /*5.505.098*/
 void set_default_parameters_pso()
 {
+    parameters.current_algorithm = PSO;
     if (!parameters.function_number)
         parameters.function_number = 3;
     if (!parameters.time_limit)
@@ -32,7 +16,7 @@ void set_default_parameters_pso()
     if (!parameters.domain_function.max)
         parameters.domain_function.max = 100;
     if (!parameters.num_generations_per_epoca)
-        parameters.num_generations_per_epoca = (int)(5505098/9111);//153;
+        parameters.num_generations_per_epoca = (int)(5505098/parameters.population_size);//153;
     if (!parameters.seed)
         parameters.seed = time(NULL);
     if (!parameters.c1)
@@ -44,11 +28,9 @@ void set_default_parameters_pso()
 
 void reset_parameters_pso()
 {
-    parameters.population_size = 0;
-    parameters.num_generations_per_epoca = 0;
-    parameters.c1 = 0;
-    parameters.c2 = 0;
-    parameters.seed = 0;
+    // reset_parameters("s:p:g:v:z:"); antigo
+    reset_parameters("s:");
+    DEBUG(print_parameters(parameters));
 }
 
 void verifica_limites(individuo *individuo, int dimension)
@@ -103,7 +85,7 @@ void copy_individuo_pso(individuo *original, individuo *copia, int dimension)
     }
 }
 
-populacao *pso(populacao *population)
+populacao *pso(populacao *population, int epoca_num, int population_num)
 {
     set_default_parameters_pso();
     // print_parameters(parameters);
@@ -153,6 +135,8 @@ populacao *pso(populacao *population)
             atualiza_posicao(&population->individuos[i], parameters.dimension);
             fitness(&population->individuos[i], parameters.dimension, parameters.function_number);
         }
+        LOG(write_population_log(epoca_num, population_num, generation_count, *population, parameters););
+
         time(&time_now);
         generation_count++;
     }

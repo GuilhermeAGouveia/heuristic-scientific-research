@@ -1,0 +1,15 @@
+Resultado para função 1: Minimo: 100.000000 Maximo: 100.000000 Média: 100.00000000000000000000 Desvio padrão: 0
+Resultado para função 2: Minimo: 200.000000 Maximo: 200.000000 Média: 200.00000000000000000000 Desvio padrão: 0
+Resultado para função 3: Minimo: 300.003687 Maximo: 300.559660 Média: 300.17613855000000000000 Desvio padrão: .19153720046233185978
+Resultado para função 4: Minimo: 400.000000 Maximo: 400.000000 Média: 400.00000000000000000000 Desvio padrão: 0
+Resultado para função 5: Minimo: 500.000001 Maximo: 500.084030 Média: 500.01880995000000000000 Desvio padrão: .02839154832599835510
+Resultado para função 6: Minimo: 600.005933 Maximo: 600.046667 Média: 600.02954860000000000000 Desvio padrão: .01006819448759309575
+Resultado para função 7: Minimo: 700.000987 Maximo: 700.022155 Média: 700.01234030000000000000 Desvio padrão: .00597666136818876496
+Resultado para função 8: Minimo: 800.000000 Maximo: 800.303109 Média: 800.19708925000000000000 Desvio padrão: .08186229433620523685
+Resultado para função 9: Minimo: 900.344138 Maximo: 901.477249 Média: 900.90887805000000000000 Desvio padrão: .31183363503613188647
+Resultado para função 10: Minimo: 1009.370887 Maximo: 1142.827114 Média: 1081.41892260000000000000 Desvio padrão: 49.60102514303216939107
+Resultado para função 11: Minimo: 1100.026828 Maximo: 1101.485682 Média: 1100.55925250000000000000 Desvio padrão: .44803564887991892915
+Resultado para função 12: Minimo: 1200.791923 Maximo: 1221.460593 Média: 1206.73804995000000000000 Desvio padrão: 7.09712641742102882629
+Resultado para função 13: Minimo: 1614.937963 Maximo: 1614.937963 Média: 1614.93796300000000000000 Desvio padrão: 0
+Resultado para função 14: Minimo: 1578.439301 Maximo: 1580.841010 Média: 1579.70249730000000000000 Desvio padrão: .68569423631777013792
+Resultado para função 15: Minimo: 1900.000000 Maximo: 1900.000000 Média: 1900.00000000000000000000 Desvio padrão: 0
