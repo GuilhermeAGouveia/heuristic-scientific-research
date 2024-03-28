@@ -392,7 +392,7 @@ populacao *aco(populacao *population, int epoca_num, int population_num)
     int generations_count = 0;
     while (generations_count < parameters.num_generations_per_epoca && difftime(time_now, time_init) < parameters.time_limit)
     {
-        DEBUG(print_individuo(individuos, d, best_individuo););
+        DEBUG(print_individuo(*individuos, d, best_individuo););
         //  Move each individuo to a new individuo_chromossome
         select_next_position(pheromones, individuos, d, best_individuo);
         evaporate_pheromones(pheromones, d);
