@@ -30,8 +30,8 @@
 
 #define NO_RECORDING
 #define STATISTICS(x)
-#define DEBUG(x) 
-#define LOG(x) x
+#define DEBUG(x) x
+#define LOG(x) 
 
 
 #define COMMOM_H
