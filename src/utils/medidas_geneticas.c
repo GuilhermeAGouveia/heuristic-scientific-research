@@ -12,13 +12,13 @@ typedef struct files_list_
     int num_files;
 } files_list;
 
-void destroy_files_list(files_list *files_destroy)
+void destroy_files_list(files_list files_destroy)
 {
-    for (int i = 0; i < files_destroy->num_files; i++)
+    for (int i = 0; i < files_destroy.num_files; i++)
     {
-        free(files_destroy->files[i]);
+        free(files_destroy.files[i]);
     }
-    free(files_destroy->files);
+    free(files_destroy.files);
 }
 
 void destroy_matriz(double **matriz, int size)
@@ -154,6 +154,11 @@ files_list filter_file_list_by(files_list files_list_original, int epoca, int ge
             strcpy(filtered_files.files[filtered_files.num_files++], current_file);
     }
 
+    for (int i = filtered_files.num_files; i < files_list_original.num_files; i++)
+    {
+        free(filtered_files.files[i]);
+    }
+
     return filtered_files;
 }
 
@@ -162,7 +167,7 @@ int extract_min_generations_from_epoca(files_list files_list_original, int epoca
     files_list files_aux;
     files_aux = filter_file_list_by(files_list_original, epoca, 0, -1);
     int n_populations = files_aux.num_files;
-    destroy_files_list(&files_aux);
+    destroy_files_list(files_aux);
     int min = (int)INFINITY;
     int current_value;
 
@@ -170,7 +175,7 @@ int extract_min_generations_from_epoca(files_list files_list_original, int epoca
     {
         files_aux = filter_file_list_by(files_list_original, epoca, -1, i);
         current_value = files_aux.num_files;
-        destroy_files_list(&files_aux);
+        destroy_files_list(files_aux);
         if (current_value < min)
             min = current_value;
     }
@@ -487,12 +492,13 @@ void write_metrics_for_each_files()
             fprintf(output_metric, "%lf ", densityPopulationResult[1]);
             fprintf(output_metric, "%lf\n", densityWorldResult);
             destroy_island(*populations, filtered_files.num_files - 1);
-            destroy_files_list(&filtered_files);
+            destroy_files_list(filtered_files);
             free(densityPopulationResult);
+            free(populations);
         }
         fclose(output_metric);
     }
-    destroy_files_list(&all_files);
+    destroy_files_list(all_files);
 }
 
 int main()
