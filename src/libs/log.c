@@ -3,7 +3,7 @@
 #include "log.h"
 #include "types.h"
 #include "utils.h"
-#define DEBUG(x) x
+#define DEBUG(x) 
 
 static int first_time = 1;
 

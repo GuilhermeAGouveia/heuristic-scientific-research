@@ -2,7 +2,7 @@
 #include "../libs/commom.h"
 #include <dirent.h>
 
-#define DEBUG(x)
+#define DEBUG(x) 
 
 void read_parameters_file(int epoca, int population);
 
@@ -21,14 +21,6 @@ void destroy_files_list(files_list files_destroy)
     free(files_destroy.files);
 }
 
-void destroy_matriz(double **matriz, int size)
-{
-    for (int i = 0; i < size; i++)
-    {
-        free(matriz[i]);
-    }
-    free(matriz);
-}
 
 void print_string_vector(char **files, int num)
 {
@@ -269,143 +261,11 @@ populacao **mount_populations(files_list files)
     return populations;
 }
 
-double euclidian(individuo firstIndividuo, individuo secondIndividuo, int dimension)
-{
-    double distance = 0;
-    for (int i = 0; i < dimension; i++)
-    {
-        distance += pow(firstIndividuo.chromosome[i] - secondIndividuo.chromosome[i], 2);
-    }
-    distance = sqrt(distance);
-    return distance;
-}
 
-double *densityPopulation(populacao **populations, int island_number)
-{
-    DEBUG(printf("\ndensityPopulation\n"););
-    double average = 0;
-    double sd = 0;
-    double *sum = (double *)calloc(island_number, sizeof(double));
-    double sumIndividual;
-    double *result = malloc(2 * sizeof(double));
-    // for all populations
-    for (int i = 0; i < island_number; i++)
-    {
-        int nIndividuals = populations[i]->size;
-
-        // for all individuals from population i
-        for (int j = 0; j < nIndividuals - 1; j++)
-        {
-            // against all individuals from the same population
-            for (int k = j + 1; k < nIndividuals; k++)
-            {
-                // sums with the norm-2 of individual j and k
-                sum[i] += euclidian(populations[i]->individuos[j], populations[i]->individuos[k], 10);
-            }
-        }
-    }
-
-    for (int i = 0; i < island_number; i++)
-    {
-        average += sum[i];
-        // DEBUG(printf("%lf"););
-    }
-
-    average /= island_number;
-
-    for (int i = 0; i < island_number; i++)
-    {
-        sd += (sum[i] - average) * (sum[i] - average);
-    }
-    sd /= island_number;
-    sd = sqrt(sd);
-
-    // cout << average << ";" << sd << ";";
-    result[0] = average;
-    result[1] = sd;
-    // DEBUG(printf("\nDensityPopulation\n"););
-    // DEBUG(printf("%lf;%lf;\n", average, sd););
-    free(sum);
-    return result;
-}
 
 // implements the same diversity metric of the density population
 // extends it to the entire "world"
-double densityWorld(populacao **populations, int island_number)
-{
-    DEBUG(printf("\ndensityWorld\n"););
-    double total;
-    double **sum = (double **)calloc(island_number, sizeof(double *));
 
-    for (int i = 0; i < island_number; i++)
-    {
-        sum[i] = (double *)calloc(island_number, sizeof(double));
-    }
-
-    // print_population(populations[1]->individuos, populations[1]->size, 10, 1);
-    // // print_population(populations[13]->individuos, populations[13]->size, 10, 1);
-    // exit(0);
-
-    // for all populations
-    for (int i = 0; i < island_number; i++)
-    {
-        // in comparison with all other populations
-        for (int j = i + 1; j < island_number; j++)
-        {
-            int nIndividualsI = populations[i]->size;
-            int nIndividualsJ = populations[j]->size;
-
-            // for all individuals from population i
-            for (int k = 0; k < nIndividualsI; k++)
-            {
-                // against all individuals from the same population
-
-                for (int l = 0; l < nIndividualsJ; l++)
-                {
-                    // sums with the norm-2 of individual j and k
-                    sum[i][j] += euclidian(populations[i]->individuos[k], populations[j]->individuos[l], parameters.dimension);
-                }
-            }
-
-            sum[i][j] = sqrt(sum[i][j]);
-
-            printf("sum[%d][%d] += %lf\n", i, j, sum[i][j]);
-        }
-    }
-
-    for (int i = 0; i < island_number; i++)
-    {
-        for (int j = i; j < island_number; j++)
-        {
-            total += sum[i][j];
-        }
-    }
-    // Errado?
-    /*
-    double sd = 0;
-
-    total /= island_size;
-
-    for (int i = 0; i < island_size; i++) {
-        for(int j = i; j < island_size; j++)
-         sd += (sum[i][j]-total)*(sum[i][j]-total);
-    }
-    sd /= island_size;
-    sd = sqrt(sd);*/
-
-    // DEBUG(printf("\nDensityWord\n"););
-    // DEBUG(printf("%lf;\n", total););
-    /*
-    //cout << total << ";" << endl;
-
-    // TODO: incompleto. Pensar numa maneira de comparar este número com o outro
-    // pensamento: não é necessário comparar este número com o outro, só comparar
-    // de uma execução com outra. Então, é somar tudo e retornar
-    // verificar se esta ideia acima está correta
-    */
-    destroy_matriz(sum, island_number);
-    return total;
-}
 
 void clean_metric_dir()
 {

@@ -74,15 +74,20 @@ int main(int argc, char *argv[])
     individuo *gbest_individuo = generate_population(1, 10, parameters.domain_function, 15);
     individuo *pbest_individuo = generate_population(1, 10, parameters.domain_function, 15);
     gbest_individuo->fitness = INFINITY;
-
+    time_t time_init, time_now;
     populacao **populations = calloc(parameters.num_algorithms, sizeof(populacao *));
+    double convergence_current, convergence_expected = 0.95;
+    int converged = -1, increment = 5, final_attempt = 2;
+    int limit_time = 3600, aux = increment;
     int *alg_set = convert_parameter_to_array(parameters.algorithms);
     alg_set = get_algorithms(alg_set, parameters.num_algorithms);
     printf("Algorithms: ");
     printVector(alg_set, parameters.num_algorithms);
-
-    for (int epoca = 0; epoca < parameters.num_epocas; epoca++)
+    time(&time_init);
+    time(&time_now);
+    for (int epoca = 0; difftime(time_now, time_init) < limit_time && !(converged == 1); epoca++)
     {
+        //printf("\nconverged:%i, epoca: %i, aux: %i\n", converged, epoca, aux);
 
         for (int alg_pos = 0; alg_pos < parameters.num_algorithms; alg_pos++)
         {
@@ -132,6 +137,32 @@ int main(int argc, char *argv[])
             printf("Migrating [BEST]...\n");
             migrate(populations, parameters.num_algorithms, parameters.num_migrations, parameters.dimension, parameters.domain_function, parameters.function_number);
         }
+
+        if (epoca == aux)
+        {
+
+            convergence_current = convergence_calculation_islands(populations, parameters.num_algorithms, convergence_expected);
+           // printf("\nConverged: %lf\n", convergence_current);
+            if (convergence_current < convergence_expected)
+            {
+                aux += increment;
+                converged = -1;
+            }
+            else
+            {
+                if (converged == -1)
+                {
+                    converged = 0;
+                    aux += final_attempt;
+                }
+                else
+                {
+                    converged = 1;
+                }
+            }
+        }
+
+        time(&time_now);
     }
 
     printf("Best %lf\n", gbest_individuo->fitness);
