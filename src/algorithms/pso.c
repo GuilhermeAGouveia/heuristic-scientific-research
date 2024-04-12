@@ -15,8 +15,6 @@ void set_default_parameters_pso()
         parameters.domain_function.min = -100;
     if (!parameters.domain_function.max)
         parameters.domain_function.max = 100;
-    if (!parameters.num_generations_per_epoca)
-        parameters.num_generations_per_epoca = (int)(5505098/parameters.population_size);//153;
     if (!parameters.seed)
         parameters.seed = time(NULL);
     if (!parameters.c1)
@@ -97,17 +95,13 @@ populacao *pso(populacao *population, int epoca_num, int population_num)
     populacao *population_best_current;
     population_best_current = generate_island(1, parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
 
-    time_t time_init, time_now;
-    time(&time_init);
-    time(&time_now);
-
     individuo *individuo_best = generate_population(1, parameters.dimension, parameters.domain_function, parameters.function_number);
     double w_max = 1, w_min = 0;
     double *c1 = malloc(parameters.dimension * sizeof(double));
     double *c2 = malloc(parameters.dimension * sizeof(double));
     int generation_count = 0;
 
-    while (generation_count < parameters.num_generations_per_epoca && difftime(time_now, time_init) < parameters.time_limit)
+    while (generation_count < parameters.num_generations_per_epoca)
     {
         for (int i = 0; i < parameters.population_size; i++)
         {
@@ -137,7 +131,6 @@ populacao *pso(populacao *population, int epoca_num, int population_num)
         }
         LOG(write_population_log(epoca_num, population_num, generation_count, *population, parameters););
 
-        time(&time_now);
         generation_count++;
     }
     copy_individuo_pso(individuo_best, &population->individuos[0], parameters.dimension);

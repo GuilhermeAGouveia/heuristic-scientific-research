@@ -55,6 +55,6 @@ double *densityPopulation(populacao * *populations, int island_number);
 double densityWorld(populacao **populations, int island_number);
 void destroy_matriz(double **matriz, int size);
 double convergence_calculation(populacao *population, double best);
-double convergence_calculation_islands(populacao **populations, int islands_size, double convergence_expected);
-
+double convergence_calculation_islands(populacao **populations, int islands_size);
+int minimum(int a, int b);
 #endif /* COMMOM_H */

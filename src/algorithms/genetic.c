@@ -8,8 +8,6 @@ void set_default_parameters_genetic()
         parameters.function_number = 3;
     if (!parameters.population_size)
         parameters.population_size = 3229; // 507;
-    if (!parameters.num_generations_per_epoca)
-        parameters.num_generations_per_epoca = (int)(5505098/parameters.population_size);//529;
     if (!parameters.time_limit)
         parameters.time_limit = 10; // seconds
     if (!parameters.dimension)
@@ -249,11 +247,8 @@ populacao *genetic(populacao *population, int epoca_num, int population_num)
     DEBUG(printf("\nevolution\n"););
     individuo *parents[2];
     individuo bestIndividuo = {.fitness = INFINITY};
-    time_t time_init, time_now;
     int evaluation_count = 0;
     // double best_ep_ant = bestIndividuo.fitness;
-    time(&time_init);
-    time(&time_now);
     DEBUG(printf("Iniciando evolucao\n"););
 
     populacao *original_population = population;
@@ -261,7 +256,7 @@ populacao *genetic(populacao *population, int epoca_num, int population_num)
     populacao *mutation_population;
     int generation_count = 0;
 
-    while (generation_count < parameters.num_generations_per_epoca && difftime(time_now, time_init) < parameters.time_limit)
+    while (generation_count < parameters.num_generations_per_epoca)
     {
 
         cross_population = crossover(original_population, mutation_population, parameters.dimension);
@@ -274,7 +269,6 @@ populacao *genetic(populacao *population, int epoca_num, int population_num)
         DEBUG(printf("\nGeração: %d\n", generation_count););
         generation_count++;
         evaluation_count += original_population->size;
-        time(&time_now);
     }
 
     reset_parameters_genetic();

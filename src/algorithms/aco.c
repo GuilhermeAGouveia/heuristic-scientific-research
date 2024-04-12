@@ -11,8 +11,6 @@ void set_default_parameters_ant()
     parameters.current_algorithm = ACO;
     if (!parameters.population_size)
         parameters.population_size = 2828; // 5252;
-    if (!parameters.num_generations_per_epoca)
-        parameters.num_generations_per_epoca = (int)(5505098/parameters.population_size); //423;
     if (!parameters.tax_evaporate)
         parameters.tax_evaporate = 0.63855 ;
     if (!parameters.num_candidates)
@@ -352,9 +350,6 @@ populacao *aco(populacao *population, int epoca_num, int population_num)
     // Allocate memory for the pheromone matrix
     double **pheromones = (double **)malloc(parameters.population_size * sizeof(double *));
     pheromones_candidates = (double **)malloc(parameters.num_candidates * sizeof(double *));
-    time_t time_init, time_now;
-    time(&time_init);
-    time(&time_now);
 
     for (int i = 0; i < parameters.population_size; i++)
     {
@@ -390,7 +385,7 @@ populacao *aco(populacao *population, int epoca_num, int population_num)
     // Update the pheromone matrix with the best individuo's path
     update_pheromones(pheromones, individuos, parameters.population_size, d, best_individuo);
     int generations_count = 0;
-    while (generations_count < parameters.num_generations_per_epoca && difftime(time_now, time_init) < parameters.time_limit)
+    while (generations_count < parameters.num_generations_per_epoca)
     {
         DEBUG(print_individuo(*individuos, d, best_individuo););
         //  Move each individuo to a new individuo_chromossome
@@ -405,7 +400,6 @@ populacao *aco(populacao *population, int epoca_num, int population_num)
         update_pheromones(pheromones, individuos, parameters.population_size, d, best_individuo);
         update_sigma(individuos, d, best_individuo);
         LOG(write_population_log(epoca_num, population_num, generations_count, *population, parameters););
-        time(&time_now);
         generations_count++;
     }
 

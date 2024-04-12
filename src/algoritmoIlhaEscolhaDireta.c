@@ -10,6 +10,8 @@
  * 3 - CLONALG
  * 4 - GA
  *
+ * -K indica o intervalo entre migrações
+ * -k a quantidade de indivíduos a serem migrados
  * Exemplo de execução: ./evol -A 1,2,3,4,2 -K 2 -k 3
  *
  * @author @gustavo1902
@@ -70,24 +72,27 @@ void print_combinations(Array combinations, int nAlgorithms)
 int main(int argc, char *argv[])
 {
     set_parameters(argc, argv); // Lê os parâmetros da linha de comando e repassa para as variáveis globais
-
     individuo *gbest_individuo = generate_population(1, 10, parameters.domain_function, 15);
     individuo *pbest_individuo = generate_population(1, 10, parameters.domain_function, 15);
     gbest_individuo->fitness = INFINITY;
     time_t time_init, time_now;
     populacao **populations = calloc(parameters.num_algorithms, sizeof(populacao *));
-    double convergence_current, convergence_expected = 0.95;
-    int converged = -1, increment = 5, final_attempt = 2;
-    int limit_time = 3600, aux = increment;
+    double convergence_current = INFINITY;
+    int current_generation = 0, generations_to_calcDensity = 100, make_migration, calculate_density;
+    int limit_time = 3600, convergence_expected = 50, final_attempts = 10, attempt_control;
     int *alg_set = convert_parameter_to_array(parameters.algorithms);
     alg_set = get_algorithms(alg_set, parameters.num_algorithms);
+    parameters.num_generations_per_epoca = minimum(parameters.num_epocas, generations_to_calcDensity);
+    make_migration = parameters.num_epocas;
+    attempt_control = final_attempts;
+    calculate_density = generations_to_calcDensity;
     printf("Algorithms: ");
     printVector(alg_set, parameters.num_algorithms);
     time(&time_init);
     time(&time_now);
-    for (int epoca = 0; difftime(time_now, time_init) < limit_time && !(converged == 1); epoca++)
+    for (int epoca = 0; difftime(time_now, time_init) < limit_time && (convergence_current > convergence_expected); epoca++)
     {
-        //printf("\nconverged:%i, epoca: %i, aux: %i\n", converged, epoca, aux);
+        // printf("\nconverged:%i, epoca: %i, aux: %i\n", converged, epoca, aux);
 
         for (int alg_pos = 0; alg_pos < parameters.num_algorithms; alg_pos++)
         {
@@ -126,42 +131,42 @@ int main(int argc, char *argv[])
         }
         set_neighbours(populations, parameters.num_algorithms);
         // print_neighbours(populations, parameters.num_algorithms);
+        current_generation += parameters.num_generations_per_epoca;
 
-        if (((float)rand() / RAND_MAX) < parameters.choice_random_migrate)
-        {
-            printf("Migrating [RANDOM]...\n");
-            random_random_migrate(populations, parameters.num_algorithms, parameters.num_migrations, parameters.dimension, parameters.domain_function, parameters.function_number);
-        }
-        else
-        {
-            printf("Migrating [BEST]...\n");
-            migrate(populations, parameters.num_algorithms, parameters.num_migrations, parameters.dimension, parameters.domain_function, parameters.function_number);
-        }
-
-        if (epoca == aux)
+        //Abaixo verificamos o que será feito: uma migração ou um calculo de convergência. Caso a convergência esperada seja alcançada o programa continuara em execução até que se esgote o número máximo de tentativas finais de melhora do resultado, e caso ocorra a melhora o número de tentativas finais é resetado
+        if (current_generation == make_migration)
         {
 
-            convergence_current = convergence_calculation_islands(populations, parameters.num_algorithms, convergence_expected);
-           // printf("\nConverged: %lf\n", convergence_current);
-            if (convergence_current < convergence_expected)
+            if (((float)rand() / RAND_MAX) < parameters.choice_random_migrate)
             {
-                aux += increment;
-                converged = -1;
+                printf("Migrating [RANDOM]...\n");
+                random_random_migrate(populations, parameters.num_algorithms, parameters.num_migrations, parameters.dimension, parameters.domain_function, parameters.function_number);
             }
             else
             {
-                if (converged == -1)
-                {
-                    converged = 0;
-                    aux += final_attempt;
-                }
-                else
-                {
-                    converged = 1;
-                }
+                printf("Migrating [BEST]...\n");
+                migrate(populations, parameters.num_algorithms, parameters.num_migrations, parameters.dimension, parameters.domain_function, parameters.function_number);
             }
+            make_migration += parameters.num_epocas;
         }
 
+        else
+        {
+            printf("Calculate Convergense...\n");
+            convergence_current = convergence_calculation_islands(populations, parameters.num_algorithms);
+            calculate_density += generations_to_calcDensity;
+            if (convergence_current <= convergence_expected && attempt_control)
+            {
+                convergence_current = INFINITY;
+                attempt_control--;
+            }
+            else
+            {
+                attempt_control = final_attempts;
+            }
+        }
+        printf("Current_generation: %d,  make_migration: %d, calculate_density: %d Convergence Current:%lf\n", current_generation, make_migration, calculate_density, convergence_current);
+        parameters.num_generations_per_epoca = minimum(make_migration, calculate_density) - current_generation;
         time(&time_now);
     }
 

@@ -379,22 +379,21 @@ double convergence_calculation(populacao *population, double best)
     }
     return count / population->size;
 }
-//Essa opção reduz tempo de execução comparado ao modo ideal de se fazer, que seria contar as ocorrencias de best em todas as ilhas primeiro e depois obter a convergencia 
-double convergence_calculation_islands(populacao **populations, int islands_size, double convergence_expected)
+
+double convergence_calculation_islands(populacao **populations, int islands_size)
 {
-    double best = INFINITY, best_current;
-    //Obtem o melhor fitness entre as ilhas
-    for(int i = 0; i < islands_size; i++){
-        best_current = get_best_of_population(*populations[i])->fitness;
-        if(best_current < best){
-            best = best_current;
-        }
+    double result;
+    if(islands_size > 1){
+        result = densityWorld(populations, islands_size);
     }
-    //Verifica se uma das ilhas tem convergencia menor que a esperada e a retorna
-    for(int i = 0; i < islands_size; i++){
-        best_current = convergence_calculation(populations[i], best);
-        if(best_current < convergence_expected)
-          return best_current;
+    else{
+        result = densityPopulation(populations, islands_size)[0];
     }
-    return best_current;
+    return result;
+}
+
+int minimum(int a, int b){
+    if(a > b)
+      return b;
+    return a;
 }

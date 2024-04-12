@@ -19,8 +19,6 @@ void set_default_parameters_diferencial()
         parameters.domain_function.min = -100;
     if (!parameters.domain_function.max)
         parameters.domain_function.max = 100;
-    if (!parameters.num_generations_per_epoca)
-        parameters.num_generations_per_epoca = (int)(5505098/parameters.population_size);//676 ;
     if (!parameters.mutation_rate)
         parameters.mutation_rate = 5;//4; // %
     if (!parameters.seed)
@@ -138,12 +136,9 @@ populacao *diferencial(populacao *population, int epoca_num, int population_num)
     individuo *parents[2];
     individuo bestIndividuo = {.fitness = INFINITY};
     
-    time_t time_init, time_now;
     int evaluation_count = 0;
     int epoca_count = 0;
     double best_ep_ant = bestIndividuo.fitness;
-    time(&time_init);
-    time(&time_now);
     DEBUG(printf("Iniciando evolucao\n"););
 
     populacao *original_population =  population;
@@ -151,7 +146,7 @@ populacao *diferencial(populacao *population, int epoca_num, int population_num)
     populacao *mutation_population;
     int generation_count = 0;
 
-    while (generation_count < parameters.num_generations_per_epoca && difftime(time_now, time_init) < parameters.time_limit)
+    while (generation_count < parameters.num_generations_per_epoca)
     {
         mutation_population = mutation_diferencial(original_population, parameters.dimension, parameters.domain_function);
         cross_population = crossover_diferencial(original_population, mutation_population, parameters.dimension);
@@ -163,7 +158,6 @@ populacao *diferencial(populacao *population, int epoca_num, int population_num)
         STATISTICS(print_coords(&original_population->individuos[original_population->size - 1], 1, generation_count, parameters.num_generations_per_epoca););
         DEBUG(printf("\nGeração: %d\n", generation_count););
         generation_count++;
-        time(&time_now);
     }
     reset_parameters_diferencial();
     return original_population;
