@@ -6,8 +6,8 @@ void set_default_parameters_genetic()
     parameters.current_algorithm = GA;
     if (!parameters.function_number)
         parameters.function_number = 3;
-    if (!parameters.population_size)
-        parameters.population_size = 3229; // 507;
+    // if (!parameters.population_size)
+    //     parameters.population_size = 3229; // 507;
     if (!parameters.time_limit)
         parameters.time_limit = 10; // seconds
     if (!parameters.dimension)
@@ -235,7 +235,7 @@ populacao *crossover(populacao *populacao_original, populacao *populacao_mutada,
     return nova_populacao;
 }
 
-populacao *genetic(populacao *population, int epoca_num, int population_num)
+populacao *genetic(populacao *population, int epoca_num, int current_generation, int population_num)
 {
     set_default_parameters_genetic();
     // print_parameters(parameters);
@@ -255,16 +255,15 @@ populacao *genetic(populacao *population, int epoca_num, int population_num)
     populacao *cross_population;
     populacao *mutation_population;
     int generation_count = 0;
+    printf("\nEpoca: %d, Current_generation:%d", epoca_num, current_generation);
 
     while (generation_count < parameters.num_generations_per_epoca)
     {
-
         cross_population = crossover(original_population, mutation_population, parameters.dimension);
         cross_population = mutation_commom(cross_population, parameters.dimension, parameters.domain_function);
         original_population = selection(original_population, cross_population, parameters.dimension);
-
         // print_individuo(original_population->individuos[original_population->size - 1], dimension, 1);
-        LOG(write_population_log(epoca_num, population_num, generation_count, *original_population, parameters););
+        LOG(write_population_log(epoca_num, population_num, generation_count + current_generation, *original_population, parameters););
         STATISTICS(print_coords(&original_population->individuos[original_population->size - 1], 1, generation_count, parameters.num_generations_per_epoca););
         DEBUG(printf("\nGeração: %d\n", generation_count););
         generation_count++;

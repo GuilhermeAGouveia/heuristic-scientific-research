@@ -11,8 +11,8 @@ void set_default_parameters_diferencial()
         parameters.time_limit = 10; // seconds
     if (!parameters.island_size)
         parameters.island_size = 1;
-    if (!parameters.population_size)
-        parameters.population_size = 1665; //58;
+    // if (!parameters.population_size)
+    //     parameters.population_size = 1665; //58;
     if (!parameters.dimension)
         parameters.dimension = 10; // 10 or 30
     if (!parameters.domain_function.min)
@@ -124,7 +124,7 @@ populacao *crossover_diferencial(populacao *populacao_original, populacao *popul
     return nova_populacao;
 }
 
-populacao *diferencial(populacao *population, int epoca_num, int population_num)
+populacao *diferencial(populacao *population, int epoca_num,int current_generation, int population_num)
 {
     set_default_parameters_diferencial();
     //print_parameters(parameters);
@@ -154,7 +154,7 @@ populacao *diferencial(populacao *population, int epoca_num, int population_num)
 
         // print_individuo(original_population->individuos[original_population->size - 1], dimension, 1);
         
-        LOG(write_population_log(epoca_num, population_num, generation_count, *original_population, parameters););
+        LOG(write_population_log(epoca_num, population_num, generation_count + current_generation, *original_population, parameters););
         STATISTICS(print_coords(&original_population->individuos[original_population->size - 1], 1, generation_count, parameters.num_generations_per_epoca););
         DEBUG(printf("\nGeração: %d\n", generation_count););
         generation_count++;

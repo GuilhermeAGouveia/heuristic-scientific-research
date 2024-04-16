@@ -9,8 +9,8 @@ individuo *candidates;
 void set_default_parameters_ant()
 {
     parameters.current_algorithm = ACO;
-    if (!parameters.population_size)
-        parameters.population_size = 2828; // 5252;
+    // if (!parameters.population_size)
+    //     parameters.population_size = 2828; // 5252;
     if (!parameters.tax_evaporate)
         parameters.tax_evaporate = 0.63855 ;
     if (!parameters.num_candidates)
@@ -335,7 +335,7 @@ double desvio_padrao_individuo(individuo *individuos, int individuos_size)
 }
 
 // The main ACO function
-populacao *aco(populacao *population, int epoca_num, int population_num)
+populacao *aco(populacao *population, int epoca_num,int current_generation, int population_num)
 {
     set_default_parameters_ant();
     // print_parameters(parameters);
@@ -399,7 +399,7 @@ populacao *aco(populacao *population, int epoca_num, int population_num)
         // Update the pheromone matrix with the best individuo's path
         update_pheromones(pheromones, individuos, parameters.population_size, d, best_individuo);
         update_sigma(individuos, d, best_individuo);
-        LOG(write_population_log(epoca_num, population_num, generations_count, *population, parameters););
+        LOG(write_population_log(epoca_num, population_num, generations_count + current_generation, *population, parameters););
         generations_count++;
     }
 

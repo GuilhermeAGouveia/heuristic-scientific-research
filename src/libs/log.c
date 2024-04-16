@@ -3,7 +3,7 @@
 #include "log.h"
 #include "types.h"
 #include "utils.h"
-#define DEBUG(x) 
+#define DEBUG(x)
 
 static int first_time = 1;
 
@@ -54,8 +54,12 @@ void write_population_log(int epoca_num, int population_num, int generation_num,
 
     for (int i = 0; i < populacao_atual.size; i++)
     {
+        // printf("\nlog_file_name:%s", log_file_name);
         FILE *log_file = fopen(log_file_name, "a");
         // fprintf(log_file, "Individuo %d: ", i);
+        // if(log_file == NULL){
+        //     printf("\nOpen file error: %s", log_file_name);
+        //  }
         for (int j = 0; j < parameters.dimension; j++)
         {
             fprintf(log_file, "%f ", populacao_atual.individuos[i].chromosome[j]);
@@ -63,4 +67,5 @@ void write_population_log(int epoca_num, int population_num, int generation_num,
         fprintf(log_file, "> %f\n", populacao_atual.individuos[i].fitness);
         fclose(log_file);
     }
+    fclose(log_file);
 }

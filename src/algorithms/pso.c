@@ -7,8 +7,8 @@ void set_default_parameters_pso()
         parameters.function_number = 3;
     if (!parameters.time_limit)
         parameters.time_limit = 10; // seconds
-    if (!parameters.population_size)
-        parameters.population_size = 9111;
+    // if (!parameters.population_size)
+    //     parameters.population_size = 9111;
     if (!parameters.dimension)
         parameters.dimension = 10; // 10 or 30
     if (!parameters.domain_function.min)
@@ -83,7 +83,7 @@ void copy_individuo_pso(individuo *original, individuo *copia, int dimension)
     }
 }
 
-populacao *pso(populacao *population, int epoca_num, int population_num)
+populacao *pso(populacao *population, int epoca_num, int current_generation, int population_num)
 {
     set_default_parameters_pso();
     // print_parameters(parameters);
@@ -129,7 +129,7 @@ populacao *pso(populacao *population, int epoca_num, int population_num)
             atualiza_posicao(&population->individuos[i], parameters.dimension);
             fitness(&population->individuos[i], parameters.dimension, parameters.function_number);
         }
-        LOG(write_population_log(epoca_num, population_num, generation_count, *population, parameters););
+        LOG(write_population_log(epoca_num, population_num, generation_count + current_generation, *population, parameters););
 
         generation_count++;
     }

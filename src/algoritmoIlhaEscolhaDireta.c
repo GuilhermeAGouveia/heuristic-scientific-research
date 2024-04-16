@@ -78,8 +78,8 @@ int main(int argc, char *argv[])
     time_t time_init, time_now;
     populacao **populations = calloc(parameters.num_algorithms, sizeof(populacao *));
     double convergence_current = INFINITY;
-    int current_generation = 0, generations_to_calcDensity = 100, make_migration, calculate_density;
-    int limit_time = 3600, convergence_expected = 50, final_attempts = 10, attempt_control;
+    int current_generation = 0, current_gen_alg = 0, generations_to_calcDensity = 100, make_migration, calculate_density;
+    int limit_time = 3600, convergence_expected = 50, final_attempts = 10, attempt_control, epoca = 0;
     int *alg_set = convert_parameter_to_array(parameters.algorithms);
     alg_set = get_algorithms(alg_set, parameters.num_algorithms);
     parameters.num_generations_per_epoca = minimum(parameters.num_epocas, generations_to_calcDensity);
@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
     printVector(alg_set, parameters.num_algorithms);
     time(&time_init);
     time(&time_now);
-    for (int epoca = 0; difftime(time_now, time_init) < limit_time && (convergence_current > convergence_expected); epoca++)
+    while (difftime(time_now, time_init) < limit_time && (convergence_current > convergence_expected))
     {
         // printf("\nconverged:%i, epoca: %i, aux: %i\n", converged, epoca, aux);
 
@@ -98,32 +98,31 @@ int main(int argc, char *argv[])
         {
             enum algorithm alg = (enum algorithm)(alg_set[alg_pos]);
 
-            printf("Running algorithm %s\n", translateIntToAlg(alg));
+            // printf("Running algorithm %s\n", translateIntToAlg(alg));
 
             switch (alg)
             {
             case PSO:
-                populations[alg_pos] = pso(populations[alg_pos], epoca, alg_pos);
+                populations[alg_pos] = pso(populations[alg_pos], epoca, current_gen_alg, alg_pos);
                 break;
             case GA:
-                populations[alg_pos] = genetic(populations[alg_pos], epoca, alg_pos);
+                populations[alg_pos] = genetic(populations[alg_pos], epoca, current_gen_alg, alg_pos);
                 break;
             case DE:
-                populations[alg_pos] = diferencial(populations[alg_pos], epoca, alg_pos);
+                populations[alg_pos] = diferencial(populations[alg_pos], epoca, current_gen_alg, alg_pos);
                 break;
             case ACO:
-                populations[alg_pos] = aco(populations[alg_pos], epoca, alg_pos);
+                populations[alg_pos] = aco(populations[alg_pos], epoca, current_gen_alg, alg_pos);
                 break;
             case CLONALG:
-                populations[alg_pos] = clonalg(populations[alg_pos], epoca, alg_pos);
+                populations[alg_pos] = clonalg(populations[alg_pos], epoca, current_gen_alg, alg_pos);
                 break;
             default:
                 printf("Invalid algorithm. Please use one of the following: p, g, d, a, c\n");
                 exit(1);
             }
-
             copy_individuo(get_best_of_population(*populations[alg_pos]), pbest_individuo, parameters.dimension);
-            print_individuo(*pbest_individuo, parameters.dimension, alg_pos);
+            // print_individuo(*pbest_individuo, parameters.dimension, alg_pos);
             if (pbest_individuo->fitness < gbest_individuo->fitness)
             {
                 copy_individuo(pbest_individuo, gbest_individuo, parameters.dimension);
@@ -132,8 +131,9 @@ int main(int argc, char *argv[])
         set_neighbours(populations, parameters.num_algorithms);
         // print_neighbours(populations, parameters.num_algorithms);
         current_generation += parameters.num_generations_per_epoca;
+        current_gen_alg += parameters.num_generations_per_epoca;
 
-        //Abaixo verificamos o que será feito: uma migração ou um calculo de convergência. Caso a convergência esperada seja alcançada o programa continuara em execução até que se esgote o número máximo de tentativas finais de melhora do resultado, e caso ocorra a melhora o número de tentativas finais é resetado
+        // Abaixo verificamos o que será feito: uma migração ou um calculo de convergência. Caso a convergência esperada seja alcançada o programa continuara em execução até que se esgote o número máximo de tentativas finais de melhora do resultado, e caso ocorra a melhora o número de tentativas finais é resetado
         if (current_generation == make_migration)
         {
 
@@ -150,11 +150,10 @@ int main(int argc, char *argv[])
             make_migration += parameters.num_epocas;
         }
 
-        else
+        if (current_generation == calculate_density)
         {
-            printf("Calculate Convergense...\n");
+            printf("\nCalculate Convergense...\n");
             convergence_current = convergence_calculation_islands(populations, parameters.num_algorithms);
-            calculate_density += generations_to_calcDensity;
             if (convergence_current <= convergence_expected && attempt_control)
             {
                 convergence_current = INFINITY;
@@ -164,11 +163,15 @@ int main(int argc, char *argv[])
             {
                 attempt_control = final_attempts;
             }
+            calculate_density += generations_to_calcDensity;
+            epoca++;
+            current_gen_alg = 0;
+            printf("Current_generation: %d,  make_migration: %d, calculate_density: %d Convergence Current:%lf\n", current_generation, make_migration, calculate_density, convergence_current);
+            time(&time_now);
         }
-        printf("Current_generation: %d,  make_migration: %d, calculate_density: %d Convergence Current:%lf\n", current_generation, make_migration, calculate_density, convergence_current);
         parameters.num_generations_per_epoca = minimum(make_migration, calculate_density) - current_generation;
-        time(&time_now);
     }
+
 
     printf("Best %lf\n", gbest_individuo->fitness);
 
