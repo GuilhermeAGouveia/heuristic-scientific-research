@@ -278,7 +278,7 @@ void read_parameters_file(int epoca, int population)
 {
     DEBUG(printf("\nread_parameters_file\n"););
     char parameters_filename[1024];
-    sprintf(parameters_filename, "log/data/epoca_%d/population_%d/_parametros.dat", epoca, population);
+    sprintf(parameters_filename, "logs_genetica/_parametros.dat");
     FILE *file = fopen(parameters_filename, "r");
     char line[1024];
     int i = 0;
@@ -331,6 +331,8 @@ void write_metrics_for_each_files()
         sprintf(filename, "log/metricas/epoca_%d/metrics_for_each_generation.dat", epoca);
         output_metric = fopen(filename, "w");
         int min_generations = extract_min_generations_from_epoca(all_files, epoca);
+       // min_generations = 50;
+       printf("\nMin: %d", min_generations);
 
         for (int generation = 0; generation < min_generations; generation++)
         {

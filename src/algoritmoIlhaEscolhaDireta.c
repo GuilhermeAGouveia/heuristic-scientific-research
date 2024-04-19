@@ -69,6 +69,18 @@ void print_combinations(Array combinations, int nAlgorithms)
     }
 }
 
+int write_parameters_genetic(int num_generations, int num_epocas){
+    char file_path[256];
+
+    sprintf(file_path, "logs_genetica/_parametros.dat");
+
+    FILE *parameters_log_file = fopen(file_path, "w");
+    fprintf(parameters_log_file, "Parameters:");
+    fprintf(parameters_log_file, "\n algorithm: %s,\n function_number: %d,\n F: %lf,\n time_limit: %d,\n island_size: %d,\n population_size: %d,\n dimension: %d,\n domain function interval: [%lf, %lf],\n num_generations: %d,\n mutation_rate: %d,\n crossover_rate: %d,\n num_migrations: %d,\n num_epocas: %d\n", translateIntToAlg(parameters.current_algorithm), parameters.function_number, parameters.F, parameters.time_limit, parameters.num_algorithms, parameters.population_size, parameters.dimension, parameters.domain_function.min, parameters.domain_function.max, num_generations, parameters.mutation_rate, parameters.crossover_rate, parameters.num_migrations, num_epocas);
+    DEBUG(printf("\nwrite_parameters: end\n"););
+    fclose(parameters_log_file);
+}
+
 int main(int argc, char *argv[])
 {
     set_parameters(argc, argv); // Lê os parâmetros da linha de comando e repassa para as variáveis globais
@@ -77,9 +89,9 @@ int main(int argc, char *argv[])
     gbest_individuo->fitness = INFINITY;
     time_t time_init, time_now;
     populacao **populations = calloc(parameters.num_algorithms, sizeof(populacao *));
-    double convergence_current = INFINITY;
+    double convergence_current = INFINITY, convergence_expected = 49.5;
     int current_generation = 0, current_gen_alg = 0, generations_to_calcDensity = 100, make_migration, calculate_density;
-    int limit_time = 3600, convergence_expected = 50, final_attempts = 10, attempt_control, epoca = 0;
+    int limit_time = 3600, final_attempts = 10, attempt_control, epoca = 0;
     int *alg_set = convert_parameter_to_array(parameters.algorithms);
     alg_set = get_algorithms(alg_set, parameters.num_algorithms);
     parameters.num_generations_per_epoca = minimum(parameters.num_epocas, generations_to_calcDensity);
@@ -179,6 +191,8 @@ int main(int argc, char *argv[])
     {
         destroy_island(populations[i], 1);
     }
+
+    write_parameters_genetic(generations_to_calcDensity, epoca);
 
     return 0;
 }
