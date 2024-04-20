@@ -7,8 +7,9 @@
 ![GitHub forks](https://img.shields.io/github/forks/GuilhermeAGouveia/real-functions-evolutionary-heuristic?style=for-the-badge)
 ![GitHub open issues](https://img.shields.io/github/issues/GuilhermeAGouveia/real-functions-evolutionary-heuristic?style=for-the-badge)
 
-> Comparação do algoritmo genético evolucionário simples com o algoritmo genético island-model (multi-populacional)
+<!---Comparação do algoritmo genético evolucionário simples com o algoritmo genético island-model (multi-populacional)--->
 
+> O propósito deste projeto é explorar a simulação de conceitos evolucionários, visando a validação de teorias genéticas. Atualmente, o repositório conta com a implementação de diversas meta-heurísticas renomadas, tais como: Algoritmo das Formigas, Otimização por Enxame de Partículas (PSO), Clonagem de Anticorpos, Algoritmo da Evolução Diferencial (DE), Algoritmo do Modelo de Ilhas Evolucionárias e Algoritmo Genético.
 
 ## 💻 Pré-requisitos
 
@@ -113,6 +114,5 @@ Agradecemos às seguintes pessoas que contribuíram para este projeto:
 Esse projeto está sob licença. Veja o arquivo [LICENSE]() para mais detalhes.
 
 [⬆ Voltar ao topo](#Algoritmos-Genéticos-para-otimização-de-funções-reais)<br>
-
 
 <!---Fim README.md teste--->
