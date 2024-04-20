@@ -8,30 +8,33 @@ time_limit=10 # Default value
 translate_alg_int_to_alg_name() {
     config_alg=$1
     string_result="["
+    count=0
     for i in $(echo $config_alg | tr "," "\n"); do
-
-        case $i in
-            0)
-                string_result="$string_result PSO"
-                ;;
-          
-            1)
-                string_result="$string_result DE"
-                ;;
-            2)
-                string_result="$string_result ACO"
-                ;;
-            3)
-                string_result="$string_result CLONALG"
-                ;;
-            4)
-                string_result="$string_result GA"
-                ;;
-            *)
-                echo "Algoritmo desconhecido ???"
-                exit 1
-                ;;
-        esac
+        for j in $(seq 1 $i); do
+            case $count in
+                0)
+                    string_result="$string_result PSO"
+                    ;;
+            
+                1)
+                    string_result="$string_result DE"
+                    ;;
+                2)
+                    string_result="$string_result ACO"
+                    ;;
+                3)
+                    string_result="$string_result CLONALG"
+                    ;;
+                4)
+                    string_result="$string_result GA"
+                    ;;
+                *)
+                    echo "Algoritmo desconhecido ???"
+                    exit 1
+                    ;;
+            esac;
+        done;
+        count=$((count+1))
     done;
     string_result="$string_result ]"
     echo -e $string_result
@@ -110,12 +113,19 @@ set_color_progress() {
     fi
 }
 
+extract_param() {
+    local params=$1
+    local param=$2
+    echo $params | cut -d"$param" -f 2 | cut -d' ' -f 2
+}
+
 define_command_evol() {
-    echo "./evol -A $alg_config -f $function_number -t $time_limit -K 1" 
+    echo "./dire $alg_config -f $function_number -t $time_limit"
 }
 
 show_indicator_algorithm() {
-    formated_algs="config: $(translate_alg_int_to_alg_name $alg_config)"
+    param_A=$(extract_param "$alg_config" "A")
+    formated_algs="config: $(translate_alg_int_to_alg_name $param_A)"
     echo -e $formated_algs
 }
 
@@ -131,12 +141,17 @@ show_indicator_function() {
     echo -e $string
 }
 
+show_command_exec() {
+    echo -e "Executando: $(define_command_evol)"
+}
+
 main () {
     source libs/progress-bar/progress-bar.sh
     echo -e "Realizando ${n_execucoes} execuções..."
     #echo -e "Código em execução: $alg_path\n"
     show_indicator_algorithm
     show_indicator_function
+    show_command_exec 
     tput civis
 
     resultado=0
