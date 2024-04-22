@@ -255,7 +255,7 @@ populacao *genetic(populacao *population, int epoca_num, int current_generation,
     populacao *cross_population;
     populacao *mutation_population;
     int generation_count = 0;
-    printf("\nEpoca: %d, Current_generation:%d", epoca_num, current_generation);
+    //printf("\nEpoca: %d, Current_generation:%d", epoca_num, current_generation);
 
     while (generation_count < parameters.num_generations_per_epoca)
     {

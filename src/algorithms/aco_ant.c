@@ -3,7 +3,6 @@
 
 double *sigma;
 double **pheromones_candidates;
-domain **probability_interval;
 
 individuo *candidates;
 
@@ -13,7 +12,7 @@ void set_default_parameters_ant()
     // if (!parameters.population_size)
     //     parameters.population_size = 2828; // 5252;
     if (!parameters.tax_evaporate)
-        parameters.tax_evaporate = 0.63855;
+        parameters.tax_evaporate = 0.63855 ;
     if (!parameters.num_candidates)
         parameters.num_candidates = 20;
     if (!parameters.p_exploitation)
@@ -60,6 +59,16 @@ void initialize(individuo *individuos, int n, int d)
             individuos[i].chromosome[j] = random_double(-100, 100);
         }
         fitness(&individuos[i], d, parameters.function_number);
+    }
+}
+void evaporate_pheromones(double **pheromones, int dimension)
+{
+    for (int i = 0; i < parameters.population_size; i++)
+    {
+        for (int j = 0; j < dimension; j++)
+        {
+            pheromones[i][j] = pheromones[i][j] * (1 - parameters.tax_evaporate);
+        }
     }
 }
 
@@ -122,6 +131,31 @@ double sum_pheromone_individuos(double **pheromones, int d, int n_individuos)
     return sum;
 }
 
+void select_next_position2(double **pheromones, individuo *individuos, int d)
+{
+    DEBUG(printf("select_next_position\n");)
+    double sum_pheromone[d], prob;
+
+    for (int i = 0; i < d; i++)
+    {
+        sum_pheromone[i] = sum_pheromone_dimension(pheromones, i);
+    }
+
+    for (int i = 0; i < parameters.population_size; i++)
+    {
+        for (int j = 0; j < d; j++)
+        {
+            prob = pheromones[i][j] / sum_pheromone[j];
+
+            if (((double)rand() / RAND_MAX) < prob)
+            {
+                individuos[i].chromosome[j] += random_double(-5, 5);
+            }
+        }
+        fitness(&individuos[i], d, parameters.function_number);
+    }
+}
+
 void saved_chosen(individuo *individuos, int id_origin, int id_new, int d)
 {
     for (int i = 0; i < d; i++)
@@ -130,7 +164,25 @@ void saved_chosen(individuo *individuos, int id_origin, int id_new, int d)
     }
 }
 
-/*void candiate_calculator(individuo *individuos, double **pheromones, double *sum_individuo_dimension, int d, int id_individuo, int id_candit)
+void candiate_calculator_crossover(individuo *individuos, int d, int id_individuo, int id_candit)
+{
+    double current_dimension_value;
+    int individuo2 = rand() % parameters.population_size;
+
+    while (individuo2 == id_individuo)
+        individuo2 = rand() % parameters.population_size;
+
+    for (int j = 0; j < d; j++)
+    {
+        current_dimension_value = individuos[id_individuo].chromosome[j];
+
+        candidates[id_candit].chromosome[j] = (current_dimension_value + individuos[individuo2].chromosome[j]) / 2;
+        if (random_double(0, 1) <= parameters.p_exploitation || !(candidates[id_candit].chromosome[j] <= 100 && candidates[id_candit].chromosome[j] >= -100))
+            candidates[id_candit].chromosome[j] = random_double(-100, 100);
+    }
+}
+
+void candiate_calculator(individuo *individuos, double **pheromones, double *sum_individuo_dimension, int d, int id_individuo, int id_candit)
 {
     double distance, current_pheromone, current_dimension_value, delta, mean;
     for (int j = 0; j < d; j++)
@@ -144,43 +196,6 @@ void saved_chosen(individuo *individuos, int id_origin, int id_new, int d)
         candidates[id_candit].chromosome[j] = current_dimension_value + delta * (mean - current_dimension_value);
         if (random_double(0, 1) <= parameters.p_exploitation || !(candidates[id_candit].chromosome[j] <= 100 && candidates[id_candit].chromosome[j] >= -100))
             candidates[id_candit].chromosome[j] = random_double(-100, 100);
-    }
-}*/
-
-void normalize_probability(double **pheromones)
-{
-    double sum_dimension, prob;
-    for (int i = 0; i < parameters.dimension; i++)
-    {
-        double start = 0;
-        sum_dimension = sum_pheromone_dimension(pheromones, parameters.dimension);
-        for (int j = 0; j < parameters.population_size; j++)
-        {
-
-            prob = pheromones[j][i] / sum_dimension;
-            probability_interval[j][i].min = start;
-            probability_interval[j][i].max = start + prob;
-            start = start + prob;
-        }
-    }
-}
-
-void candiate_calculator(individuo *individuos, double **pheromones, double *sum_individuo_dimension, int d, int id_individuo, int id_candit)
-{
-    double chosen_porcent;
-    for (int i = 0; i < parameters.dimension; i++)
-    {
-        chosen_porcent = random_double(0, 1);
-        for (int j = 0; j < parameters.population_size; j++)
-        {
-            if (probability_interval[j][i].min <= chosen_porcent && probability_interval[j][i].max > chosen_porcent)
-            {
-                candidates[id_candit].chromosome[i] = individuos[j].chromosome[i];
-                if (random_double(0, 1) <= parameters.p_exploitation || !(candidates[id_candit].chromosome[j] <= 100 && candidates[id_candit].chromosome[j] >= -100))
-                    candidates[id_candit].chromosome[j] = random_double(-100, 100);
-                break;
-            }
-        }
     }
 }
 
@@ -213,7 +228,6 @@ void select_next_position(double **pheromones, individuo *individuos, int d, ind
         sum_dimensions[i] = sum_individuo_dimension(individuos, i);
     }
     // Para cada formiga gera N candidatos com base no feromonio
-    normalize_probability(pheromones);
     for (int i = 0; i < parameters.population_size; i++)
     {
         for (int k = 0; k < parameters.num_candidates; k++)
@@ -320,31 +334,8 @@ double desvio_padrao_individuo(individuo *individuos, int individuos_size)
     return sqrt(sum / individuos_size);
 }
 
-void alloc_memory(double ** pheromones){
-        for (int i = 0; i < parameters.population_size; i++)
-    {
-        pheromones[i] = (double *)malloc(parameters.dimension * sizeof(double));
-        probability_interval[i] = (domain *)malloc(parameters.dimension * sizeof(domain));
-        for (int j = 0; j < parameters.dimension; j++)
-        {
-            pheromones[i][j] = 1.0 / parameters.population_size;
-            probability_interval[i][j].max = 0.0;
-            probability_interval[i][j].min = 0.0;
-        }
-    }
-
-    for (int i = 0; i < parameters.num_candidates; i++)
-    {
-        pheromones_candidates[i] = (double *)malloc(parameters.dimension * sizeof(double));
-        for (int j = 0; j < parameters.dimension; j++)
-        {
-            pheromones_candidates[i][j] = 1.0 / parameters.num_candidates;
-        }
-    }
-}
-
 // The main ACO function
-populacao *aco(populacao *population, int epoca_num, int current_generation, int population_num)
+populacao *aco(populacao *population, int epoca_num,int current_generation, int population_num)
 {
     set_default_parameters_ant();
     // print_parameters(parameters);
@@ -354,54 +345,84 @@ populacao *aco(populacao *population, int epoca_num, int current_generation, int
     }
 
     individuo *individuos = population->individuos;
- 
+    int d = 10;
     DEBUG(printf("aco\n");)
+    // Allocate memory for the pheromone matrix
     double **pheromones = (double **)malloc(parameters.population_size * sizeof(double *));
     pheromones_candidates = (double **)malloc(parameters.num_candidates * sizeof(double *));
-    probability_interval = (domain **)malloc(parameters.population_size * sizeof(domain *));
-    candidates = (individuo *)malloc(parameters.num_candidates * sizeof(individuo));
-    alloc_memory(pheromones);
 
+    for (int i = 0; i < parameters.population_size; i++)
+    {
+        pheromones[i] = (double *)malloc(d * sizeof(double));
+        for (int j = 0; j < d; j++)
+        {
+            pheromones[i][j] = 1.0 / parameters.population_size;
+        }
+    }
+
+    for (int i = 0; i < parameters.num_candidates; i++)
+    {
+        pheromones_candidates[i] = (double *)malloc(d * sizeof(double));
+        for (int j = 0; j < d; j++)
+        {
+            pheromones_candidates[i][j] = 1.0 / parameters.num_candidates;
+        }
+    }
+
+    // Allocate memory for the individuos
     // individuo *individuos = (individuo *)malloc(parameters.population_size * sizeof(individuo));
     individuo *best_individuo = generate_population(1, 10, parameters.domain_function, 15);
-    initialize(candidates, parameters.num_candidates, parameters.dimension);
+    candidates = (individuo *)malloc(parameters.num_candidates * sizeof(individuo));
+
+    initialize(candidates, parameters.num_candidates, d);
 
     // Find the best individuo and its fitness value
     copy_individuo(get_best_of_population(*population), best_individuo, parameters.dimension);
 
-    sigma = (double *)malloc(parameters.dimension * sizeof(double));
-    update_sigma(individuos, parameters.dimension, best_individuo);
+    sigma = (double *)malloc(d * sizeof(double));
+    update_sigma(individuos, d, best_individuo);
 
     // Update the pheromone matrix with the best individuo's path
-    update_pheromones(pheromones, individuos, parameters.population_size, parameters.dimension, best_individuo);
+    update_pheromones(pheromones, individuos, parameters.population_size, d, best_individuo);
     int generations_count = 0;
     while (generations_count < parameters.num_generations_per_epoca)
     {
-        DEBUG(print_individuo(*individuos, parameters.dimension, best_individuo););
-        select_next_position(pheromones, individuos, parameters.dimension, best_individuo);
+        DEBUG(print_individuo(*individuos, d, best_individuo););
+        //  Move each individuo to a new individuo_chromossome
+        select_next_position(pheromones, individuos, d, best_individuo);
+        evaporate_pheromones(pheromones, d);
+
         // Update the best individuo and its fitness value
-        catch_best_individuo(population, best_individuo, pheromones, parameters.dimension);
+        catch_best_individuo(population, best_individuo, pheromones, d);
         // Verifica se a melhor posição não foi perdida
-        best_individuo_check(individuos, best_individuo, pheromones, parameters.dimension);
-        update_pheromones(pheromones, individuos, parameters.population_size, parameters.dimension, best_individuo);
-        update_sigma(individuos, parameters.dimension, best_individuo);
+        best_individuo_check(individuos, best_individuo, pheromones, d);
+        // Update the pheromone matrix with the best individuo's path
+        update_pheromones(pheromones, individuos, parameters.population_size, d, best_individuo);
+        update_sigma(individuos, d, best_individuo);
         LOG(write_population_log(epoca_num, population_num, generations_count + current_generation, *population, parameters););
         generations_count++;
     }
 
     population->individuos = individuos;
     population->size = parameters.population_size;
-    copy_individuo(best_individuo, &population->individuos[0], parameters.dimension);
+    copy_individuo(best_individuo, &population->individuos[0], d);
 
     // Free memory
-    for (int i = 0; i < parameters.population_size; i++)
-    {
-        free(probability_interval[i]);
-    }
+    // for (int i = 0; i < parameters.population_size; i++)
+    //{
+    // free(pheromones[i]);
+    // free(individuos[i].chromosome);
+    // }
+
+    // for (int i = 0; i < parameters.num_candidates; i++)
+    //{
+    // free(pheromones_candidates[i]);
+    // free(candidates[i].chromosome);
+    //}
     free(pheromones);
     free(pheromones_candidates);
     // free(candidates);
-    // free(sigma);
+    free(sigma);
     free(best_individuo);
     reset_parameters_ant();
     return population;
