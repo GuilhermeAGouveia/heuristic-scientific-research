@@ -119,10 +119,13 @@ void copy_individuo(individuo *original, individuo *copia, int dimension)
 void destroy_population(individuo *population, int n_individuos)
 {
     DEBUG(printf("\ndestroy_population\n"););
-    for (int i = 0; i < n_individuos; i++)
+    if (population != NULL)
     {
-        free(population[i].chromosome);
-        free(population[i].velocidade);
+        for (int i = 0; i < n_individuos; i++)
+        {
+            free(population[i].chromosome);
+            free(population[i].velocidade);
+        }
     }
     free(population);
 }
@@ -319,7 +322,7 @@ double densityWorld(populacao **populations, int island_number)
 
             sum[i][j] = sqrt(sum[i][j]);
 
-            //printf("sum[%d][%d] += %lf\n", i, j, sum[i][j]);
+            // printf("sum[%d][%d] += %lf\n", i, j, sum[i][j]);
         }
     }
 
@@ -359,11 +362,14 @@ double densityWorld(populacao **populations, int island_number)
 
 void destroy_matriz(double **matriz, int size)
 {
-    for (int i = 0; i < size; i++)
+    if (matriz != NULL)
     {
-        free(matriz[i]);
+        for (int i = 0; i < size; i++)
+        {
+            free(matriz[i]);
+        }
+        free(matriz);
     }
-    free(matriz);
 }
 
 double convergence_calculation(populacao *population, double best)
@@ -383,17 +389,27 @@ double convergence_calculation(populacao *population, double best)
 double convergence_calculation_islands(populacao **populations, int islands_size)
 {
     double result;
-    if(islands_size > 1){
+    if (islands_size > 1)
+    {
         result = densityWorld(populations, islands_size);
     }
-    else{
+    else
+    {
         result = densityPopulation(populations, islands_size)[0];
     }
     return result;
 }
 
-int minimum(int a, int b){
-    if(a > b)
-      return b;
+int minimum(int a, int b)
+{
+    if (a > b)
+        return b;
     return a;
+}
+
+int inInterval(double min, double max, double valor)
+{
+    if (valor >= min && valor <= max)
+        return 1;
+    return 0;
 }

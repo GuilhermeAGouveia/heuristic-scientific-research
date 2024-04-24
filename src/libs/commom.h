@@ -57,4 +57,5 @@ void destroy_matriz(double **matriz, int size);
 double convergence_calculation(populacao *population, double best);
 double convergence_calculation_islands(populacao **populations, int islands_size);
 int minimum(int a, int b);
+int inInterval(double min, double max, double valor);
 #endif /* COMMOM_H */

@@ -17,13 +17,13 @@ statistics: compil; \
 	./scripts/sh/gerar_todas_estatisticas.sh; \
 
 genetic_metrics: ;
-	gcc -o $(medidas_geneticas_output) utils/medidas_geneticas.c $(commom_libs); \
+	gcc -o $(medidas_geneticas_output) -g utils/medidas_geneticas.c $(commom_libs); \
 
 direct: ;
-	gcc -o $(ilha_direta_output) algoritmoIlhaEscolhaDireta.c $(commom_libs); \
+	gcc -o $(ilha_direta_output) -g algoritmoIlhaEscolhaDireta.c $(commom_libs); \
 
 proportional: ;
-	gcc -o $(ilha_proporcional_output) algoritmoIlhaEscolhaProporcional.c $(commom_libs); \
+	gcc -o $(ilha_proporcional_output) -g algoritmoIlhaEscolhaProporcional.c $(commom_libs); \
 
 furaaf: prepare;
 	./scripts/sh/verificar_params.sh; \

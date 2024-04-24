@@ -69,7 +69,8 @@ void print_combinations(Array combinations, int nAlgorithms)
     }
 }
 
-int write_parameters_genetic(int num_generations, int num_epocas){
+int write_parameters_genetic(int num_generations, int num_epocas)
+{
     char file_path[256];
 
     sprintf(file_path, "logs_genetica/_parametros.dat");
@@ -91,7 +92,7 @@ int main(int argc, char *argv[])
     populacao **populations = calloc(parameters.num_algorithms, sizeof(populacao *));
     double convergence_current = INFINITY, convergence_expected = 49.5;
     int current_generation = 0, current_gen_alg = 0, generations_to_calcDensity = 100, make_migration, calculate_density;
-    int limit_time = 3600, final_attempts = 10, attempt_control, epoca = 0;
+    int limit_time = 3600, final_attempts = 5, attempt_control, epoca = 0;
     int *alg_set = convert_parameter_to_array(parameters.algorithms);
     alg_set = get_algorithms(alg_set, parameters.num_algorithms);
     parameters.num_generations_per_epoca = minimum(parameters.num_epocas, generations_to_calcDensity);
@@ -184,14 +185,15 @@ int main(int argc, char *argv[])
         parameters.num_generations_per_epoca = minimum(make_migration, calculate_density) - current_generation;
     }
 
-
     printf("Best %lf\n", gbest_individuo->fitness);
-
+    if ((enum algorithm)alg_set[0] == ACO)
+    {
+        desaloc_memory_aco();
+    }
     for (int i = 0; i < parameters.num_algorithms; i++)
     {
         destroy_island(populations[i], 1);
     }
-
     write_parameters_genetic(generations_to_calcDensity, epoca);
 
     return 0;
