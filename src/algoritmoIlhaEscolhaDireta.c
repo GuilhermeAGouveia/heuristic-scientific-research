@@ -150,16 +150,16 @@ int main(int argc, char *argv[])
         if (current_generation == make_migration)
         {
 
-            if (((float)rand() / RAND_MAX) < parameters.choice_random_migrate)
-            {
-                printf("Migrating [RANDOM]...\n");
+            //if (((float)rand() / RAND_MAX) < parameters.choice_random_migrate)
+           // {
+                //printf("Migrating [RANDOM]...\n");
                 random_random_migrate(populations, parameters.num_algorithms, parameters.num_migrations, parameters.dimension, parameters.domain_function, parameters.function_number);
-            }
-            else
-            {
-                printf("Migrating [BEST]...\n");
-                migrate(populations, parameters.num_algorithms, parameters.num_migrations, parameters.dimension, parameters.domain_function, parameters.function_number);
-            }
+           // }
+           // else
+            //{
+                //printf("Migrating [BEST]...\n");
+                //migrate(populations, parameters.num_algorithms, parameters.num_migrations, parameters.dimension, parameters.domain_function, parameters.function_number);
+            //}
             make_migration += parameters.num_epocas;
         }
 

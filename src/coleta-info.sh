@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 # Options
-n_execucoes=10 # Default value
+n_execucoes=10    # Default value
 function_number=3 # Default value
-time_limit=10 # Default value
+time_limit=10     # Default value
 
 translate_alg_int_to_alg_name() {
     config_alg=$1
@@ -12,56 +12,59 @@ translate_alg_int_to_alg_name() {
     for i in $(echo $config_alg | tr "," "\n"); do
         for j in $(seq 1 $i); do
             case $count in
-                0)
-                    string_result="$string_result PSO"
-                    ;;
-            
-                1)
-                    string_result="$string_result DE"
-                    ;;
-                2)
-                    string_result="$string_result ACO"
-                    ;;
-                3)
-                    string_result="$string_result CLONALG"
-                    ;;
-                4)
-                    string_result="$string_result GA"
-                    ;;
-                *)
-                    echo "Algoritmo desconhecido ???"
-                    exit 1
-                    ;;
-            esac;
-        done;
-        count=$((count+1))
-    done;
+            0)
+                string_result="$string_result PSO"
+                ;;
+
+            1)
+                string_result="$string_result DE"
+                ;;
+            2)
+                string_result="$string_result ACO"
+                ;;
+            3)
+                string_result="$string_result CLONALG"
+                ;;
+            4)
+                string_result="$string_result GA"
+                ;;
+            *)
+                echo "Algoritmo desconhecido ???"
+                exit 1
+                ;;
+            esac
+        done
+        count=$((count + 1))
+    done
     string_result="$string_result ]"
     echo -e $string_result
 }
 
-usage() { echo "Usage: $0 [-n <Numero de execuções>] [-f <Numero da função de teste de 1 a 15>] [-c <Nome do código evolutivo que será executado>] [-t <Tempo máximo de cada execução>]" 1>&2; exit 1; }
+usage() {
+    echo "Usage: $0 [-n <Numero de execuções>] [-f <Numero da função de teste de 1 a 15>] [-c <Nome do código evolutivo que será executado>] [-t <Tempo máximo de cada execução>]" 1>&2
+    exit 1
+}
 
 while getopts ":n:f:t:c:" o; do
     case "${o}" in
-        n)
-            n_execucoes=${OPTARG}
-            ;;
-        f)
-            function_number=${OPTARG}
-            ;;
-        t)
-            time_limit=${OPTARG}
-            ;;
-        c)
-            alg_config=${OPTARG}
-            ;;
-        *)
-            usage
-            ;;
+    n)
+        n_execucoes=${OPTARG}
+        ;;
+    f)
+        function_number=${OPTARG}
+        ;;
+    t)
+        time_limit=${OPTARG}
+        ;;
+    c)
+        alg_config=${OPTARG}
+        ;;
+    *)
+        usage
+        ;;
     esac
 done
-shift $((OPTIND-1))
+shift $((OPTIND - 1))
 
 # Math
 
@@ -102,11 +105,11 @@ mount_progress_bar() {
 }
 
 set_color_progress() {
-    if (( $1 < 25 )); then
+    if (($1 < 25)); then
         tput setaf 1
-    elif (( $1 < 50 )); then
+    elif (($1 < 50)); then
         tput setaf 3
-    elif (( $1 < 75 )); then
+    elif (($1 < 75)); then
         tput setaf 3
     else
         tput setaf 4
@@ -137,7 +140,7 @@ show_indicator_function() {
         else
             string="$string    $i"
         fi
-    done;
+    done
     echo -e $string
 }
 
@@ -145,13 +148,22 @@ show_command_exec() {
     echo -e "Executando: $(define_command_evol)"
 }
 
-main () {
+move_arquivos() {
+    origem="$1"
+    destino="$2"
+    nova_pasta="$3"
+
+    mkdir -p "$destino/$nova_pasta"
+    mv "$origem"/* "$destino/$nova_pasta"
+}
+
+main() {
     source libs/progress-bar/progress-bar.sh
     echo -e "Realizando ${n_execucoes} execuções..."
     #echo -e "Código em execução: $alg_path\n"
     show_indicator_algorithm
     show_indicator_function
-    show_command_exec 
+    show_command_exec
     tput civis
 
     resultado=0
@@ -164,29 +176,35 @@ main () {
 
     semente=0
 
-    vertical_center=$((($(tput lines) - 3 )/ 2))
+    vertical_center=$((($(tput lines) - 3) / 2))
     for i in $(seq 1 $vertical_center); do
         printf "\n"
     done
 
-
     mount_progress_bar 0 $n_execucoes
     for i in $(seq 1 $n_execucoes); do
         resultado=$(eval $(define_command_evol $alg_config) | tail -n 1)
-        
+
         valor_atual=$(echo $resultado | grep Best | cut -d' ' -f2)
         array_values+=($valor_atual)
-        if (( $(echo "$minimo > $valor_atual" | bc -l) )); then
+        if (($(echo "$minimo > $valor_atual" | bc -l))); then
             minimo=$valor_atual
         fi
 
-        if (( $(echo "$maximo < $valor_atual" | bc -l) )); then
+        if (($(echo "$maximo < $valor_atual" | bc -l))); then
             maximo=$valor_atual
         fi
 
-        mount_progress_bar $((i*100/n_execucoes))
 
-    done;
+        mount_progress_bar $((i * 100 / n_execucoes))
+
+        # Gerar nome da nova pasta com base no número da execução
+        nova_pasta="execucao_${i}"
+
+        # Move os arquivos para a nova pasta
+        move_arquivos "log" "logs_genetica/furaaf/current_logs" "$nova_pasta"
+
+    done
     tput reset
     tput setaf 2
     echo -e "\nResultado para função $function_number:\n"
