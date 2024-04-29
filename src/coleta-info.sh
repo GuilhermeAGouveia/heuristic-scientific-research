@@ -45,7 +45,7 @@ usage() {
     exit 1
 }
 
-while getopts ":n:f:t:c:" o; do
+while getopts ":n:f:t:c:Z:" o; do
     case "${o}" in
     n)
         n_execucoes=${OPTARG}
@@ -58,6 +58,9 @@ while getopts ":n:f:t:c:" o; do
         ;;
     c)
         alg_config=${OPTARG}
+        ;;
+    Z)
+        temporary_folder=${OPTARG}
         ;;
     *)
         usage
@@ -123,7 +126,7 @@ extract_param() {
 }
 
 define_command_evol() {
-    echo "./dire $alg_config -f $function_number -t $time_limit"
+    echo "./dire $alg_config -f $function_number -t $time_limit -Z $temporary_folder"
 }
 
 show_indicator_algorithm() {
@@ -153,8 +156,12 @@ move_arquivos() {
     destino="$2"
     nova_pasta="$3"
 
-    mkdir -p "$destino/$nova_pasta"
-    mv "$origem"/* "$destino/$nova_pasta"
+    if [ -z "$nova_pasta" ]; then
+        mv "$origem"/* "$destino"
+    else
+        mkdir -p "$destino/$nova_pasta"
+        mv "$origem"/* "$destino/$nova_pasta"
+    fi
 }
 
 main() {
@@ -182,6 +189,8 @@ main() {
     done
 
     mount_progress_bar 0 $n_execucoes
+    temporary_folder_two=$(date +%H%M%S_%3N)$temporary_folder
+    mkdir -p logs_genetica/furaaf/$temporary_folder_two
     for i in $(seq 1 $n_execucoes); do
         resultado=$(eval $(define_command_evol $alg_config) | tail -n 1)
 
@@ -195,16 +204,17 @@ main() {
             maximo=$valor_atual
         fi
 
-
         mount_progress_bar $((i * 100 / n_execucoes))
 
         # Gerar nome da nova pasta com base no número da execução
-        nova_pasta="execucao_${i}"
 
         # Move os arquivos para a nova pasta
-        move_arquivos "log" "logs_genetica/furaaf/current_logs" "$nova_pasta"
-
+        nova_pasta="execucao_${i}"
+        move_arquivos "logs_genetica/furaaf/$temporary_folder" "logs_genetica/furaaf/$temporary_folder_two" $nova_pasta
+        #mover_arquivos_para_subdiretorio "logs_genetica/furaaf/$temporary_folder" "$nova_pasta"
     done
+    move_arquivos "logs_genetica/furaaf/$temporary_folder_two" "logs_genetica/furaaf/$temporary_folder"
+    rm -rf logs_genetica/furaaf/$temporary_folder_two
     tput reset
     tput setaf 2
     echo -e "\nResultado para função $function_number:\n"
