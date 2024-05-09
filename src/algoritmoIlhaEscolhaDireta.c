@@ -69,15 +69,15 @@ void print_combinations(Array combinations, int nAlgorithms)
     }
 }
 
-int write_parameters_genetic(int num_generations, int num_epocas)
+int write_parameters_genetic(int num_generations, int num_epocas, int gens_final_epoca)
 {
     char file_path[256];
 
-    sprintf(file_path, "logs_genetica/_parametros.dat");
+    sprintf(file_path, "logs_genetica/furaaf/%s/data/_parametros.dat", parameters.temporary_folder);
 
     FILE *parameters_log_file = fopen(file_path, "w");
     fprintf(parameters_log_file, "Parameters:");
-    fprintf(parameters_log_file, "\n algorithm: %s,\n function_number: %d,\n F: %lf,\n time_limit: %d,\n island_size: %d,\n population_size: %d,\n dimension: %d,\n domain function interval: [%lf, %lf],\n num_generations: %d,\n mutation_rate: %d,\n crossover_rate: %d,\n num_migrations: %d,\n num_epocas: %d\n", translateIntToAlg(parameters.current_algorithm), parameters.function_number, parameters.F, parameters.time_limit, parameters.num_algorithms, parameters.population_size, parameters.dimension, parameters.domain_function.min, parameters.domain_function.max, num_generations, parameters.mutation_rate, parameters.crossover_rate, parameters.num_migrations, num_epocas);
+    fprintf(parameters_log_file, "\n algorithm: %s,\n function_number: %d,\n F: %lf,\n time_limit: %d,\n island_size: %d,\n population_size: %d,\n dimension: %d,\n domain function interval: [%lf, %lf],\n num_generations: %d,\n mutation_rate: %d,\n crossover_rate: %d,\n num_migrations: %d,\n num_epocas: %d\n gens_final_epoca: %d", translateIntToAlg(parameters.current_algorithm), parameters.function_number, parameters.F, parameters.time_limit, parameters.num_algorithms, parameters.population_size, parameters.dimension, parameters.domain_function.min, parameters.domain_function.max, num_generations, parameters.mutation_rate, parameters.crossover_rate, parameters.num_migrations, num_epocas, gens_final_epoca);
     DEBUG(printf("\nwrite_parameters: end\n"););
     fclose(parameters_log_file);
 }
@@ -90,20 +90,21 @@ int main(int argc, char *argv[])
     gbest_individuo->fitness = INFINITY;
     time_t time_init, time_now;
     populacao **populations = calloc(parameters.num_algorithms, sizeof(populacao *));
-    double convergence_current = INFINITY, convergence_expected = 49.5;
-    int current_generation = 0, current_gen_alg = 0, generations_to_calcDensity = 100, make_migration, calculate_density;
-    int limit_time = 3600, final_attempts = 5, attempt_control, epoca = 0;
+    double convergence_current = INFINITY, convergence_expected = 100, old_best_fitness = INFINITY;
+    int current_generation = 0, current_gen_alg = 0, generations_to_calcDensity = 2000, make_migration, calculate_density;
+    int limit_time = 3600, final_attempts = 0, attempt_control, epoca = 0, confers_stagnetion_count = 0, gen_stagnetion = 500;
     int *alg_set = convert_parameter_to_array(parameters.algorithms);
     alg_set = get_algorithms(alg_set, parameters.num_algorithms);
-    parameters.num_generations_per_epoca = minimum(parameters.num_epocas, generations_to_calcDensity);
+    // parameters.num_generations_per_epoca = minimum(parameters.num_epocas, generations_to_calcDensity);
+    parameters.num_generations_per_epoca = 1;
     make_migration = parameters.num_epocas;
     attempt_control = final_attempts;
     calculate_density = generations_to_calcDensity;
-    printf("Algorithms: ");
-    printVector(alg_set, parameters.num_algorithms);
+    // printf("Algorithms: ");
+    // printVector(alg_set, parameters.num_algorithms);
     time(&time_init);
     time(&time_now);
-    while (difftime(time_now, time_init) < limit_time && (convergence_current > convergence_expected))
+    while (difftime(time_now, time_init) < limit_time && (convergence_current > convergence_expected) && confers_stagnetion_count <= gen_stagnetion)
     {
         // printf("\nconverged:%i, epoca: %i, aux: %i\n", converged, epoca, aux);
 
@@ -150,25 +151,26 @@ int main(int argc, char *argv[])
         if (current_generation == make_migration)
         {
 
-            //if (((float)rand() / RAND_MAX) < parameters.choice_random_migrate)
-           // {
-                //printf("Migrating [RANDOM]...\n");
-                random_random_migrate(populations, parameters.num_algorithms, parameters.num_migrations, parameters.dimension, parameters.domain_function, parameters.function_number);
-           // }
-           // else
+            // if (((float)rand() / RAND_MAX) < parameters.choice_random_migrate)
+            // {
+            // printf("Migrating [RANDOM]...\n");
+            random_random_migrate(populations, parameters.num_algorithms, parameters.num_migrations, parameters.dimension, parameters.domain_function, parameters.function_number);
+            // }
+            // else
             //{
-                //printf("Migrating [BEST]...\n");
-                //migrate(populations, parameters.num_algorithms, parameters.num_migrations, parameters.dimension, parameters.domain_function, parameters.function_number);
+            // printf("Migrating [BEST]...\n");
+            // migrate(populations, parameters.num_algorithms, parameters.num_migrations, parameters.dimension, parameters.domain_function, parameters.function_number);
             //}
             make_migration += parameters.num_epocas;
         }
 
         if (current_generation == calculate_density)
         {
-            printf("\nCalculate Convergense...\n");
+            // printf("\nCalculate Convergense...\n");
             convergence_current = convergence_calculation_islands(populations, parameters.num_algorithms);
             if (convergence_current <= convergence_expected && attempt_control)
             {
+                printf("%d,%lf,%lf\n", current_generation, convergence_current, gbest_individuo->fitness);
                 convergence_current = INFINITY;
                 attempt_control--;
             }
@@ -179,13 +181,26 @@ int main(int argc, char *argv[])
             calculate_density += generations_to_calcDensity;
             epoca++;
             current_gen_alg = 0;
-            printf("Current_generation: %d,  make_migration: %d, calculate_density: %d Convergence Current:%lf\n", current_generation, make_migration, calculate_density, convergence_current);
-            time(&time_now);
-        }
-        parameters.num_generations_per_epoca = minimum(make_migration, calculate_density) - current_generation;
-    }
+            // printf("Current_generation: %d,  make_migration: %d, calculate_density: %d Convergence Current:%lf Confers_Stagnetion:%d\n", current_generation, make_migration, calculate_density, convergence_current, confers_stagnetion);
 
+            if (convergence_current != INFINITY)
+                printf("%d,%lf,%lf\n", current_generation, convergence_current, gbest_individuo->fitness);
+            // printf("Best %lf\n", gbest_individuo->fitness);
+        }
+
+        if (double_cmp(gbest_individuo->fitness, old_best_fitness, 3) < 0)
+        {
+            confers_stagnetion_count = 0;
+            old_best_fitness = gbest_individuo->fitness;
+        }
+        confers_stagnetion_count++;
+        //printf("%d,%lf,%lf\n", current_generation, convergence_current, gbest_individuo->fitness);
+        time(&time_now);
+        // parameters.num_generations_per_epoca = minimum(make_migration, calculate_density) - current_generation;
+    }
+    printf("\nTotal_Time:%.2lf\n", difftime(time_now, time_init));
     printf("Best %lf\n", gbest_individuo->fitness);
+    //printf("\nFinal Gneration:%d", current_generation);
     if ((enum algorithm)alg_set[0] == ACO)
     {
         desaloc_memory_aco();
@@ -194,7 +209,7 @@ int main(int argc, char *argv[])
     {
         destroy_island(populations[i], 1);
     }
-    write_parameters_genetic(generations_to_calcDensity, epoca);
-
+    write_parameters_genetic(generations_to_calcDensity, epoca + 1, current_gen_alg);
+    
     return 0;
 }

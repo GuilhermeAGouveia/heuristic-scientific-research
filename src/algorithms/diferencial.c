@@ -20,15 +20,24 @@ void set_default_parameters_diferencial()
     if (!parameters.domain_function.max)
         parameters.domain_function.max = 100;
     if (!parameters.mutation_rate)
-        parameters.mutation_rate = 5;//4; // %
+        parameters.mutation_rate = 5; // 4; // %
     if (!parameters.seed)
-        parameters.seed = time(NULL);
+    {
+        struct timeval tv;
+        gettimeofday(&tv, NULL);
+        unsigned long long millisecondsSinceEpoch =
+            (unsigned long long)(tv.tv_sec) * 1000 +
+            (unsigned long long)(tv.tv_usec) / 1000;
+        parameters.seed = millisecondsSinceEpoch;
+    }
+
     if (!parameters.evaluation_limit)
         parameters.evaluation_limit = 1490400;
     srand(parameters.seed);
 }
 
-void reset_parameters_diferencial() {
+void reset_parameters_diferencial()
+{
     // reset_parameters("s:p:g:m:F:"); antigo
     reset_parameters("s:m:F:");
     DEBUG(print_parameters(parameters));
@@ -82,7 +91,7 @@ void selection_diferencial(populacao *population_original, populacao *population
     {
         if (population_mutation->individuos[i].fitness < population_original->individuos[i].fitness)
             copy_individuo(&population_mutation->individuos[i], &population_original->individuos[i], parameters.dimension);
-            //population_original->individuos[i] = population_mutation->individuos[i];
+        // population_original->individuos[i] = population_mutation->individuos[i];
     }
     qsort(population_original->individuos, population_original->size, sizeof(individuo), comparador_individuo);
     destroy_island(population_mutation, 1);
@@ -124,24 +133,25 @@ populacao *crossover_diferencial(populacao *populacao_original, populacao *popul
     return nova_populacao;
 }
 
-populacao *diferencial(populacao *population, int epoca_num,int current_generation, int population_num)
+populacao *diferencial(populacao *population, int epoca_num, int current_generation, int population_num)
 {
     set_default_parameters_diferencial();
-    //print_parameters(parameters);
-    if(population == NULL){
-        population = generate_island(1,parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
+    // print_parameters(parameters);
+    if (population == NULL)
+    {
+        population = generate_island(1, parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
     }
 
     DEBUG(printf("\nevolution\n"););
     individuo *parents[2];
     individuo bestIndividuo = {.fitness = INFINITY};
-    
+
     int evaluation_count = 0;
     int epoca_count = 0;
     double best_ep_ant = bestIndividuo.fitness;
     DEBUG(printf("Iniciando evolucao\n"););
 
-    populacao *original_population =  population;
+    populacao *original_population = population;
     populacao *cross_population;
     populacao *mutation_population;
     int generation_count = 0;
@@ -153,7 +163,7 @@ populacao *diferencial(populacao *population, int epoca_num,int current_generati
         selection_diferencial(original_population, cross_population, parameters.dimension);
 
         // print_individuo(original_population->individuos[original_population->size - 1], dimension, 1);
-        
+
         LOG(write_population_log(epoca_num, population_num, generation_count + current_generation, *original_population, parameters););
         STATISTICS(print_coords(&original_population->individuos[original_population->size - 1], 1, generation_count, parameters.num_generations_per_epoca););
         DEBUG(printf("\nGeração: %d\n", generation_count););

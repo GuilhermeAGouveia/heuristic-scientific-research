@@ -16,7 +16,15 @@ void set_default_parameters_pso()
     if (!parameters.domain_function.max)
         parameters.domain_function.max = 100;
     if (!parameters.seed)
-        parameters.seed = time(NULL);
+    {
+        struct timeval tv;
+        gettimeofday(&tv, NULL);
+        unsigned long long millisecondsSinceEpoch =
+            (unsigned long long)(tv.tv_sec) * 1000 +
+            (unsigned long long)(tv.tv_usec) / 1000;
+        parameters.seed = millisecondsSinceEpoch;
+    }
+
     if (!parameters.c1)
         parameters.c1 = 0.61845;
     if (!parameters.c2)
@@ -135,6 +143,9 @@ populacao *pso(populacao *population, int epoca_num, int current_generation, int
     }
     copy_individuo_pso(individuo_best, &population->individuos[0], parameters.dimension);
     destroy_island(population_best_current, 1);
+    destroy_population(individuo_best,1);
     reset_parameters_pso();
+    free(c1);
+    free(c2);
     return population;
 }

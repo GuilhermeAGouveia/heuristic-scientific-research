@@ -28,17 +28,29 @@ for config in $all_params; do
     new_config=$(echo $config | sed "s/_/ /g")
     parcial_name=$(extract_param "$new_config" "A")
     clear
-    for func in $(seq 1 15); do
+    for func in $(seq 9 9); do
         #rm results/tcc/result_[$parcial_name][f$func].txt
         temporary_folder=$(date +%H%M%S_%3N)$config
 
-        ./coleta-info.sh -n 3 -c "$new_config" -f $func -t 10 -Z  $temporary_folder | tee output-coleta-info[$parcial_name][f$func].dat
+        ./coleta-info.sh -n 1 -c "$new_config" -f $func -t 10 -Z $temporary_folder | tee output-coleta-info[$parcial_name][f$func].dat
+        wait
         result=$(cat output-coleta-info[$parcial_name][f$func].dat | tail -n 6)
         mkdir logs_genetica/coleta_info/$config
-        echo -e $result >> logs_genetica/coleta_info/$config/[f$func].txt
-        move_arquivos logs_genetica/furaaf/$temporary_folder logs_genetica/furaaf/$config /[f$func]
+        echo -e $result >>logs_genetica/coleta_info/$config/[f$func].txt
+        #mkdir  logs_genetica/furaaf/$config
+        #mkdir  logs_genetica/furaaf/$config/[f$func]
+        move_arquivos logs_genetica/furaaf/$temporary_folder logs_genetica/furaaf/$config/[f$func]
         rm output-coleta-info[$parcial_name][f$func].dat
         rm -rf logs_genetica/furaaf/$temporary_folder
         tput reset
-    done;
-done;
+    done
+    for exe in $(seq 1 1); do
+        ./metrics logs_genetica/furaaf/$config/[f$func]/execucao_$exe/data
+        wait
+        rm -rf logs_genetica/furaaf/$config/[f$func]/execucao_$exe/data
+    done
+
+    #zip -r logs_genetica/furaaf/$config.zip logs_genetica/furaaf/$config
+    wait
+    rm -rf logs_genetica/furaaf/$config
+done

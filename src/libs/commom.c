@@ -1,5 +1,4 @@
 #include "commom.h"
-
 void fitness(individuo *individuo, int dimension, int function_number)
 {
     // individuo.fitness = real_function(individuo.chromosome, dimension);
@@ -241,8 +240,9 @@ double *densityPopulation(populacao **populations, int island_number)
     double average = 0;
     double sd = 0;
     double *sum = (double *)calloc(island_number, sizeof(double));
-    double sumIndividual;
+    double sumIndividual = 0;
     double *result = malloc(2 * sizeof(double));
+    
     // for all populations
     for (int i = 0; i < island_number; i++)
     {
@@ -287,7 +287,7 @@ double *densityPopulation(populacao **populations, int island_number)
 double densityWorld(populacao **populations, int island_number)
 {
     DEBUG(printf("\ndensityWorld\n"););
-    double total;
+    double total = 0;
     double **sum = (double **)calloc(island_number, sizeof(double *));
 
     for (int i = 0; i < island_number; i++)

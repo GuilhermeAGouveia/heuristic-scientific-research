@@ -2,9 +2,10 @@
 #include "../libs/commom.h"
 #include <dirent.h>
 
-#define DEBUG(x) 
+#define DEBUG(x)
+int gens_final_epoca;
 
-void read_parameters_file(int epoca, int population);
+void read_parameters_file(int epoca, int population, char *folderPath);
 
 typedef struct files_list_
 {
@@ -20,7 +21,6 @@ void destroy_files_list(files_list files_destroy)
     }
     free(files_destroy.files);
 }
-
 
 void print_string_vector(char **files, int num)
 {
@@ -184,8 +184,8 @@ int extract_min_generations_from_epoca(files_list files_list_original, int epoca
 
 populacao *read_population_from_generation_file(char *filename, int epoca, int population)
 {
-    read_parameters_file(epoca, population);
-    // print_parameters(parameters);
+    // read_parameters_file(epoca, population);
+    //  print_parameters(parameters);
     populacao *population_ = generate_clean_island(1, parameters.population_size, parameters.dimension);
     // print_population(population_->individuos, population_->size, parameters.dimension, 1);
     FILE *file = fopen(filename, "r");
@@ -246,19 +246,19 @@ int get_metainfo_from_filename(char *filename, enum MetaInfo meta_info)
     return atoi(population_string);
 }
 
-populacao **mount_populations(files_list files)
+populacao **mount_populations(files_list files, int epoca)
 {
     DEBUG(printf("\nmount_populations\n"););
 
     populacao **populations = calloc(files.num_files, sizeof(populacao *));
     for (int i = 0; i < files.num_files; i++)
     {
-        DEBUG(printf("file: %s\n", files.files[i]););
-        int population = get_metainfo_from_filename(files.files[i], POPULATION);
-        int epoca = get_metainfo_from_filename(files.files[i], EPOCA);
-        int generation = get_metainfo_from_filename(files.files[i], GENERATION);
+        // printf("file: %s\n", files.files[i]);
+        //  int population = get_metainfo_from_filename(files.files[i], POPULATION);
+        //  int epoca = get_metainfo_from_filename(files.files[i], EPOCA);
+        //  int generation = get_metainfo_from_filename(files.files[i], GENERATION);
 
-        populations[i] = read_population_from_generation_file(files.files[i], epoca, population);
+        populations[i] = read_population_from_generation_file(files.files[i], epoca, i);
         // printf("file: %s\n", files.files[i]);
         // printf("epoca: %d\n", epoca);
         // printf("population: %d\n", population);
@@ -268,11 +268,8 @@ populacao **mount_populations(files_list files)
     return populations;
 }
 
-
-
 // implements the same diversity metric of the density population
 // extends it to the entire "world"
-
 
 void clean_metric_dir()
 {
@@ -281,11 +278,11 @@ void clean_metric_dir()
     system("rm -rf log/metricas/*");
 }
 
-void read_parameters_file(int epoca, int population)
+void read_parameters_file(int epoca, int population, char *folderPath)
 {
     DEBUG(printf("\nread_parameters_file\n"););
     char parameters_filename[1024];
-    sprintf(parameters_filename, "logs_genetica/_parametros.dat");
+    sprintf(parameters_filename, "%s/_parametros.dat", folderPath);
     FILE *file = fopen(parameters_filename, "r");
     char line[1024];
     int i = 0;
@@ -314,63 +311,128 @@ void read_parameters_file(int epoca, int population)
         {
             sscanf(line, " num_generations: %d", &parameters.num_generations_per_epoca);
         }
+        if (strstr(line, "gens_final_epoca"))
+        {
+            sscanf(line, " gens_final_epoca: %d", &gens_final_epoca);
+        }
     }
     fclose(file);
     DEBUG(printf("\n[end] read_parameters_file\n"););
 }
 
-void write_metrics_for_each_files()
+// void write_metrics_for_each_files(char *folderPath)
+// {
+//     // clean_metric_dir();
+//     DEBUG(printf("population_size: %d\n", parameters.population_size););
+//     DEBUG(printf("num_epocas: %d\n", parameters.num_epocas););
+//     DEBUG(printf("num_generations_per_epoca: %d\n", parameters.num_generations_per_epoca););
+
+//     FILE *output_metric;
+//     files_list all_files = list_all_files_in_dir("./log");
+//     char cmd[1024];
+//     for (int epoca = 0; epoca < parameters.num_epocas; epoca++)
+//     {
+//         sprintf(cmd, "mkdir -p log/metricas/epoca_%d/", epoca);
+//         system(cmd);
+//         char filename[1024];
+//         sprintf(filename, "log/metricas/epoca_%d/metrics_for_each_generation.dat", epoca);
+//         output_metric = fopen(filename, "w");
+//         int min_generations = extract_min_generations_from_epoca(all_files, epoca);
+//         printf("\nMin: %d", min_generations);
+
+//         for (int generation = 0; generation < min_generations; generation++)
+//         {
+//             files_list filtered_files = filter_file_list_by(all_files, epoca, generation, -1);
+//             // printf("\nNum_files:%d", filtered_files.num_files);
+//             DEBUG(print_string_vector(filtered_files.files, filtered_files.num_files););
+//             populacao **populations = mount_populations(filtered_files);
+//             double *densityPopulationResult = densityPopulation(populations, filtered_files.num_files);
+//             double densityWorldResult = densityWorld(populations, filtered_files.num_files);
+//             // Criar pasta
+//             DEBUG(printf("densityPopulationResult: %lf %lf\n", densityPopulationResult[0], densityPopulationResult[1]););
+//             DEBUG(printf("densityWorldResult: %lf\n", densityWorldResult););
+
+//             if (output_metric == NULL)
+//             {
+//                 DEBUG(printf("Error opening file!\n"););
+//                 exit(1);
+//             }
+//             fprintf(output_metric, "%lf ", densityPopulationResult[0]);
+//             fprintf(output_metric, "%lf ", densityPopulationResult[1]);
+//             fprintf(output_metric, "%lf\n", densityWorldResult);
+//             destroy_island(*populations, filtered_files.num_files - 1);
+//             destroy_files_list(filtered_files);
+//             free(densityPopulationResult);
+//             free(populations);
+//         }
+//         fclose(output_metric);
+//     }
+//     destroy_files_list(all_files);
+// }
+
+void write_metrics_for_each_files(populacao **populations, char *folderPath)
 {
-    read_parameters_file(0, 0);
-    clean_metric_dir();
-    DEBUG(printf("population_size: %d\n", parameters.population_size););
-    DEBUG(printf("num_epocas: %d\n", parameters.num_epocas););
-    DEBUG(printf("num_generations_per_epoca: %d\n", parameters.num_generations_per_epoca););
-
     FILE *output_metric;
-    files_list all_files = list_all_files_in_dir("./log");
-    char cmd[1024];
-    for (int epoca = 0; epoca < parameters.num_epocas; epoca++)
+    output_metric = fopen(folderPath, "a");
+    double *densityPopulationResult = densityPopulation(populations, parameters.island_size);
+    double densityWorldResult = densityWorld(populations, parameters.island_size);
+
+    if (output_metric == NULL)
     {
-        sprintf(cmd, "mkdir -p log/metricas/epoca_%d/", epoca);
-        system(cmd);
-        char filename[1024];
-        sprintf(filename, "log/metricas/epoca_%d/metrics_for_each_generation.dat", epoca);
-        output_metric = fopen(filename, "w");
-        int min_generations = extract_min_generations_from_epoca(all_files, epoca);
-        printf("\nMin: %d", min_generations);
-
-        for (int generation = 0; generation < min_generations; generation++)
-        {
-            files_list filtered_files = filter_file_list_by(all_files, epoca, generation, -1);
-            // printf("\nNum_files:%d", filtered_files.num_files);
-            DEBUG(print_string_vector(filtered_files.files, filtered_files.num_files););
-            populacao **populations = mount_populations(filtered_files);
-            double *densityPopulationResult = densityPopulation(populations, filtered_files.num_files);
-            double densityWorldResult = densityWorld(populations, filtered_files.num_files);
-            // Criar pasta
-            DEBUG(printf("densityPopulationResult: %lf %lf\n", densityPopulationResult[0], densityPopulationResult[1]););
-            DEBUG(printf("densityWorldResult: %lf\n", densityWorldResult););
-
-            if (output_metric == NULL)
-            {
-                DEBUG(printf("Error opening file!\n"););
-                exit(1);
-            }
-            fprintf(output_metric, "%lf ", densityPopulationResult[0]);
-            fprintf(output_metric, "%lf ", densityPopulationResult[1]);
-            fprintf(output_metric, "%lf\n", densityWorldResult);
-            destroy_island(*populations, filtered_files.num_files - 1);
-            destroy_files_list(filtered_files);
-            free(densityPopulationResult);
-            free(populations);
-        }
-        fclose(output_metric);
+        DEBUG(printf("Error opening file!\n"););
+        exit(1);
     }
-    destroy_files_list(all_files);
+    fprintf(output_metric, "%lf ", densityPopulationResult[0]);
+    fprintf(output_metric, "%lf ", densityPopulationResult[1]);
+    fprintf(output_metric, "%lf\n", densityWorldResult);
+    // destroy_island(*populations, parameters.island_size - 1);
+    free(densityPopulationResult);
+    fclose(output_metric);
 }
 
-int main()
+int main(int argc, char *argv[])
 {
-    write_metrics_for_each_files();
+    char *folderPath = argv[1];
+    read_parameters_file(0, 0, folderPath);
+    int gens_per_epoca = parameters.num_generations_per_epoca;
+    char filename[1024];
+    files_list files_gen;
+    files_gen.num_files = parameters.island_size;
+ 
+    sprintf(filename, "rm -rf  logs_genetica/metrics/%s", strstr(folderPath, "_-A"));
+    system(filename);
+    for (int i = 0; i < parameters.num_epocas; i++)
+    {
+        sprintf(filename, "mkdir -p logs_genetica/metrics/%s/epoca_%d", strstr(folderPath, "_-A"), i);
+        system(filename);
+        sprintf(filename, "logs_genetica/metrics/%s/epoca_%d/metrics_output.txt", strstr(folderPath, "_-A"), i);
+        if (i == parameters.num_epocas - 1 && gens_final_epoca != 0)
+        {
+            gens_per_epoca = gens_final_epoca;
+        }
+        for (int j = 0; j < gens_per_epoca; j++)
+        {
+            files_gen.files = alocc_string_matrix(files_gen.num_files, 500);
+            for (int p = 0; p < files_gen.num_files; p++)
+            {
+                sprintf(files_gen.files[p], "%s/epoca_%d/population_%d/generation_%d.log", folderPath, i, p, j);
+            }
+
+            populacao **populations = mount_populations(files_gen, i);
+
+            write_metrics_for_each_files(populations, filename);
+            for (int l = 0; l < files_gen.num_files; l++)
+            {
+                for (int k = 0; k < parameters.population_size; k++)
+                {
+                    free(populations[l]->individuos[k].chromosome);
+                    free(populations[l]->individuos[k].velocidade);
+                }
+                free(populations[l]->individuos);
+                free(populations[l]->neighbours);
+            }
+            free(populations);
+            free(files_gen.files);
+        }
+    }
 }

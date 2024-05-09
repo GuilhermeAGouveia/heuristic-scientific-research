@@ -18,7 +18,15 @@ void set_default_parameters_clonalg()
     if (!parameters.clones)
         parameters.clones = 72;
     if (!parameters.seed)
-        parameters.seed = time(NULL);
+    {
+        struct timeval tv;
+        gettimeofday(&tv, NULL);
+        unsigned long long millisecondsSinceEpoch =
+            (unsigned long long)(tv.tv_sec) * 1000 +
+            (unsigned long long)(tv.tv_usec) / 1000;
+        parameters.seed = millisecondsSinceEpoch;
+    }
+
     srand(parameters.seed);
 }
 
@@ -116,7 +124,7 @@ void union_populacao_clones_and_main(populacao *populacao_clones, populacao *pop
     }
 }
 
-populacao *clonalg(populacao *population, int epoca_num,int current_generation, int population_num)
+populacao *clonalg(populacao *population, int epoca_num, int current_generation, int population_num)
 {
     set_default_parameters_clonalg();
     // print_parameters(parameters);

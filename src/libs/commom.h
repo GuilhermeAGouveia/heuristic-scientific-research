@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include <getopt.h>
 #include <time.h>
+#include <sys/time.h>
 #include <math.h>
 #include "types.h"
 #include "funcoes_cec_2015/cec15_test_func.h"

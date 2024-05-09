@@ -23,7 +23,15 @@ void set_default_parameters_genetic()
     if (!parameters.evaluation_limit)
         parameters.evaluation_limit = 1490400;
     if (!parameters.seed)
-        parameters.seed = time(NULL);
+    {
+        struct timeval tv;
+        gettimeofday(&tv, NULL);
+        unsigned long long millisecondsSinceEpoch =
+            (unsigned long long)(tv.tv_sec) * 1000 +
+            (unsigned long long)(tv.tv_usec) / 1000;
+        parameters.seed = millisecondsSinceEpoch;
+    }
+
     srand(parameters.seed);
 }
 
@@ -126,7 +134,7 @@ populacao *union_populations(populacao *populacao1, populacao *populacao2)
     }
     for (int i = 0; i < populacao2->size; i++)
     {
-        copy_individuo( &populacao2->individuos[i], &populacao_unida->individuos[i + populacao1->size],parameters.dimension);
+        copy_individuo(&populacao2->individuos[i], &populacao_unida->individuos[i + populacao1->size], parameters.dimension);
     }
     return populacao_unida;
 }
@@ -137,7 +145,7 @@ populacao *slice_population(populacao *population, int start, int end)
     populacao *sliced_population = generate_island(1, end - start, parameters.dimension, parameters.domain_function, parameters.function_number);
     for (int i = 0; i < end - start; i++)
     {
-        copy_individuo(&population->individuos[i + start],&sliced_population->individuos[i],  parameters.dimension);
+        copy_individuo(&population->individuos[i + start], &sliced_population->individuos[i], parameters.dimension);
     }
     return sliced_population;
 }
@@ -223,7 +231,6 @@ populacao *crossover(populacao *populacao_original, populacao *populacao_mutada,
 
             fitness(filho, dimension, parameters.function_number);
             copy_individuo(filho, &nova_populacao->individuos[i], 10);
-        
         }
         else
         {
@@ -245,8 +252,6 @@ populacao *genetic(populacao *population, int epoca_num, int current_generation,
         population = generate_island(1, parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
     }
     DEBUG(printf("\nevolution\n"););
-    individuo *parents[2];
-    individuo bestIndividuo = {.fitness = INFINITY};
     int evaluation_count = 0;
     // double best_ep_ant = bestIndividuo.fitness;
     DEBUG(printf("Iniciando evolucao\n"););
@@ -255,7 +260,7 @@ populacao *genetic(populacao *population, int epoca_num, int current_generation,
     populacao *cross_population;
     populacao *mutation_population;
     int generation_count = 0;
-    //printf("\nEpoca: %d, Current_generation:%d", epoca_num, current_generation);
+    // printf("\nEpoca: %d, Current_generation:%d", epoca_num, current_generation);
 
     while (generation_count < parameters.num_generations_per_epoca)
     {
