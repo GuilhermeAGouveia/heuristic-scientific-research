@@ -284,6 +284,10 @@ void read_parameters_file(int epoca, int population, char *folderPath)
     char parameters_filename[1024];
     sprintf(parameters_filename, "%s/_parametros.dat", folderPath);
     FILE *file = fopen(parameters_filename, "r");
+    if( file == NULL){
+       printf("\nErro ao ler _parametreos.dat");
+       exit(0);
+    }
     char line[1024];
     int i = 0;
     fgets(line, 1024, file);
@@ -374,7 +378,7 @@ void write_metrics_for_each_files(populacao **populations, char *folderPath)
 {
     FILE *output_metric;
     output_metric = fopen(folderPath, "a");
-    double *densityPopulationResult = densityPopulation(populations, parameters.island_size);
+    double densityPopulationResult = densityPopulation(populations, parameters.island_size);
     double densityWorldResult = densityWorld(populations, parameters.island_size);
 
     if (output_metric == NULL)
@@ -382,11 +386,9 @@ void write_metrics_for_each_files(populacao **populations, char *folderPath)
         DEBUG(printf("Error opening file!\n"););
         exit(1);
     }
-    fprintf(output_metric, "%lf ", densityPopulationResult[0]);
-    fprintf(output_metric, "%lf ", densityPopulationResult[1]);
+    fprintf(output_metric, "%lf ", densityPopulationResult);
     fprintf(output_metric, "%lf\n", densityWorldResult);
     // destroy_island(*populations, parameters.island_size - 1);
-    free(densityPopulationResult);
     fclose(output_metric);
 }
 
@@ -395,22 +397,48 @@ int main(int argc, char *argv[])
     char *folderPath = argv[1];
     read_parameters_file(0, 0, folderPath);
     int gens_per_epoca = parameters.num_generations_per_epoca;
+    int epoca = 0, gen_init = 0;
     char filename[1024];
     files_list files_gen;
     files_gen.num_files = parameters.island_size;
- 
-    sprintf(filename, "rm -rf  logs_genetica/metrics/%s", strstr(folderPath, "_-A"));
-    system(filename);
-    for (int i = 0; i < parameters.num_epocas; i++)
+
+    if (strstr(folderPath, "_-A") == NULL)
+    {
+        printf("\nErro no caminho do arquivo: O nome do caminho do arquido deve conter \"_-A\"");
+        exit(0);
+    }
+
+    if (argc > 2)
+    {
+        epoca = atoi(argv[2]);
+        gen_init = atoi(argv[3]);
+        gens_per_epoca = atoi(argv[4]);
+        parameters.num_epocas = epoca + 1;
+    }
+
+    if (argc == 2)
+    {
+        sprintf(filename, "rm -rf  logs_genetica/metrics/%s", strstr(folderPath, "_-A"));
+        system(filename);
+    }
+
+    for (int i = epoca; i < parameters.num_epocas; i++)
     {
         sprintf(filename, "mkdir -p logs_genetica/metrics/%s/epoca_%d", strstr(folderPath, "_-A"), i);
         system(filename);
-        sprintf(filename, "logs_genetica/metrics/%s/epoca_%d/metrics_output.txt", strstr(folderPath, "_-A"), i);
-        if (i == parameters.num_epocas - 1 && gens_final_epoca != 0)
+        if (argc == 2)
+        {
+            sprintf(filename, "logs_genetica/metrics/%s/epoca_%d/metrics_output.txt", strstr(folderPath, "_-A"), i);
+        }
+        else
+        {
+            sprintf(filename, "logs_genetica/metrics/%s/epoca_%d/%d_%d.txt", strstr(folderPath, "_-A"), i, gen_init, gens_per_epoca - 1);
+        }
+        if (i == parameters.num_epocas - 1 && gens_final_epoca != 0 && argc == 2)
         {
             gens_per_epoca = gens_final_epoca;
         }
-        for (int j = 0; j < gens_per_epoca; j++)
+        for (int j = gen_init; j < gens_per_epoca; j++)
         {
             files_gen.files = alocc_string_matrix(files_gen.num_files, 500);
             for (int p = 0; p < files_gen.num_files; p++)

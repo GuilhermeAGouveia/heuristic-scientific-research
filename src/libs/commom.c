@@ -234,15 +234,15 @@ double euclidian(individuo firstIndividuo, individuo secondIndividuo, int dimens
     return distance;
 }
 
-double *densityPopulation(populacao **populations, int island_number)
+double densityPopulation(populacao **populations, int island_number)
 {
     DEBUG(printf("\ndensityPopulation\n"););
     double average = 0;
     double sd = 0;
     double *sum = (double *)calloc(island_number, sizeof(double));
     double sumIndividual = 0;
-    double *result = malloc(2 * sizeof(double));
-    
+    double result;
+
     // for all populations
     for (int i = 0; i < island_number; i++)
     {
@@ -268,16 +268,11 @@ double *densityPopulation(populacao **populations, int island_number)
 
     average /= island_number;
 
-    for (int i = 0; i < island_number; i++)
-    {
-        sd += (sum[i] - average) * (sum[i] - average);
-    }
-    sd /= island_number;
-    sd = sqrt(sd);
+
 
     // cout << average << ";" << sd << ";";
-    result[0] = average;
-    result[1] = sd;
+    result = average;
+
     // DEBUG(printf("\nDensityPopulation\n"););
     // DEBUG(printf("%lf;%lf;\n", average, sd););
     free(sum);
@@ -357,6 +352,7 @@ double densityWorld(populacao **populations, int island_number)
     // verificar se esta ideia acima está correta
     */
     destroy_matriz(sum, island_number);
+    // printf("\nTime Density_Wolrd: %.2lf\n", difftime(time_now, time_init));
     return total;
 }
 
@@ -389,14 +385,24 @@ double convergence_calculation(populacao *population, double best)
 double convergence_calculation_islands(populacao **populations, int islands_size)
 {
     double result;
+    // struct timeval tv_inicio, tv_fim;
+    // gettimeofday(&tv_inicio, NULL);
     if (islands_size > 1)
     {
         result = densityWorld(populations, islands_size);
+        return result;
     }
-    else
-    {
-        result = densityPopulation(populations, islands_size)[0];
-    }
+
+    result = densityPopulation(populations, islands_size);
+
+    // gettimeofday(&tv_fim, NULL);
+    // long long inicio =
+    //     (long long)(tv_inicio.tv_sec) * 1000000 +
+    //     (long long)(tv_inicio.tv_usec);
+    // long long fim =
+    //     (long long)(tv_fim.tv_sec) * 1000000 +
+    //     (long long)(tv_fim.tv_usec);
+    // printf("\nTime Density_Wolrd: %.2lf\n", (fim - inicio)/1000000.0);
     return result;
 }
 

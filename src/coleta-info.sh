@@ -167,7 +167,7 @@ move_arquivos() {
 main() {
     source libs/progress-bar/progress-bar.sh
     echo -e "Realizando ${n_execucoes} execuções..."
-    #echo -e "Código em execução: $alg_path\n"
+    echo -e "Código em execução: $alg_path\n"
     show_indicator_algorithm
     show_indicator_function
     show_command_exec
@@ -189,7 +189,7 @@ main() {
     done
 
     mount_progress_bar 0 $n_execucoes
-    temporary_folder_two=$(date +%H%M%S_%3N)$temporary_folder
+    temporary_folder_two="1$(date +%H%M%S_%3N)$temporary_folder"
     mkdir -p logs_genetica/furaaf/$temporary_folder_two
     for i in $(seq 1 $n_execucoes); do
         resultado=$(eval $(define_command_evol $alg_config) | tail -n 1)
@@ -206,15 +206,18 @@ main() {
 
         mount_progress_bar $((i * 100 / n_execucoes))
 
-        # Gerar nome da nova pasta com base no número da execução
-
-        # Move os arquivos para a nova pasta
         nova_pasta="execucao_${i}"
         move_arquivos "logs_genetica/furaaf/$temporary_folder" "logs_genetica/furaaf/$temporary_folder_two" $nova_pasta
-        #mover_arquivos_para_subdiretorio "logs_genetica/furaaf/$temporary_folder" "$nova_pasta"
+        echo "logs_genetica/furaaf/$temporary_folder_two/$nova_pasta"
+        ./metrics_instances.sh logs_genetica/furaaf/$temporary_folder_two/$nova_pasta/data 10
+        wait
+        rm -rf logs_genetica/furaaf/$temporary_folder_two/*
+
     done
-    move_arquivos "logs_genetica/furaaf/$temporary_folder_two" "logs_genetica/furaaf/$temporary_folder"
     rm -rf logs_genetica/furaaf/$temporary_folder_two
+    rm -rf logs_genetica/furaaf/$temporary_folder
+    # move_arquivos "logs_genetica/furaaf/$temporary_folder_two" "logs_genetica/furaaf/$temporary_folder"
+    # rm -rf logs_genetica/furaaf/$temporary_folder_two
     tput reset
     tput setaf 2
     echo -e "\nResultado para função $function_number:\n"
