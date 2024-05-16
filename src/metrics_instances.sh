@@ -111,14 +111,15 @@ main() {
     wait
     path_folder_filter=$(echo "$path_folder" | grep -o '_-A_[^ ]*' | head -1)
     #path_folder_filter=$(echo "$path_folder" | grep -o '_-A[[:alnum:]]*')
-    path_output_metrics="logs_genetica/metrics/$path_folder_filter/$undo_path_name"
-    >>"$path_output_metrics/metrics_F$function_number.txt"
+    path_output="logs_genetica/metrics/$path_folder_filter/$undo_path_name"
+    >>"$path_output/metrics_F$function_number.txt"
+
 
     gen_init=0
     gen_final=$generations_per_instance
     for ((i = 0; i < $num_instances; i++)); do
-        cat "$path_output_metrics/$gen_init"_"$(($gen_final - 1)).txt" >> "$path_output_metrics/metrics_F$function_number.txt"
-        rm  "$path_output_metrics/$gen_init"_"$(($gen_final - 1)).txt"
+        cat "$path_output/$gen_init"_"$(($gen_final - 1)).txt" >> "$path_output/metrics_F$function_number.txt"
+        rm  "$path_output/$gen_init"_"$(($gen_final - 1)).txt"
         gen_init=$gen_final
         if [ $i -eq $(($num_instances - 2)) ]; then
             gen_final=$total_generations
@@ -126,6 +127,9 @@ main() {
             gen_final=$(($gen_final + $generations_per_instance))
         fi
     done
+    mv "$path_output"/* "$path_output"/../..
+    rm -rf "$(dirname "$(dirname "$path_output")")/data" 
+
 
 }
 

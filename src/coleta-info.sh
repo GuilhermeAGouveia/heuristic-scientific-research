@@ -189,8 +189,9 @@ main() {
     done
 
     mount_progress_bar 0 $n_execucoes
+    path_data="logs_genetica/furaaf"
     temporary_folder_two="1$(date +%H%M%S_%3N)$temporary_folder"
-    mkdir -p logs_genetica/furaaf/$temporary_folder_two
+    mkdir -p $path_data/$temporary_folder_two
     for i in $(seq 1 $n_execucoes); do
         resultado=$(eval $(define_command_evol $alg_config) | tail -n 1)
 
@@ -207,17 +208,18 @@ main() {
         mount_progress_bar $((i * 100 / n_execucoes))
 
         nova_pasta="execucao_${i}"
-        move_arquivos "logs_genetica/furaaf/$temporary_folder" "logs_genetica/furaaf/$temporary_folder_two" $nova_pasta
-        echo "logs_genetica/furaaf/$temporary_folder_two/$nova_pasta"
-        ./metrics_instances.sh logs_genetica/furaaf/$temporary_folder_two/$nova_pasta/data 10
+        move_arquivos "$path_data/$temporary_folder" "$path_data/$temporary_folder_two" $nova_pasta
+        echo "$path_data/$temporary_folder_two/$nova_pasta"
+        ./metrics_instances.sh $path_data/$temporary_folder_two/$nova_pasta/data 10
         wait
-        rm -rf logs_genetica/furaaf/$temporary_folder_two/*
-
+        if [ $i -eq 1 ]; then
+           cp  $path_data/$temporary_folder_two/$nova_pasta/data/_parametros.dat logs_genetica/metrics/_$(echo $alg_config | sed "s/ /_/g")/_parametros_F$function_number.dat
+        fi
+        rm -rf $path_data/$temporary_folder_two/*
     done
-    rm -rf logs_genetica/furaaf/$temporary_folder_two
-    rm -rf logs_genetica/furaaf/$temporary_folder
-    # move_arquivos "logs_genetica/furaaf/$temporary_folder_two" "logs_genetica/furaaf/$temporary_folder"
-    # rm -rf logs_genetica/furaaf/$temporary_folder_two
+    rm -rf $path_data/$temporary_folder_two
+    rm -rf $path_data/$temporary_folder
+
     tput reset
     tput setaf 2
     echo -e "\nResultado para função $function_number:\n"
@@ -225,6 +227,9 @@ main() {
     echo "Maximo: $maximo"
     echo "Média: $(mean "${array_values[@]}")"
     echo "Desvio padrão: $(std "${array_values[@]}")"
+
 }
 
 main
+
+

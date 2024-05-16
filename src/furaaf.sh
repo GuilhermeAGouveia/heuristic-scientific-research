@@ -22,7 +22,8 @@ move_arquivos() {
 
 echo "Executando o make"
 make direct # compila o algoritmo de ilha por escolha direta
-
+n_execucoes=1
+last_function=2
 all_params=$(cat params.txt | sed "s/ /_/g")
 for config in $all_params; do
     new_config=$(echo $config | sed "s/_/ /g")
@@ -30,11 +31,11 @@ for config in $all_params; do
     rm -rf logs_genetica/metrics/$config
     rm -rf logs_genetica/coleta_info/$config
     clear
-    for func in $(seq 9 9); do
+    for func in $(seq 1 $last_function); do
         #rm results/tcc/result_[$parcial_name][f$func].txt
         temporary_folder=$(date +%H%M%S_%3N)$config
 
-        ./coleta-info.sh -n 2 -c "$new_config" -f $func -t 10 -Z $temporary_folder | tee output-coleta-info[$parcial_name][f$func].dat
+        ./coleta-info.sh -n $n_execucoes -c "$new_config" -f $func -t 10 -Z $temporary_folder | tee output-coleta-info[$parcial_name][f$func].dat
         result=$(cat output-coleta-info[$parcial_name][f$func].dat | tail -n 6)
         mkdir logs_genetica/coleta_info/$config
         echo -e $result >>logs_genetica/coleta_info/$config/[f$func].txt
@@ -42,4 +43,14 @@ for config in $all_params; do
         tput reset
     done
 
+    path_metrics="logs_genetica/metrics/$config"
+    for ((function = 1; function <= $last_function; function++)); do
+        ./metrics_all $path_metrics $function $n_execucoes &
+    done
+
+    wait
+   
+   tput reset
 done
+
+

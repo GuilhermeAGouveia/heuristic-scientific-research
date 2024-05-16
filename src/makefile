@@ -2,8 +2,9 @@ commom_libs = ./libs/statistics.c ./libs/log.c ./libs/crossover.c ./libs/types.c
 ilha_proporcional_output = prop
 ilha_direta_output = dire
 medidas_geneticas_output = metrics
+metrics_all_output = metrics_all
 
-all: genetic_metrics direct proportional; \
+all: genetic_metrics genetic_metrics_all direct proportional; \
 
 run: compil;
 	./evol; \
@@ -18,6 +19,9 @@ statistics: compil; \
 
 genetic_metrics: ;
 	gcc -o $(medidas_geneticas_output) -g utils/medidas_geneticas.c $(commom_libs); \
+
+genetic_metrics_all: ;
+	gcc -o $(metrics_all_output) -g utils/metrics_all_executations.c $(commom_libs); \
 
 direct: ;
 	gcc -o $(ilha_direta_output) -g algoritmoIlhaEscolhaDireta.c $(commom_libs); \
