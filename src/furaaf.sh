@@ -31,7 +31,7 @@ contar_instancias() {
 #rm -rf logs_genetica/coleta_info/*
 
 echo "Executando o make"
-make direct # compila o algoritmo de ilha por escolha direta
+make  # compila o algoritmo de ilha por escolha direta
 n_execucoes=30
 first_function=$1
 last_function=$2
