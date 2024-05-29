@@ -210,7 +210,7 @@ main() {
         nova_pasta="execucao_${i}"
         move_arquivos "$path_data/$temporary_folder" "$path_data/$temporary_folder_two" $nova_pasta
         echo "$path_data/$temporary_folder_two/$nova_pasta"
-        ./metrics_instances.sh $path_data/$temporary_folder_two/$nova_pasta/data 10
+        ./metrics_instances.sh $path_data/$temporary_folder_two/$nova_pasta/data 4
         wait
         if [ $i -eq 1 ]; then
            cp  $path_data/$temporary_folder_two/$nova_pasta/data/_parametros.dat logs_genetica/metrics/_$(echo $alg_config | sed "s/ /_/g")/_parametros_F$function_number.dat
