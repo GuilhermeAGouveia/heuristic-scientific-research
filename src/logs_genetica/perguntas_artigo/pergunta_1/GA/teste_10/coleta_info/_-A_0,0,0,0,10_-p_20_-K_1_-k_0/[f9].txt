@@ -1,0 +1,1 @@
+Resultado para função 9: Minimo: 902.090841 Maximo: 903.080451 Média: 902.63102340000000000000 Desvio padrão: .31561008191845414070

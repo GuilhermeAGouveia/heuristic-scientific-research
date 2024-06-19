@@ -1,0 +1,1 @@
+Resultado para função 8: Minimo: 800.690799 Maximo: 803.532888 Média: 801.58248933333333333333 Desvio padrão: .61224500997652529299

@@ -1,0 +1,1 @@
+Resultado para função 8: Minimo: 800.546788 Maximo: 802.115310 Média: 801.14065670000000000000 Desvio padrão: .40426941573148551334

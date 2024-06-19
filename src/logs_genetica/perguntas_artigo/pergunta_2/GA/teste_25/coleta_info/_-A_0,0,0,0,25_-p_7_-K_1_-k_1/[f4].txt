@@ -1,0 +1,1 @@
+Resultado para função 4: Minimo: 400.005974 Maximo: 400.359493 Média: 400.11941350000000000000 Desvio padrão: .07453442742417761405
