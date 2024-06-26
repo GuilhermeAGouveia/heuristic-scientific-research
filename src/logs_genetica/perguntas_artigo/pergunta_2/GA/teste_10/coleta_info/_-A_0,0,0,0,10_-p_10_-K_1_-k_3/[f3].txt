@@ -1,0 +1,1 @@
+Resultado para função 3: Minimo: 302.265748 Maximo: 306.711357 Média: 304.15130606666666666666 Desvio padrão: 1.15006885458227915422

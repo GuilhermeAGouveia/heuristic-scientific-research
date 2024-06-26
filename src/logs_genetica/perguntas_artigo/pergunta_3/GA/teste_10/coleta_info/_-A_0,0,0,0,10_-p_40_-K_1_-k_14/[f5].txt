@@ -1,0 +1,1 @@
+Resultado para função 5: Minimo: 500.148199 Maximo: 501.149680 Média: 500.53200796666666666666 Desvio padrão: .21879366240615583442

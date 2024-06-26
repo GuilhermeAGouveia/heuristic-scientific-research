@@ -32,10 +32,14 @@ double random_double(double min, double max)
     return random;
 }
 
-int doubleEqual(double a, double b, int num_casas)
+int double_cmp(double a, double b, int num_casas)
 {
     double tolerance = pow(10, -num_casas);
-    return fabs(a - b) < tolerance;
+    if (fabs(a - b) < tolerance)
+        return 0;
+    if (a - b > 0)
+        return 1;
+    return -1;
 }
 
 double calc_mean(individuo *population, int population_size)
@@ -142,11 +146,12 @@ int size_of_array(char *parameter)
         total++;
         token = strtok(NULL, ",");
     }
-    if(total > 5){
+    if (total > 5)
+    {
         puts("Número de algoritmos inválido");
         exit(0);
     }
-      
+
     return i;
 }
 
@@ -162,15 +167,18 @@ int *get_algorithms(int *quantidade_islands, int total)
 {
     proporcao_alg proporcoes[5];
     int *result = calloc(total, sizeof(int));
-    for (int i = 0; i < 5; i++){
+    for (int i = 0; i < 5; i++)
+    {
         proporcoes[i].total_islands = quantidade_islands[i];
         proporcoes[i].alg = i;
-    }   
+    }
     qsort(&proporcoes, 5, sizeof(proporcao_alg), comparador_quantidade_alg);
     int cont = 0;
-    
-    for(int i = 0; i < 5; i++){
-        for(int j = 0; j < proporcoes[i].total_islands; j++, cont++){
+
+    for (int i = 0; i < 5; i++)
+    {
+        for (int j = 0; j < proporcoes[i].total_islands; j++, cont++)
+        {
             result[cont] = proporcoes[i].alg;
         }
     }
@@ -193,4 +201,3 @@ int *convert_parameter_to_array(char *parameter)
     }
     return array;
 }
-

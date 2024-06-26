@@ -17,7 +17,7 @@ args parameters;
 void set_parameters(int argc, char *argv[])
 {
     int opt;
-    while ((opt = getopt(argc, argv, "A:f:F:t:i:p:d:l:u:g:m:c:k:s:v:z:C:P:e:K:M:Q:O:D:L:G:N:n")) != -1)
+    while ((opt = getopt(argc, argv, "A:f:F:t:i:p:d:l:u:g:m:c:k:s:v:z:C:P:e:K:M:Q:O:D:L:G:N:Z:n:")) != -1)
     {
         switch (opt)
         {
@@ -105,6 +105,9 @@ void set_parameters(int argc, char *argv[])
             break;
         case 'P':
             parameters.p_exploitation = atof(optarg);
+            break;
+        case 'Z':
+            strcpy(parameters.temporary_folder, optarg);
             break;
         default:
             printf("Invalid option: %c\n", opt);

@@ -25,7 +25,7 @@ typedef struct array
 void print_individuo(individuo individuo, int dimension, int id);
 void print_population(individuo *pop, int tamanho_populacao, int dimension, int only_fitness);
 double random_double(double min, double max);
-int doubleEqual(double a, double b, int num_casas);
+int double_cmp(double a, double b, int num_casas);
 double calc_mean(individuo *population, int population_size);
 double desvio_padrao(individuo *population, int population_size);
 Array generateComb(int n);

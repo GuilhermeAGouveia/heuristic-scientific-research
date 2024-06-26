@@ -1,7 +1,4 @@
 #include "commom.h"
-
-
-
 void fitness(individuo *individuo, int dimension, int function_number)
 {
     // individuo.fitness = real_function(individuo.chromosome, dimension);
@@ -96,7 +93,6 @@ populacao *generate_clean_island(int island_size, int population_size, int dimen
     return populations;
 }
 
-
 individuo *get_best_of_population(populacao populacao)
 {
     DEBUG(printf("\nget_best_of_population\n"););
@@ -110,7 +106,6 @@ individuo *get_worst_of_population(individuo *population, int n_populacoes)
     return &population[0];
 }
 
-
 void copy_individuo(individuo *original, individuo *copia, int dimension)
 {
     copia->fitness = original->fitness;
@@ -123,10 +118,13 @@ void copy_individuo(individuo *original, individuo *copia, int dimension)
 void destroy_population(individuo *population, int n_individuos)
 {
     DEBUG(printf("\ndestroy_population\n"););
-    for (int i = 0; i < n_individuos; i++)
+    if (population != NULL)
     {
-        free(population[i].chromosome);
-        free(population[i].velocidade);
+        for (int i = 0; i < n_individuos; i++)
+        {
+            free(population[i].chromosome);
+            free(population[i].velocidade);
+        }
     }
     free(population);
 }
@@ -139,7 +137,7 @@ void destroy_island(populacao *populations, int island_size)
         destroy_population(populations[i].individuos, populations[i].size);
         free(populations[i].neighbours);
     }
-    //free(populations);
+    // free(populations);
 }
 
 void migrate(populacao **populations, int island_size, int num_migrations, int dimension, domain domain_function, int function_number)
@@ -223,4 +221,201 @@ void random_random_migrate(populacao **populations, int island_size, int num_mig
             populations[i]->individuos[positions[i][j]] = pool[i * num_migrations + j];
         }
     }
+}
+
+double euclidian(individuo firstIndividuo, individuo secondIndividuo, int dimension)
+{
+    double distance = 0;
+    for (int i = 0; i < dimension; i++)
+    {
+        distance += pow(firstIndividuo.chromosome[i] - secondIndividuo.chromosome[i], 2);
+    }
+    distance = sqrt(distance);
+    return distance;
+}
+
+double densityPopulation(populacao **populations, int island_number)
+{
+    DEBUG(printf("\ndensityPopulation\n"););
+    double average = 0;
+    double sd = 0;
+    double *sum = (double *)calloc(island_number, sizeof(double));
+    double sumIndividual = 0;
+    double result;
+
+    // for all populations
+    for (int i = 0; i < island_number; i++)
+    {
+        int nIndividuals = populations[i]->size;
+
+        // for all individuals from population i
+        for (int j = 0; j < nIndividuals - 1; j++)
+        {
+            // against all individuals from the same population
+            for (int k = j + 1; k < nIndividuals; k++)
+            {
+                // sums with the norm-2 of individual j and k
+                sum[i] += euclidian(populations[i]->individuos[j], populations[i]->individuos[k], 10);
+            }
+        }
+    }
+
+    for (int i = 0; i < island_number; i++)
+    {
+        average += sum[i];
+        // DEBUG(printf("%lf"););
+    }
+
+    average /= island_number;
+
+
+
+    // cout << average << ";" << sd << ";";
+    result = average;
+
+    // DEBUG(printf("\nDensityPopulation\n"););
+    // DEBUG(printf("%lf;%lf;\n", average, sd););
+    free(sum);
+    return result;
+}
+
+double densityWorld(populacao **populations, int island_number)
+{
+    DEBUG(printf("\ndensityWorld\n"););
+    double total = 0;
+    double **sum = (double **)calloc(island_number, sizeof(double *));
+
+    for (int i = 0; i < island_number; i++)
+    {
+        sum[i] = (double *)calloc(island_number, sizeof(double));
+    }
+
+    // print_population(populations[1]->individuos, populations[1]->size, 10, 1);
+    // // print_population(populations[13]->individuos, populations[13]->size, 10, 1);
+    // exit(0);
+
+    // for all populations
+    for (int i = 0; i < island_number; i++)
+    {
+        // in comparison with all other populations
+        for (int j = i + 1; j < island_number; j++)
+        {
+            int nIndividualsI = populations[i]->size;
+            int nIndividualsJ = populations[j]->size;
+
+            // for all individuals from population i
+            for (int k = 0; k < nIndividualsI; k++)
+            {
+                // against all individuals from the same population
+
+                for (int l = 0; l < nIndividualsJ; l++)
+                {
+                    // sums with the norm-2 of individual j and k
+                    sum[i][j] += euclidian(populations[i]->individuos[k], populations[j]->individuos[l], parameters.dimension);
+                }
+            }
+
+            sum[i][j] = sqrt(sum[i][j]);
+
+            // printf("sum[%d][%d] += %lf\n", i, j, sum[i][j]);
+        }
+    }
+
+    for (int i = 0; i < island_number; i++)
+    {
+        for (int j = i; j < island_number; j++)
+        {
+            total += sum[i][j];
+        }
+    }
+    // Errado?
+    /*
+    double sd = 0;
+
+    total /= island_size;
+
+    for (int i = 0; i < island_size; i++) {
+        for(int j = i; j < island_size; j++)
+         sd += (sum[i][j]-total)*(sum[i][j]-total);
+    }
+    sd /= island_size;
+    sd = sqrt(sd);*/
+
+    // DEBUG(printf("\nDensityWord\n"););
+    // DEBUG(printf("%lf;\n", total););
+    /*
+    //cout << total << ";" << endl;
+
+    // TODO: incompleto. Pensar numa maneira de comparar este número com o outro
+    // pensamento: não é necessário comparar este número com o outro, só comparar
+    // de uma execução com outra. Então, é somar tudo e retornar
+    // verificar se esta ideia acima está correta
+    */
+    destroy_matriz(sum, island_number);
+    // printf("\nTime Density_Wolrd: %.2lf\n", difftime(time_now, time_init));
+    return total;
+}
+
+void destroy_matriz(double **matriz, int size)
+{
+    if (matriz != NULL)
+    {
+        for (int i = 0; i < size; i++)
+        {
+            free(matriz[i]);
+        }
+        free(matriz);
+    }
+}
+
+double convergence_calculation(populacao *population, double best)
+{
+    double count = 0;
+
+    for (int i = 0; i < population->size; i++)
+    {
+        if (population->individuos[i].fitness == best)
+        {
+            count++;
+        }
+    }
+    return count / population->size;
+}
+
+double convergence_calculation_islands(populacao **populations, int islands_size)
+{
+    double result;
+    // struct timeval tv_inicio, tv_fim;
+    // gettimeofday(&tv_inicio, NULL);
+    if (islands_size > 1)
+    {
+        result = densityWorld(populations, islands_size);
+        return result;
+    }
+
+    result = densityPopulation(populations, islands_size);
+
+    // gettimeofday(&tv_fim, NULL);
+    // long long inicio =
+    //     (long long)(tv_inicio.tv_sec) * 1000000 +
+    //     (long long)(tv_inicio.tv_usec);
+    // long long fim =
+    //     (long long)(tv_fim.tv_sec) * 1000000 +
+    //     (long long)(tv_fim.tv_usec);
+    // printf("\nTime Density_Wolrd: %.2lf\n", (fim - inicio)/1000000.0);
+    return result;
+}
+
+int minimum(int a, int b)
+{
+    if (a > b)
+        return b;
+    return a;
+}
+
+int inInterval(double min, double max, double valor)
+{
+    if (valor >= min && valor <= max)
+        return 1;
+    return 0;
 }

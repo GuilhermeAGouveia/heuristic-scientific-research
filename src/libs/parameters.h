@@ -18,6 +18,7 @@ typedef struct args_
     domain domain_function;
     float choice_random_migrate;
     char algorithms[250];
+    char temporary_folder[100];
     int num_algorithms;
     double F;
     int num_pso;

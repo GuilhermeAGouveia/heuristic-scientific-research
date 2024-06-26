@@ -16,6 +16,6 @@
 
 #define DIFERENCIAL_H
 
-populacao *diferencial(populacao *population, int epoca_num, int population_num);
+populacao *diferencial(populacao *population, int epoca_num,int current_generation, int population_num);
 
 #endif /* DIFERENCIAL_H */

@@ -7,20 +7,26 @@ void set_default_parameters_clonalg()
         parameters.function_number = 3;
     if (!parameters.time_limit)
         parameters.time_limit = 10; // seconds
-    if (!parameters.population_size)
-        parameters.population_size = 46;
+    // if (!parameters.population_size)
+    //     parameters.population_size = 46;
     if (!parameters.dimension)
         parameters.dimension = 10; // 10 or 30
     if (!parameters.domain_function.min)
         parameters.domain_function.min = -100;
     if (!parameters.domain_function.max)
         parameters.domain_function.max = 100;
-    if (!parameters.num_generations_per_epoca)
-        parameters.num_generations_per_epoca =  (int)(5505098/parameters.population_size);//615;
     if (!parameters.clones)
         parameters.clones = 72;
     if (!parameters.seed)
-        parameters.seed = time(NULL);
+    {
+        struct timeval tv;
+        gettimeofday(&tv, NULL);
+        unsigned long long millisecondsSinceEpoch =
+            (unsigned long long)(tv.tv_sec) * 1000 +
+            (unsigned long long)(tv.tv_usec) / 1000;
+        parameters.seed = millisecondsSinceEpoch;
+    }
+
     srand(parameters.seed);
 }
 
@@ -118,7 +124,7 @@ void union_populacao_clones_and_main(populacao *populacao_clones, populacao *pop
     }
 }
 
-populacao *clonalg(populacao *population, int epoca_num, int population_num)
+populacao *clonalg(populacao *population, int epoca_num, int current_generation, int population_num)
 {
     set_default_parameters_clonalg();
     // print_parameters(parameters);
@@ -132,15 +138,12 @@ populacao *clonalg(populacao *population, int epoca_num, int population_num)
     qsort(population_main->individuos, population_main->size, sizeof(individuo), comparador_individuo);
     populacao *populacao_clones;
     populacao *populacao_clones_mutated;
-    time_t time_init, time_now;
     int generation_count = 0;
-    time(&time_init);
-    time(&time_now);
     DEBUG(printf("Iniciando evolucao\n"););
     //  while (difftime(time_now, time_init) < parameters.time_limit)
     // {
 
-    while (generation_count < parameters.num_generations_per_epoca && difftime(time_now, time_init) < parameters.time_limit)
+    while (generation_count < parameters.num_generations_per_epoca)
     {
         STATISTICS(print_coords(&population_main->individuos[population_main->size - 1], 1, generation_count, parameters.num_generations););
 
@@ -151,10 +154,9 @@ populacao *clonalg(populacao *population, int epoca_num, int population_num)
         union_populacao_clones_and_main(populacao_clones_mutated, population_main, parameters.population_size);
         destroy_island(populacao_clones, parameters.population_size);
         qsort(population_main->individuos, population_main->size, sizeof(individuo), comparador_individuo);
-        LOG(write_population_log(epoca_num, population_num, generation_count, *population_main, parameters););
+        LOG(write_population_log(epoca_num, population_num, generation_count + current_generation, *population_main, parameters););
 
         generation_count++;
-        time(&time_now);
     }
     // double desv = desvio_padrao(population_main->individuos, parameters.population_size);
     // printf("Desvio_P: %lf\n", desv);

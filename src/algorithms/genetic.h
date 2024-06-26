@@ -17,6 +17,6 @@
 #define GENETIC_H
 
 
-populacao *genetic(populacao *population, int epoca_num, int population_num);
+populacao *genetic(populacao *population, int epoca_num,int current_generation, int population_num);
 
 #endif /* GENETIC_H */

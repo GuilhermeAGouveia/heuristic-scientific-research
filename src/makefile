@@ -2,8 +2,10 @@ commom_libs = ./libs/statistics.c ./libs/log.c ./libs/crossover.c ./libs/types.c
 ilha_proporcional_output = prop
 ilha_direta_output = dire
 medidas_geneticas_output = metrics
+metrics_all_output = metrics_all
+filter_metrics_for_plot_output = filter_plot
 
-all: genetic_metrics direct proportional; \
+all: genetic_metrics genetic_metrics_all direct metrics_plot proportional; \
 
 run: compil;
 	./evol; \
@@ -17,13 +19,19 @@ statistics: compil; \
 	./scripts/sh/gerar_todas_estatisticas.sh; \
 
 genetic_metrics: ;
-	gcc -o $(medidas_geneticas_output) utils/medidas_geneticas.c $(commom_libs); \
+	gcc -o $(medidas_geneticas_output) -g utils/medidas_geneticas.c $(commom_libs); \
+
+genetic_metrics_all: ;
+	gcc -o $(metrics_all_output) -g utils/metrics_all_executations.c $(commom_libs); \
+
+metrics_plot: ;
+	gcc -o $(filter_metrics_for_plot_output) -g utils/filter_metrics_for_plot.c $(commom_libs); \
 
 direct: ;
-	gcc -o $(ilha_direta_output) algoritmoIlhaEscolhaDireta.c $(commom_libs); \
+	gcc -o $(ilha_direta_output) -g algoritmoIlhaEscolhaDireta.c $(commom_libs); \
 
 proportional: ;
-	gcc -o $(ilha_proporcional_output) algoritmoIlhaEscolhaProporcional.c $(commom_libs); \
+	gcc -o $(ilha_proporcional_output) -g algoritmoIlhaEscolhaProporcional.c $(commom_libs); \
 
 furaaf: prepare;
 	./scripts/sh/verificar_params.sh; \
