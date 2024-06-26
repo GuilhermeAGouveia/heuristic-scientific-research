@@ -3,8 +3,9 @@ ilha_proporcional_output = prop
 ilha_direta_output = dire
 medidas_geneticas_output = metrics
 metrics_all_output = metrics_all
+filter_metrics_for_plot_output = filter_plot
 
-all: genetic_metrics genetic_metrics_all direct proportional; \
+all: genetic_metrics genetic_metrics_all direct metrics_plot proportional; \
 
 run: compil;
 	./evol; \
@@ -22,6 +23,9 @@ genetic_metrics: ;
 
 genetic_metrics_all: ;
 	gcc -o $(metrics_all_output) -g utils/metrics_all_executations.c $(commom_libs); \
+
+metrics_plot: ;
+	gcc -o $(filter_metrics_for_plot_output) -g utils/filter_metrics_for_plot.c $(commom_libs); \
 
 direct: ;
 	gcc -o $(ilha_direta_output) -g algoritmoIlhaEscolhaDireta.c $(commom_libs); \
