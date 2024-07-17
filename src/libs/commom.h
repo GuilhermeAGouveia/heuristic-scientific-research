@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include <getopt.h>
 #include <time.h>
+#include <sys/time.h>
 #include <math.h>
 #include "types.h"
 #include "funcoes_cec_2015/cec15_test_func.h"
@@ -30,8 +31,8 @@
 
 #define NO_RECORDING
 #define STATISTICS(x)
-#define DEBUG(x) x
-#define LOG(x) 
+#define DEBUG(x) 
+#define LOG(x) x
 
 
 #define COMMOM_H
@@ -50,5 +51,12 @@ individuo *get_worst_of_population(individuo *population, int n_populacoes);
 int comparador_proporcoes_alg(const void *a, const void *b);
 void migrate(populacao **populations, int island_size, int num_migrations, int dimension, domain domain_function, int function_number);
 void random_random_migrate(populacao **populations, int island_size, int num_migrations, int dimension, domain domain_function, int function_number);
-
+double euclidian(individuo firstIndividuo, individuo secondIndividuo, int dimension);
+double densityPopulation(populacao **populations, int island_number);
+double densityWorld(populacao **populations, int island_number);
+void destroy_matriz(double **matriz, int size);
+double convergence_calculation(populacao *population, double best);
+double convergence_calculation_islands(populacao **populations, int islands_size);
+int minimum(int a, int b);
+int inInterval(double min, double max, double valor);
 #endif /* COMMOM_H */

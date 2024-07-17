@@ -1,0 +1,1 @@
+Resultado para função 7: Minimo: 700.053306 Maximo: 700.262290 Média: 700.15678630000000000000 Desvio padrão: .05323762901191224162

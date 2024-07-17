@@ -3,7 +3,7 @@
 #include "log.h"
 #include "types.h"
 #include "utils.h"
-#define DEBUG(x) x
+#define DEBUG(x)
 
 static int first_time = 1;
 
@@ -12,7 +12,7 @@ void write_parameters(int epoca, int population, args parameters)
     DEBUG(printf("\nwrite_parameters\n"););
     char file_path[256];
 
-    sprintf(file_path, "log/data/epoca_%d/population_%d/_parametros.dat", epoca, population);
+    sprintf(file_path, "logs_genetica/furaaf/%s/data/epoca_%d/population_%d/_parametros.dat", parameters.temporary_folder, epoca, population);
 
     FILE *parameters_log_file = fopen(file_path, "w");
     fprintf(parameters_log_file, "Parameters:");
@@ -33,7 +33,7 @@ int create_population_and_epoca_dir(int epoca_num, int population_num)
     DEBUG(printf("\ncreate_population_and_epoca_dir\n"););
 
     char cmd[256];
-    sprintf(cmd, "mkdir -p log/data/epoca_%d/population_%d", epoca_num, population_num);
+    sprintf(cmd, "mkdir -p logs_genetica/furaaf/%s/data/epoca_%d/population_%d", parameters.temporary_folder, epoca_num, population_num);
     return system(cmd);
 }
 
@@ -49,13 +49,17 @@ void write_population_log(int epoca_num, int population_num, int generation_num,
 
     create_population_and_epoca_dir(epoca_num, population_num);
     write_parameters(epoca_num, population_num, parameters);
-    sprintf(log_file_name, "log/data/epoca_%d/population_%d/generation_%d.log", epoca_num, population_num, generation_num);
+    sprintf(log_file_name, "logs_genetica/furaaf/%s/data/epoca_%d/population_%d/generation_%d.log", parameters.temporary_folder, epoca_num, population_num, generation_num);
     FILE *log_file = fopen(log_file_name, "w");
 
     for (int i = 0; i < populacao_atual.size; i++)
     {
+        // printf("\nlog_file_name:%s", log_file_name);
         FILE *log_file = fopen(log_file_name, "a");
         // fprintf(log_file, "Individuo %d: ", i);
+        // if(log_file == NULL){
+        //     printf("\nOpen file error: %s", log_file_name);
+        //  }
         for (int j = 0; j < parameters.dimension; j++)
         {
             fprintf(log_file, "%f ", populacao_atual.individuos[i].chromosome[j]);
@@ -63,4 +67,5 @@ void write_population_log(int epoca_num, int population_num, int generation_num,
         fprintf(log_file, "> %f\n", populacao_atual.individuos[i].fitness);
         fclose(log_file);
     }
+    fclose(log_file);
 }

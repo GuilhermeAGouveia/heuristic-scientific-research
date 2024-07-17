@@ -1,0 +1,1 @@
+Resultado para função 6: Minimo: 600.143690 Maximo: 600.529549 Média: 600.32010330000000000000 Desvio padrão: .10276201273854393836

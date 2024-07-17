@@ -6,10 +6,8 @@ void set_default_parameters_genetic()
     parameters.current_algorithm = GA;
     if (!parameters.function_number)
         parameters.function_number = 3;
-    if (!parameters.population_size)
-        parameters.population_size = 3229; // 507;
-    if (!parameters.num_generations_per_epoca)
-        parameters.num_generations_per_epoca = (int)(5505098/parameters.population_size);//529;
+    // if (!parameters.population_size)
+    //     parameters.population_size = 3229; // 507;
     if (!parameters.time_limit)
         parameters.time_limit = 10; // seconds
     if (!parameters.dimension)
@@ -25,7 +23,15 @@ void set_default_parameters_genetic()
     if (!parameters.evaluation_limit)
         parameters.evaluation_limit = 1490400;
     if (!parameters.seed)
-        parameters.seed = time(NULL);
+    {
+        struct timeval tv;
+        gettimeofday(&tv, NULL);
+        unsigned long long millisecondsSinceEpoch =
+            (unsigned long long)(tv.tv_sec) * 1000 +
+            (unsigned long long)(tv.tv_usec) / 1000;
+        parameters.seed = millisecondsSinceEpoch;
+    }
+
     srand(parameters.seed);
 }
 
@@ -128,7 +134,7 @@ populacao *union_populations(populacao *populacao1, populacao *populacao2)
     }
     for (int i = 0; i < populacao2->size; i++)
     {
-        copy_individuo( &populacao2->individuos[i], &populacao_unida->individuos[i + populacao1->size],parameters.dimension);
+        copy_individuo(&populacao2->individuos[i], &populacao_unida->individuos[i + populacao1->size], parameters.dimension);
     }
     return populacao_unida;
 }
@@ -139,7 +145,7 @@ populacao *slice_population(populacao *population, int start, int end)
     populacao *sliced_population = generate_island(1, end - start, parameters.dimension, parameters.domain_function, parameters.function_number);
     for (int i = 0; i < end - start; i++)
     {
-        copy_individuo(&population->individuos[i + start],&sliced_population->individuos[i],  parameters.dimension);
+        copy_individuo(&population->individuos[i + start], &sliced_population->individuos[i], parameters.dimension);
     }
     return sliced_population;
 }
@@ -225,7 +231,6 @@ populacao *crossover(populacao *populacao_original, populacao *populacao_mutada,
 
             fitness(filho, dimension, parameters.function_number);
             copy_individuo(filho, &nova_populacao->individuos[i], 10);
-        
         }
         else
         {
@@ -237,7 +242,7 @@ populacao *crossover(populacao *populacao_original, populacao *populacao_mutada,
     return nova_populacao;
 }
 
-populacao *genetic(populacao *population, int epoca_num, int population_num)
+populacao *genetic(populacao *population, int epoca_num, int current_generation, int population_num)
 {
     set_default_parameters_genetic();
     // print_parameters(parameters);
@@ -247,34 +252,27 @@ populacao *genetic(populacao *population, int epoca_num, int population_num)
         population = generate_island(1, parameters.population_size, parameters.dimension, parameters.domain_function, parameters.function_number);
     }
     DEBUG(printf("\nevolution\n"););
-    individuo *parents[2];
-    individuo bestIndividuo = {.fitness = INFINITY};
-    time_t time_init, time_now;
     int evaluation_count = 0;
     // double best_ep_ant = bestIndividuo.fitness;
-    time(&time_init);
-    time(&time_now);
     DEBUG(printf("Iniciando evolucao\n"););
 
     populacao *original_population = population;
     populacao *cross_population;
     populacao *mutation_population;
     int generation_count = 0;
+    // printf("\nEpoca: %d, Current_generation:%d", epoca_num, current_generation);
 
-    while (generation_count < parameters.num_generations_per_epoca && difftime(time_now, time_init) < parameters.time_limit)
+    while (generation_count < parameters.num_generations_per_epoca)
     {
-
         cross_population = crossover(original_population, mutation_population, parameters.dimension);
         cross_population = mutation_commom(cross_population, parameters.dimension, parameters.domain_function);
         original_population = selection(original_population, cross_population, parameters.dimension);
-
         // print_individuo(original_population->individuos[original_population->size - 1], dimension, 1);
-        LOG(write_population_log(epoca_num, population_num, generation_count, *original_population, parameters););
+        LOG(write_population_log(epoca_num, population_num, generation_count + current_generation, *original_population, parameters););
         STATISTICS(print_coords(&original_population->individuos[original_population->size - 1], 1, generation_count, parameters.num_generations_per_epoca););
         DEBUG(printf("\nGeração: %d\n", generation_count););
         generation_count++;
         evaluation_count += original_population->size;
-        time(&time_now);
     }
 
     reset_parameters_genetic();
