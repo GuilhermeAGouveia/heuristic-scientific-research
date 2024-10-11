@@ -5,9 +5,9 @@
 # K_VALUES=(1 2 3 4 5 10 20)
 # k_VALUES=(0.01 0.05 0.1 0.15 0.25 0.5)
 # P_VALUES=(5 10 25 50 100 250 500 1000)
-K_VALUES=(1)
-k_VALUES=(0)
-P_VALUES=(4 10 20)
+K_VALUES=(1000)
+k_VALUES=(0)   
+P_VALUES=(40)
 island_VALUES=(2 5 10 25 50)
 #A_VALUES=(
 #    "2,0,0,0,0" "0,2,0,0,0" "0,0,2,0,0" "0,0,0,2,0" "0,0,0,0,2"
@@ -28,7 +28,7 @@ matriz[0, 4]="50,0,0,0,0"
 
 matriz[1, 0]="0,2,0,0,0"
 matriz[1, 1]="0,5,0,0,0"
-matriz[1, 2]="0,0,10,0,0"
+matriz[1, 2]="0,10,0,0,0"
 matriz[1, 3]="0,25,0,0,0"
 matriz[1, 4]="0,50,0,0,0"
 
@@ -52,7 +52,7 @@ matriz[4, 4]="0,0,0,0,50"
 
 ALG=("PSO" "DE" "ACO" "CLONAL" "GA")
 
-folder_t="perguntas_artigo/pergunta_6.1"
+folder_t="experimentos_sc/perguntas_artigo/pergunta_4"
 
 function arredondar() {
     echo "scale=0;(($1 + 0.5)/1)" | bc
@@ -60,7 +60,7 @@ function arredondar() {
 
 rm -r parameters_combinations/$folder_t/*
 
-for ((i = 4; i < 5; i++)); do
+for ((i = 0; i < 5; i++)); do
     mkdir -p parameters_combinations/$folder_t/${ALG[$i]}
     for ((j = 0; j < 5; j++)); do
         for P in "${P_VALUES[@]}"; do
@@ -82,27 +82,29 @@ done
 
 
 
-# for ((i = 0; i < 1; i++)); do
+# for ((i = 0; i < 5; i++)); do
+#     mkdir -p parameters_combinations/$folder_t/${ALG[$i]}
 
 #     for P in "${P_VALUES[@]}"; do
-#         path_destiny="parameters_combinations/perguntas_artigo/$folder_t/${ALG[$i]}"
+#         path_destiny="parameters_combinations/$folder_t/${ALG[$i]}"
 #         mkdir -p $path_destiny
 #         echo " -A ${A_VALUES[$i]} -p $P -K 1000 -k 0" >> $path_destiny/${A_VALUES[$i]}.txt
 #     done
 # done
 
-for ((i = 4; i < 5; i++)); do
+# for ((i = 0; i < 5; i++)); do
 
-    for P in "${P_VALUES[@]}"; do
 
-        for a in "${island_VALUES[@]}"; do
-            PA=$(echo "$P * $a" | bc)
-            path_destiny="parameters_combinations/$folder_t/${ALG[$i]}"
+#     for P in "${P_VALUES[@]}"; do
 
-            echo " -A ${A_VALUES[$i]} -p $PA -K 1000 -k 0" >>$path_destiny/${A_VALUES[$i]}.txt
-        done
+#         for a in "${island_VALUES[@]}"; do
+#             PA=$(echo "$P * $a" | bc)
+#             path_destiny="parameters_combinations/$folder_t/${ALG[$i]}"
 
-    done
-done
+#             echo " -A ${A_VALUES[$i]} -p $PA -K 1000 -k 0" >>$path_destiny/${A_VALUES[$i]}.txt
+#         done
+
+#     done
+# done
 
 echo "Combinacoes geradas com sucesso!"
