@@ -159,7 +159,7 @@ move_arquivos() {
     if [ -z "$nova_pasta" ]; then
         mv "$origem"/* "$destino"
     else
-        mkdir -p "$destino/$nova_pasta"
+        mkdir -p "$destino/$nova_pasta" 2>/dev/null
         mv "$origem"/* "$destino/$nova_pasta"
     fi
 }
@@ -191,7 +191,7 @@ main() {
     mount_progress_bar 0 $n_execucoes
     path_data="logs_genetica/furaaf"
     temporary_folder_two="1$(date +%H%M%S_%3N)$temporary_folder"
-    mkdir -p $path_data/$temporary_folder_two
+    mkdir -p $path_data/$temporary_folder_two 2>/dev/null
     for i in $(seq 1 $n_execucoes); do
         resultado=$(eval $(define_command_evol $alg_config) | tail -n 1)
 
@@ -215,12 +215,12 @@ main() {
         if [ $i -eq 1 ]; then
            cp  $path_data/$temporary_folder_two/$nova_pasta/data/_parametros.dat logs_genetica/metrics/_$(echo $alg_config | sed "s/ /_/g")/_parametros_F$function_number.dat
         fi
-        rm -rf $path_data/$temporary_folder_two/*
+        rm -rf $path_data/$temporary_folder_two/* 2>/dev/null
     done
-    rm -rf $path_data/$temporary_folder_two
-    rm -rf $path_data/$temporary_folder
+    rm -rf $path_data/$temporary_folder_two 2>/dev/null
+    rm -rf $path_data/$temporary_folder 2>/dev/null
 
-    tput reset
+
     tput setaf 2
     echo -e "\nResultado para função $function_number:\n"
     echo "Minimo: $minimo"

@@ -1,0 +1,24 @@
+#!/bin/bash
+#SBATCH --nodes=1                      #Numero de Nós
+#SBATCH --ntasks-per-node=48          #Numero de tarefas por Nó
+##SBATCH --ntasks=T                     #Numero total de tarefas MPI
+#SBATCH -p sequana_cpu                        #Fila (partition) a ser utilizada
+#SBATCH -J GEN_DB			       #Nome job
+#SBATCH --exclusive                    #Utilização exclusiva dos nós durante a execução do job
+##SBATCH --no-requeue
+#SBATCH --time=00:05:00	
+
+#Exibe os nós alocados para o Job
+echo $SLURM_JOB_NODELIST
+nodeset -e $SLURM_JOB_NODELIST
+
+cd $SLURM_SUBMIT_DIR
+
+
+#Configura o executavel
+EXEC=/scratch/unifal-mg/simgenetic/iago.carvalho/heuristic2/src/furaaf.sh
+
+#exibe informações sobre o executável
+/usr/bin/ldd $EXEC
+
+srun -n $SLURM_NTASKS $EXEC
