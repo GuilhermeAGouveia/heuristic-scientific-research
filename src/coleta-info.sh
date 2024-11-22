@@ -4,6 +4,7 @@
 n_execucoes=10    # Default value
 function_number=3 # Default value
 time_limit=10     # Default value
+n_cores=1
 
 translate_alg_int_to_alg_name() {
     config_alg=$1
@@ -45,7 +46,7 @@ usage() {
     exit 1
 }
 
-while getopts ":n:f:t:c:Z:" o; do
+while getopts ":n:f:t:c:Z:C:" o; do
     case "${o}" in
     n)
         n_execucoes=${OPTARG}
@@ -61,6 +62,9 @@ while getopts ":n:f:t:c:Z:" o; do
         ;;
     Z)
         temporary_folder=${OPTARG}
+        ;;
+    C)
+        n_cores=${OPTARG}
         ;;
     *)
         usage
@@ -210,7 +214,7 @@ main() {
         nova_pasta="execucao_${i}"
         move_arquivos "$path_data/$temporary_folder" "$path_data/$temporary_folder_two" $nova_pasta
         echo "$path_data/$temporary_folder_two/$nova_pasta"
-        ./metrics_instances.sh $path_data/$temporary_folder_two/$nova_pasta/data 1
+        ./metrics_instances.sh $path_data/$temporary_folder_two/$nova_pasta/data $n_cores
         wait
         if [ $i -eq 1 ]; then
            cp  $path_data/$temporary_folder_two/$nova_pasta/data/_parametros.dat logs_genetica/metrics/_$(echo $alg_config | sed "s/ /_/g")/_parametros_F$function_number.dat
@@ -221,7 +225,6 @@ main() {
     rm -rf $path_data/$temporary_folder 2>/dev/null
 
 
-    tput setaf 2
     echo -e "\nResultado para função $function_number:\n"
     echo "Minimo: $minimo"
     echo "Maximo: $maximo"

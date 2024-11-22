@@ -31,12 +31,12 @@ contar_instancias() {
 
 # Caminho do arquivo de lock
 lock_file="paramsLock"
-
-
+cores=48
+#cores_per_node=$(echo "$cores / $nodes" | bc)
 # Tenta obter o lock para acessar params.txt
 while ! mkdir "$lock_file" 2>/dev/null; do
     echo "Processo $$ aguardando pelo lock."
-    sleep 0.5
+    sleep 0.2
 done
 
 echo "Processo $$ obteve o lock."
@@ -44,15 +44,20 @@ echo "Processo $$ obteve o lock."
 echo "Data e hora atual: $(date +"%Y-%m-%d %H:%M:%S.%3N")"
 
 file_input=params.txt
+mkdir -p control_n_process
+file_processes=control_n_process/params$$
+echo $cores >> $file_processes.txt
 
-# Obtém a primeira linha do arquivo params.txt 
-config=$(head -n 1 "$file_input" | sed "s/ /_/g")
-
-sed -i '1d' "$file_input"
+for (( i = 0; i < $cores; i++)); do
+    config=$(head -n 1 "$file_input" | sed "s/ /_/g")
+    sed -i '1d' "$file_input"
+    echo $config
+    ./furaaf_main.sh "$config" $file_processes $cores &
+done
 
 rm -rf $lock_file
-echo $config
 
+wait
 
 # Executa o script principal
-./furaaf_main.sh "$config"
+
