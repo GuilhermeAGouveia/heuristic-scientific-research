@@ -46,7 +46,7 @@ usage() {
     exit 1
 }
 
-while getopts ":n:f:t:c:Z:C:" o; do
+while getopts ":n:f:t:c:Z:F:C:" o; do
     case "${o}" in
     n)
         n_execucoes=${OPTARG}
@@ -63,8 +63,11 @@ while getopts ":n:f:t:c:Z:C:" o; do
     Z)
         temporary_folder=${OPTARG}
         ;;
+    F)
+        total_process_file=${OPTARG}
+        ;;
     C)
-        n_cores=${OPTARG}
+        cores=${OPTARG}
         ;;
     *)
         usage
@@ -168,6 +171,35 @@ move_arquivos() {
     fi
 }
 
+return_free_cores() {
+    
+    while ! mkdir "$total_process_file" 2>/dev/null; do
+        sleep 0.2
+    done
+
+    current_total_process=$(head -n 1 "$total_process_file.txt")
+    free_cores=$(echo "$cores - $current_total_process" | bc)
+    sed -i '1d' "$total_process_file.txt"
+    echo "$cores" >> "$total_process_file.txt"
+    rm -rf "$total_process_file"
+    echo $free_cores  # Use echo para retornar o valor
+}
+
+free_core_file() {
+    while ! mkdir "$total_process_file" 2>/dev/null; do
+    sleep 0.2
+    done
+
+    current_total_process=$(head -n 1 "$total_process_file.txt")
+    current_total_process=$(echo "$current_total_process - $1" | bc)
+    sed -i '1d' $total_process_file.txt
+    echo $current_total_process >> $total_process_file.txt
+
+    rm -r $total_process_file
+
+}
+
+
 main() {
     source libs/progress-bar/progress-bar.sh
     echo -e "Realizando ${n_execucoes} execuções..."
@@ -211,11 +243,17 @@ main() {
 
         mount_progress_bar $((i * 100 / n_execucoes))
 
-        nova_pasta="execucao_${i}"
+        nova_pasta="execucao_${i}/F_$function_number"
         move_arquivos "$path_data/$temporary_folder" "$path_data/$temporary_folder_two" $nova_pasta
         echo "$path_data/$temporary_folder_two/$nova_pasta"
+        
+        free_cores=$(echo "$(return_free_cores)")
+        n_cores=$((1 + $free_cores))
+        echo "cores metrics: $n_cores"
         ./metrics_instances.sh $path_data/$temporary_folder_two/$nova_pasta/data $n_cores
         wait
+        free_core_file $free_cores
+
         if [ $i -eq 1 ]; then
            cp  $path_data/$temporary_folder_two/$nova_pasta/data/_parametros.dat logs_genetica/metrics/_$(echo $alg_config | sed "s/ /_/g")/_parametros_F$function_number.dat
         fi

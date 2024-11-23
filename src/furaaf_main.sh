@@ -26,7 +26,7 @@ contar_instancias() {
     pgrep -f "furaaf.sh" | grep -v "^$$\$" | wc -l
 }
 
-return_free_cores() {
+return_free_cores() {   #Retorna o total de cores livres
     
     while ! mkdir "$total_process_file" 2>/dev/null; do
         sleep 0.2
@@ -40,7 +40,7 @@ return_free_cores() {
     echo $free_cores  # Use echo para retornar o valor
 }
 
-free_run_function() {
+free_core_file() {  #Libera n cores passados por parâmetro
     while ! mkdir "$total_process_file" 2>/dev/null; do
     sleep 0.2
     done
@@ -52,10 +52,9 @@ free_run_function() {
 
     rm -r $total_process_file
 
-
 }
 
-run_function() {
+run_function() { 
     func=$1
     echo ""
     echo "$config funcao $func"
@@ -63,7 +62,7 @@ run_function() {
     temporary_folder=$(date +%H%M%S_%3N)$config
 
     # result=$(./coleta-info.sh -n $n_execucoes -c "$new_config" -f $func -t 10 -Z $temporary_folder | tee output-coleta-info[$parcial_name][f$func].dat)
-    resultado_coleta=$(./coleta-info.sh -n $n_execucoes -c "$new_config" -f $func -t 10 -Z $temporary_folder -C $2)
+    resultado_coleta=$(./coleta-info.sh -n $n_execucoes -c "$new_config" -f $func -t 10 -Z $temporary_folder -F $total_process_file -C $cores)
     arquivo_saida="output-coleta-info[$parcial_name][f$func].dat"
     echo "$resultado_coleta" > $arquivo_saida
 
@@ -72,12 +71,12 @@ run_function() {
     rm logs_genetica/coleta_info/$config/[f$func].txt 2>/dev/null
     echo -e $result >>logs_genetica/coleta_info/$config/[f$func].txt
     rm output-coleta-info[$parcial_name][f$func].dat 2>/dev/null
-
+    
     ./metrics_all $path_metrics $func $n_execucoes &
     wait
-    cores_to_remove=$(($2))
+    cores_to_remove=1               #Função atual
 
-    free_run_function $cores_to_remove
+    free_core_file $cores_to_remove
 }
 
 n_execucoes=30
@@ -88,7 +87,7 @@ config=$1
 total_process_file=$2
 cores=$3
 current_function=$first_function
-metrics_n_cores=0
+
 function_n_cores=1
 
 new_config=$(echo $config | sed "s/_/ /g")
@@ -99,35 +98,25 @@ path_metrics="logs_genetica/metrics/$config"
 
 while [ $current_function -le $last_function ]; do
 
-
      while [  $function_n_cores -eq 0 ]; do
          function_n_cores=$(echo "$(return_free_cores)")
      done
 
-
     if [ $(echo "$function_n_cores + $current_function - 1" | bc) -gt $last_function ]; then
-        free_cores_to_function=$(( $last_function - $current_function + 1 ))
-        metrics_n_cores=$(echo "($function_n_cores - $free_cores_to_function)" | bc)
+        free_cores_to_function=$(( $last_function - $current_function + 1 ))  #Verifica quantos cores são necessários
+        return_cores=$(echo "($function_n_cores - $free_cores_to_function)" | bc) #Quantos cores devem ser liberados
         function_n_cores=$free_cores_to_function
+        free_core_file $return_cores
     fi
-
-    metrics_for_all=$(echo "scale=0; ($metrics_n_cores / $function_n_cores) + 1" | bc)
-    metrics_for_first=$(( ($metrics_n_cores % $function_n_cores) + $metrics_for_all))
-
 
     echo ""
     echo "-----------------------------------------------------------------------------"
     echo $config
-    echo "Valor de function_n_cores: $function_n_cores, Metrics:$metrics_n_cores"
-    echo "For_all: $(($metrics_for_all - 1)), For first: $(($metrics_for_first - 1))"
+    echo "Valor de function_n_cores: $function_n_cores"
     echo ""
 
     for ((i = 0; i < $function_n_cores; i++));do
-        if [ $i -eq 0 ]; then
-           run_function $current_function $metrics_for_first &
-        else
-           run_function $current_function  $metrics_for_all &
-        fi    
+        run_function $current_function  &
         current_function=$(($current_function + 1))
         sleep 0.1
     done
@@ -135,7 +124,6 @@ while [ $current_function -le $last_function ]; do
     wait
 
     function_n_cores=0
-    metrics_n_cores=0
     
 done
 

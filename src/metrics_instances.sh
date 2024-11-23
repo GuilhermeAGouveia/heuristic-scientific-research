@@ -98,7 +98,7 @@ main() {
     gen_init=0
     gen_final=$generations_per_instance
     #echo "$path_folder $num_aux $gen_init $gen_final"
-    for ((i = 0; i < $num_instances; i++)); do
+        for ((i = 0; i < $num_instances; i++)); do
         ./metrics $path_folder $num_aux $gen_init $gen_final &
         gen_init=$gen_final
         if [ $i -eq "$(($num_instances - 2))" ]; then
@@ -127,8 +127,10 @@ main() {
             gen_final=$(($gen_final + $generations_per_instance))
         fi
     done
-    mv "$path_output"/* "$path_output"/../..
-    rm -rf "$(dirname "$(dirname "$path_output")")/data" 
+
+
+     mv "$path_output"/* "$path_output"/../../..
+     rm -rf "$(dirname "$(dirname "$(dirname "$path_output")")")/F_$function_number"
 
 
 }
