@@ -4,6 +4,21 @@
 # No makefile, execute o comando "make furaaf"
 
 # Caminho do arquivo de lock
+
+free_core_file() {  #Libera n cores passados por parâmetro
+    while ! mkdir "$file_processes" 2>/dev/null; do
+    sleep 0.2
+    done
+
+    current_total_process=$(head -n 1 "$file_processes.txt")
+    current_total_process=$(echo "$current_total_process - $1" | bc)
+    sed -i '1d' $file_processes.txt
+    echo $current_total_process >> $file_processes.txt
+
+    rm -r $file_processes
+
+}
+
 lock_file="paramsLock"
 cores=48
 
@@ -25,8 +40,15 @@ echo $cores >> $file_processes.txt
 for (( i = 0; i < $cores; i++)); do
     config=$(head -n 1 "$file_input" | sed "s/ /_/g")
     sed -i '1d' "$file_input"
-    echo $config
-    ./furaaf_main.sh "$config" $file_processes $cores &
+    if [[ ! $config =~ -A ]]; then
+        free_core_file $(( $cores - $i ))
+        echo "Liberou $(( $cores - $i )) cores"
+        break
+    else
+        echo $config
+        ./furaaf_main.sh "$config" $file_processes $cores &
+       
+    fi
 done
 
 rm -rf $lock_file
