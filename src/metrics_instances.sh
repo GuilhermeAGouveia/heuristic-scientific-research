@@ -78,6 +78,7 @@ main() {
     path_folder=$1
     num_instances=$2
     read_parameters_file "$path_folder"
+    path_folder_filter=$(echo "$path_folder" | grep -o '_-A_[^ ]*' | head -1)
 
     if [ $gens_final_epoca -eq 0 ] ; then
         total_generations=$(echo "$num_generations_per_epoca * $num_epocas" | bc)
@@ -98,7 +99,8 @@ main() {
     gen_init=0
     gen_final=$generations_per_instance
     #echo "$path_folder $num_aux $gen_init $gen_final"
-        for ((i = 0; i < $num_instances; i++)); do
+    for ((i = 0; i < $num_instances; i++)); do
+        rm -f "logs_genetica/metrics/$path_folder_filter/epoca_$num_aux/${gen_init}_$((gen_final - 1)).txt" 2>/dev/null
         ./metrics $path_folder $num_aux $gen_init $gen_final &
         gen_init=$gen_final
         if [ $i -eq "$(($num_instances - 2))" ]; then
@@ -109,9 +111,10 @@ main() {
     done
 
     wait
-    path_folder_filter=$(echo "$path_folder" | grep -o '_-A_[^ ]*' | head -1)
+
     #path_folder_filter=$(echo "$path_folder" | grep -o '_-A[[:alnum:]]*')
     path_output="logs_genetica/metrics/$path_folder_filter/$undo_path_name"
+    rm -f "$path_output/metrics_F$function_number.txt" 2>/dev/null
     >>"$path_output/metrics_F$function_number.txt"
 
 
