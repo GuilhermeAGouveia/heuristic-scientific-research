@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+#set -x
 # Options
 n_execucoes=10    # Default value
 function_number=3 # Default value
@@ -133,8 +133,13 @@ extract_param() {
 }
 
 define_command_evol() {
+    local alg_config="$1"
+    local function_number="$2"
+    local time_limit="$3"
+    local temporary_folder="$4"
     echo "./dire $alg_config -f $function_number -t $time_limit -Z $temporary_folder"
 }
+
 
 show_indicator_algorithm() {
     param_A=$(extract_param "$alg_config" "A")
@@ -295,7 +300,7 @@ main() {
     valor_atual=0
     maximo=0
 
-    array_values=()
+    #array_values=()
 
     semente=0
 
@@ -306,64 +311,103 @@ main() {
 
     mount_progress_bar 0 $n_execucoes
     path_data="logs_genetica/furaaf"
-    temporary_folder_two="1$(date +%H%M%S_%3N)$temporary_folder"
-    mkdir -p $path_data/$temporary_folder_two 2>/dev/null
-    for i in $(seq 1 $n_execucoes); do
-        resultado=$(eval $(define_command_evol $alg_config) | tail -n 1)
 
-        valor_atual=$(echo $resultado | grep Best | cut -d' ' -f2)
-        array_values+=($valor_atual)
-        if (($(echo "$minimo > $valor_atual" | bc -l))); then
-            minimo=$valor_atual
-        fi
+    local -a array_values=()
+    
+    current_exec=1
 
-        if (($(echo "$maximo < $valor_atual" | bc -l))); then
-            maximo=$valor_atual
-        fi
+    config=$(echo $alg_config | sed "s/ /_/g")
+    config="_$config"
 
-        mount_progress_bar $((i * 100 / n_execucoes))
+    colet_info="$path_data/F${function_number}_${config}_C"
+    mkdir -p "$colet_info"
 
-        nova_pasta="execucao_${i}/F_$function_number"
-        move_arquivos "$path_data/$temporary_folder" "$path_data/$temporary_folder_two" $nova_pasta
-        echo "$path_data/$temporary_folder_two/$nova_pasta"
-        
+    while (( 1 )); do
+
         free_cores=$(echo "$(return_one_free_core)")
-        n_cores=$((1 + $free_cores))
-        
-        alg_aux=$(echo "$alg_config" | sed 's/ -/_-/g' | sed 's/ /_/g')
-        a_values=$(echo "$alg_aux" | grep -oP '(?<=-A_)[^_]+')
-        p_value=$(echo "$alg_aux" | grep -oP '(?<=-p_)[^_]+')
-        min_cores=3
+        current_last_exec=$(($free_cores + $current_exec))
 
+        if (( $current_last_exec > $n_execucoes )); then    
+            surplus=$(( $current_last_exec - $n_execucoes ))
+            free_core_file $surplus
+            current_last_exec=$n_execucoes
+        fi
 
-        for value in $(echo "$a_values" | tr ',' ' '); do
-            if (( value >= 25 && $p_value >= 250 && $n_cores < $min_cores )); then
-                free_core_file $n_cores
-                n_cores=0
-                checks_stopped_processes
-                while (( $n_cores < $min_cores )); do
-                    free_cores=$(echo "$(return_one_free_core)")
-                    n_cores=$(($n_cores + $free_cores))
+        for i in $(seq $current_exec $current_last_exec); do
+            (
+                temporary_folder_aux="$(date +%H%M%S_%3N)_F${function_number}_EX_${i}$config"
+                temporary_folder="$temporary_folder_aux/execucao_${i}/F_$function_number"
+
+                resultado=$(eval "$(define_command_evol "$alg_config" "$function_number" "$time_limit" "$temporary_folder")" | tail -n 1)
+                valor_atual=$(echo "$resultado" | grep Best | cut -d' ' -f2)
+                echo "$valor_atual" > "$colet_info/${i}.txt"
+
+                free_cores_m=$(echo "$(return_one_free_core)")
+                n_cores_m=$((1 + $free_cores_m))
+                
+                a_values=$(echo "$config" | grep -oP '(?<=-A_)[^_]+') #get number of islands and population size
+                p_value=$(echo "$config" | grep -oP '(?<=-p_)[^_]+')
+                min_cores_m=3
+
+                for value in $(echo "$a_values" | tr ',' ' '); do   #reserve a minimun of cores for heavy instances to run ./metrics
+                    if (( value >= 25 && $p_value >= 250 && $n_cores_m < $min_cores_m )); then
+                        free_core_file $n_cores_m
+                        n_cores_m=0
+                        checks_stopped_processes
+                        while (( $n_cores_m < $min_cores_m )); do
+                            free_cores_m=$(echo "$(return_one_free_core)")
+                            n_cores_m=$(($n_cores_m + $free_cores_m))
+                        done
+                        stopped_processes_free
+                        break
+                    fi
                 done
-                stopped_processes_free
-                break
-            fi
+
+                echo "$alg_config $n_cores_m" >> GG.txt
+                ./metrics_instances.sh $path_data/$temporary_folder/$nova_pasta/data $n_cores_m
+                wait
+                echo "$alg_config FIM" >> GG.txt
+
+                if [ $i -eq 1 ]; then
+                    cp  $path_data/$temporary_folder/$nova_pasta/data/_parametros.dat logs_genetica/metrics/_$(echo $alg_config | sed "s/ /_/g")/_parametros_F$function_number.dat
+                fi
+
+                if [ $i -eq $current_exec ]; then  # In the first time hold one core to the current execution of coleta-info
+                    n_cores_m=$(( $n_cores_m - 1 ))
+                fi
+
+                free_core_file $(($n_cores_m))
+                rm -rf $path_data/$temporary_folder_aux 2>/dev/null
+                rm -rf $path_data/$temporary_folder 2>/dev/null
+            ) &
+            
+            sleep 0.2
         done
 
-
-        echo "$alg_config $n_cores" >> GG.txt
-        ./metrics_instances.sh $path_data/$temporary_folder_two/$nova_pasta/data $n_cores
         wait
-        echo "$alg_config FIM" >> GG.txt
-        free_core_file $(($n_cores - 1))
 
-        if [ $i -eq 1 ]; then
-           cp  $path_data/$temporary_folder_two/$nova_pasta/data/_parametros.dat logs_genetica/metrics/_$(echo $alg_config | sed "s/ /_/g")/_parametros_F$function_number.dat
+        if (( $current_last_exec == $n_execucoes  )); then
+            break
         fi
-        rm -rf $path_data/$temporary_folder_two/* 2>/dev/null
+        current_exec=$(($current_last_exec + 1))
     done
-    rm -rf $path_data/$temporary_folder_two 2>/dev/null
-    rm -rf $path_data/$temporary_folder 2>/dev/null
+
+    for i in $(seq 1 "$n_execucoes"); do
+       local valor_atual=$(cat "$colet_info/${i}.txt") 
+       array_values["$i"]="$valor_atual"  
+    done
+
+    for i in $(seq 1 "$n_execucoes"); do
+        local valor_atual="${array_values[$i]}"
+
+        if (( $(echo "$minimo > $valor_atual" | bc -l) )); then
+            minimo="$valor_atual"
+        fi
+        if (( $(echo "$maximo < $valor_atual" | bc -l) )); then
+            maximo="$valor_atual"
+        fi
+    done
+
 
 
     echo -e "\nResultado para função $function_number:\n"
@@ -372,6 +416,9 @@ main() {
     echo "Média: $(mean "${array_values[@]}")"
     echo "Desvio padrão: $(std "${array_values[@]}")"
 
+    rm -rf $colet_info
+
 }
 
 main
+

@@ -59,10 +59,10 @@ run_function() {
     echo ""
     echo "$config funcao $func"
 
-    temporary_folder=$(date +%H%M%S_%3N)$config
+
 
     # result=$(./coleta-info.sh -n $n_execucoes -c "$new_config" -f $func -t 10 -Z $temporary_folder | tee output-coleta-info[$parcial_name][f$func].dat)
-    resultado_coleta=$(./coleta-info.sh -n $n_execucoes -c "$new_config" -f $func -t 10 -Z $temporary_folder -F $total_process_file -C $cores)
+    resultado_coleta=$(./coleta-info.sh -n $n_execucoes -c "$new_config" -f $func -t 10 -F $total_process_file -C $cores)
     arquivo_saida="output-coleta-info[$parcial_name][f$func].dat"
     echo "$resultado_coleta" > $arquivo_saida
 
@@ -135,3 +135,8 @@ echo $config END  $(date +"%Y-%m-%d %H:%M:%S.%3N")
 # for ((function = $first_function; function <= $last_function; function++)); do
 #     ./metrics_all $path_metrics $function $n_execucoes &
 # done
+
+
+
+
+
