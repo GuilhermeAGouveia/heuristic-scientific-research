@@ -185,6 +185,86 @@ return_free_cores() {
     echo $free_cores  # Use echo para retornar o valor
 }
 
+checks_stopped_processes() {
+    folder_name=SP
+    folder_name="$total_process_file$folder_name"
+    run=1
+    while (( $run != 0 )); do
+        while ! mkdir "$folder_name" 2>/dev/null; do
+            sleep 0.2
+        done
+
+        if [ ! -e "$folder_name.txt" ]; then
+            echo 0 > "$folder_name.txt"  
+        fi
+
+        current_value=$(head -n 1 "$folder_name.txt")
+
+        if (( $current_value == 0 )); then
+            sed -i '1d' "$folder_name.txt"
+            echo 1 >> "$folder_name.txt"
+            run=0
+            rm -rf "$folder_name"
+            echo "$alg_config LIBERADO" >> GG.txt
+
+        else
+            rm -rf "$folder_name"
+            echo "$alg_config PARADO" >> GG.txt
+            sleep 60
+        fi
+    done
+}
+
+stopped_processes_free() {
+    folder_name=SP
+    folder_name="$total_process_file$folder_name"
+
+    while ! mkdir "$folder_name" 2>/dev/null; do
+        sleep 0.2
+    done
+
+    sed -i '1d' "$folder_name.txt"
+    echo 0 >> "$folder_name.txt"
+
+    rm -rf "$folder_name"
+
+}
+
+
+return_one_free_core() {
+    run=1
+    free=0
+    while (( $run != 0 )); do
+        while ! mkdir "$total_process_file" 2>/dev/null; do
+            sleep 0.2
+        done
+
+        current_total_process=$(head -n 1 "$total_process_file.txt")
+        free_cores=$(echo "$cores - $current_total_process" | bc)
+
+        if (( $free_cores >= 2 )); then
+            sed -i '1d' "$total_process_file.txt"
+            echo $(( $current_total_process + 2 )) >> "$total_process_file.txt"
+            free=$(( $free + 2 )) 
+        fi
+
+        if (( $free_cores == 1 )); then
+            sed -i '1d' "$total_process_file.txt"
+            echo $(( $current_total_process + 1 )) >> "$total_process_file.txt"
+            free=$(( $free + 1 )) 
+        fi
+
+        if (( $free_cores == 0 )); then
+            run=0
+        fi
+        rm -rf "$total_process_file"
+        sleep 0.4
+    done
+    echo $free
+
+}
+
+
 free_core_file() {
     while ! mkdir "$total_process_file" 2>/dev/null; do
     sleep 0.2
@@ -247,12 +327,35 @@ main() {
         move_arquivos "$path_data/$temporary_folder" "$path_data/$temporary_folder_two" $nova_pasta
         echo "$path_data/$temporary_folder_two/$nova_pasta"
         
-        free_cores=$(echo "$(return_free_cores)")
+        free_cores=$(echo "$(return_one_free_core)")
         n_cores=$((1 + $free_cores))
-        echo "cores metrics: $n_cores"
+        
+        alg_aux=$(echo "$alg_config" | sed 's/ -/_-/g' | sed 's/ /_/g')
+        a_values=$(echo "$alg_aux" | grep -oP '(?<=-A_)[^_]+')
+        p_value=$(echo "$alg_aux" | grep -oP '(?<=-p_)[^_]+')
+        min_cores=3
+
+
+        for value in $(echo "$a_values" | tr ',' ' '); do
+            if (( value >= 25 && $p_value >= 250 && $n_cores < $min_cores )); then
+                free_core_file $n_cores
+                n_cores=0
+                checks_stopped_processes
+                while (( $n_cores < $min_cores )); do
+                    free_cores=$(echo "$(return_one_free_core)")
+                    n_cores=$(($n_cores + $free_cores))
+                done
+                stopped_processes_free
+                break
+            fi
+        done
+
+
+        echo "$alg_config $n_cores" >> GG.txt
         ./metrics_instances.sh $path_data/$temporary_folder_two/$nova_pasta/data $n_cores
         wait
-        free_core_file $free_cores
+        echo "$alg_config FIM" >> GG.txt
+        free_core_file $(($n_cores - 1))
 
         if [ $i -eq 1 ]; then
            cp  $path_data/$temporary_folder_two/$nova_pasta/data/_parametros.dat logs_genetica/metrics/_$(echo $alg_config | sed "s/ /_/g")/_parametros_F$function_number.dat
@@ -272,5 +375,3 @@ main() {
 }
 
 main
-
-

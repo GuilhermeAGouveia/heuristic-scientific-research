@@ -78,7 +78,6 @@ main() {
     path_folder=$1
     num_instances=$2
     read_parameters_file "$path_folder"
-    path_folder_filter=$(echo "$path_folder" | grep -o '_-A_[^ ]*' | head -1)
 
     if [ $gens_final_epoca -eq 0 ] ; then
         total_generations=$(echo "$num_generations_per_epoca * $num_epocas" | bc)
@@ -87,6 +86,11 @@ main() {
     fi
 
     generations_per_instance=$(echo "$total_generations / $num_instances" | bc)
+
+    if [ $generations_per_instance -eq 0 ] ; then
+        generations_per_instance=$total_generations
+        num_instances=1
+    fi
     
     num_aux=0
     undo_path_name="epoca_0"
@@ -100,8 +104,8 @@ main() {
     gen_final=$generations_per_instance
     #echo "$path_folder $num_aux $gen_init $gen_final"
     for ((i = 0; i < $num_instances; i++)); do
-        rm -f "logs_genetica/metrics/$path_folder_filter/epoca_$num_aux/${gen_init}_$((gen_final - 1)).txt" 2>/dev/null
-        ./metrics $path_folder $num_aux $gen_init $gen_final &
+        #rm -f "logs_genetica/metrics/$path_folder_filter/epoca_$num_aux/${gen_init}_$((gen_final - 1)).txt" 2>/dev/null
+        ./metrics $path_folder $num_aux $gen_init $gen_final || echo "Erro ao executar ./metrics com $path_folder $num_aux $gen_init $gen_final" >> erro.txt &
         gen_init=$gen_final
         if [ $i -eq "$(($num_instances - 2))" ]; then
             gen_final=$total_generations
@@ -113,16 +117,21 @@ main() {
     wait
 
     #path_folder_filter=$(echo "$path_folder" | grep -o '_-A[[:alnum:]]*')
+    path_folder_filter=$(echo "$path_folder" | grep -o '_-A_[^ ]*' | head -1)
+    if [ -z "$path_folder_filter" ]; then
+        echo "Erro: Não foi possível filtrar path_folder_filter do caminho $path_folder" >> erro.txt
+        echo path_folder: $path_folder >> erro.txt
+        exit 1
+    fi
     path_output="logs_genetica/metrics/$path_folder_filter/$undo_path_name"
-    rm -f "$path_output/metrics_F$function_number.txt" 2>/dev/null
-    >>"$path_output/metrics_F$function_number.txt"
+    > "$path_output/metrics_F$function_number.txt" || echo "Erro ao criar arquivo $path_output/metrics_F$function_number.txt" >> erro.txt
 
 
     gen_init=0
     gen_final=$generations_per_instance
     for ((i = 0; i < $num_instances; i++)); do
-        cat "$path_output/$gen_init"_"$(($gen_final - 1)).txt" >> "$path_output/metrics_F$function_number.txt"
-        rm  "$path_output/$gen_init"_"$(($gen_final - 1)).txt"
+        cat "$path_output/$gen_init"_"$(($gen_final - 1)).txt" >> "$path_output/metrics_F$function_number.txt" || echo "Erro ao concatenar arquivos para $path_output/metrics_F$function_number.txt" >> erro.txt
+        rm "$path_output/$gen_init"_"$(($gen_final - 1)).txt" || echo "Erro ao remover gen_init_gen_final.txt" >> erro.txt
         gen_init=$gen_final
         if [ $i -eq $(($num_instances - 2)) ]; then
             gen_final=$total_generations
@@ -132,8 +141,8 @@ main() {
     done
 
 
-     mv "$path_output"/* "$path_output"/../../..
-     rm -rf "$(dirname "$(dirname "$(dirname "$path_output")")")/F_$function_number"
+    mv "$path_output"/* "$path_output"/../../.. || echo "Erro ao mover arquivos de $path_output" >> erro.txt
+    rm -rf "$(dirname "$(dirname "$(dirname "$path_output")")")/F_$function_number" || echo "Erro ao remover diretório dirname" >> erro.txt
 
 
 }

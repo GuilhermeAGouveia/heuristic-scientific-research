@@ -79,9 +79,9 @@ run_function() {
     free_core_file $cores_to_remove
 }
 
-n_execucoes=30
-first_function=1
-last_function=15
+n_execucoes=$6
+first_function=$4
+last_function=$5
 config=$1
 
 total_process_file=$2
@@ -135,8 +135,3 @@ echo $config END  $(date +"%Y-%m-%d %H:%M:%S.%3N")
 # for ((function = $first_function; function <= $last_function; function++)); do
 #     ./metrics_all $path_metrics $function $n_execucoes &
 # done
-
-
-
-
-
