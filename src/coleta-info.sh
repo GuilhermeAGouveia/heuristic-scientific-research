@@ -60,9 +60,6 @@ while getopts ":n:f:t:c:Z:F:C:" o; do
     c)
         alg_config=${OPTARG}
         ;;
-    Z)
-        temporary_folder=${OPTARG}
-        ;;
     F)
         total_process_file=${OPTARG}
         ;;
@@ -210,11 +207,10 @@ checks_stopped_processes() {
             echo 1 >> "$folder_name.txt"
             run=0
             rm -rf "$folder_name"
-            echo "$alg_config LIBERADO" >> GG.txt
+
 
         else
             rm -rf "$folder_name"
-            echo "$alg_config PARADO" >> GG.txt
             sleep 60
         fi
     done
@@ -262,6 +258,7 @@ return_one_free_core() {
         if (( $free_cores == 0 )); then
             run=0
         fi
+
         rm -rf "$total_process_file"
         sleep 0.4
     done
@@ -279,7 +276,7 @@ free_core_file() {
     current_total_process=$(echo "$current_total_process - $1" | bc)
     sed -i '1d' $total_process_file.txt
     echo $current_total_process >> $total_process_file.txt
-
+   
     rm -r $total_process_file
 
 }
@@ -321,10 +318,16 @@ main() {
 
     colet_info="$path_data/F${function_number}_${config}_C"
     mkdir -p "$colet_info"
+    mkdir -p "logs_genetica/metrics/$config"
+
+    process_current="${total_process_file}PD/process_current.txt"
+    mkdir "${total_process_file}PD"
+    > "$process_current"
+    > "${total_process_file}PD/process_current2.txt"
 
     while (( 1 )); do
 
-        free_cores=$(echo "$(return_one_free_core)")
+        free_cores=$(echo "$(return_free_cores)")
         current_last_exec=$(($free_cores + $current_exec))
 
         if (( $current_last_exec > $n_execucoes )); then    
@@ -333,12 +336,15 @@ main() {
             current_last_exec=$n_execucoes
         fi
 
+
         for i in $(seq $current_exec $current_last_exec); do
             (
-                temporary_folder_aux="$(date +%H%M%S_%3N)_F${function_number}_EX_${i}$config"
-                temporary_folder="$temporary_folder_aux/execucao_${i}/F_$function_number"
-
-                resultado=$(eval "$(define_command_evol "$alg_config" "$function_number" "$time_limit" "$temporary_folder")" | tail -n 1)
+                local temporary_folder_aux="$$_F${function_number}_EX_${i}$config"
+                local temporary_folder="$temporary_folder_aux/execucao_${i}/F_$function_number"
+                
+                command=$(define_command_evol "$alg_config" "$function_number" "$time_limit" "$temporary_folder")
+                resultado=$(bash -c "$command" | tail -n 1)
+                #resultado=$(eval "$(define_command_evol "$alg_config" "$function_number" "$time_limit" "$temporary_folder")" | tail -n 1)
                 valor_atual=$(echo "$resultado" | grep Best | cut -d' ' -f2)
                 echo "$valor_atual" > "$colet_info/${i}.txt"
 
@@ -363,14 +369,19 @@ main() {
                     fi
                 done
 
-                echo "$alg_config $n_cores_m" >> GG.txt
-                ./metrics_instances.sh $path_data/$temporary_folder/$nova_pasta/data $n_cores_m
+                #echo "config: $config" >> erro.txt
+
+                if [ -z "$config" ] || [ -z "$path_data" ] || [ -z "$temporary_folder" ] ; then
+                    echo "Coleta-info Erro: Variavel vazia: Config: $config, Path: $path_data, Exec: $i, Func: $function_number" >> erro.txt
+                fi
+
+                nice -n 5 ./metrics_instances.sh -p "$path_data/$temporary_folder/$nova_pasta/data" -n "$n_cores_m" -c "$config/execucao_$i/F_$function_number/data"
                 wait
-                echo "$alg_config FIM" >> GG.txt
 
                 if [ $i -eq 1 ]; then
-                    cp  $path_data/$temporary_folder/$nova_pasta/data/_parametros.dat logs_genetica/metrics/_$(echo $alg_config | sed "s/ /_/g")/_parametros_F$function_number.dat
+                    cp  $path_data/$temporary_folder/$nova_pasta/data/_parametros.dat logs_genetica/metrics/$config/_parametros_F$function_number.dat || echo "Erro ao copiar parametros.dat em coleta-info.sh: Config: $config, Exec: $i, Func: $function_number" >> erro.txt
                 fi
+
 
                 if [ $i -eq $current_exec ]; then  # In the first time hold one core to the current execution of coleta-info
                     n_cores_m=$(( $n_cores_m - 1 ))
@@ -382,7 +393,20 @@ main() {
             ) &
             
             sleep 0.2
+
+
         done
+
+
+        process_status=$(ps aux --sort=-%cpu | grep -E "metric|dire|coleta|furaaf" | grep -v grep | awk '$3 > 0.1')
+        count=$(echo "$process_status" | awk 'BEGIN {count=0} {if ($3 > 0.1) count++} END {print count}')
+        count2=$(echo "$process_status" | awk 'BEGIN {count=0} {if ($3 > 0.01) count++} END {print count}')
+        if [[ -z "$count" ]]; then
+            count=0  
+        fi
+        echo "$count $count2" >> $process_current
+
+        ps aux --sort=-%cpu >> "${total_process_file}PD/process_current2.txt"
 
         wait
 

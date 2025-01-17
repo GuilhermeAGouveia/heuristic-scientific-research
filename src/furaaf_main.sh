@@ -26,6 +26,19 @@ contar_instancias() {
     pgrep -f "furaaf.sh" | grep -v "^$$\$" | wc -l
 }
 
+sum_core_file() {  #Libera n cores passados por parâmetro
+    while ! mkdir "$total_process_file" 2>/dev/null; do
+    sleep 0.2
+    done
+
+    current_total_process=$(head -n 1 "$total_process_file.txt")
+    current_total_process=$(echo "$current_total_process + $1" | bc)
+    echo $current_total_process > $total_process_file.txt
+
+    rm -r $total_process_file
+
+}
+
 return_free_cores() {   #Retorna o total de cores livres
     
     while ! mkdir "$total_process_file" 2>/dev/null; do
@@ -37,7 +50,7 @@ return_free_cores() {   #Retorna o total de cores livres
     sed -i '1d' "$total_process_file.txt"
     echo "$cores" >> "$total_process_file.txt"
     rm -rf "$total_process_file"
-    echo $free_cores  # Use echo para retornar o valor
+    echo $free_cores  
 }
 
 free_core_file() {  #Libera n cores passados por parâmetro
@@ -72,9 +85,10 @@ run_function() {
     echo -e $result >>logs_genetica/coleta_info/$config/[f$func].txt
     rm output-coleta-info[$parcial_name][f$func].dat 2>/dev/null
     
-    ./metrics_all $path_metrics $func $n_execucoes &
-    wait
-    cores_to_remove=1               #Função atual
+
+    ./metrics_all "$path_metrics" "$func" "$n_execucoes" 2>&1 
+    
+    cores_to_remove=1               
 
     free_core_file $cores_to_remove
 }
@@ -128,9 +142,19 @@ while [ $current_function -le $last_function ]; do
 done
 
 
-rm -rf $path_metrics/exe* 
+#rm -rf $path_metrics/exe* 
 echo $config END  $(date +"%Y-%m-%d %H:%M:%S.%3N")
 
+while ! mkdir "${total_process_file}TR" 2>/dev/null; do
+            sleep 0.2
+done
+
+process_TR=$(head -n 1 "${total_process_file}TR.txt")
+process_TR=$(($process_TR + 1))
+echo "$process_TR" > "${total_process_file}TR.txt"
+
+sum_core_file 1
+rm -rf "${total_process_file}TR"
 
 # for ((function = $first_function; function <= $last_function; function++)); do
 #     ./metrics_all $path_metrics $function $n_execucoes &

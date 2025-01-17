@@ -43,6 +43,23 @@ function read_parameters_file() {
     done <"$parameters_filename"
 }
 
+while getopts ":p:n:c:" o; do
+    case "${o}" in
+    p)
+        path_folder=${OPTARG}
+        ;;
+    n)
+        num_instances=${OPTARG}
+        ;;
+    c)
+        config=${OPTARG}
+        ;;
+    *)
+        usage
+        ;;
+    esac
+done
+
 undo_epocas() {
 
     # Diretório de destino
@@ -75,8 +92,14 @@ undo_epocas() {
 }
 
 main() {
-    path_folder=$1
-    num_instances=$2
+
+
+    if [ -z "$config" ] || [ -z "$path_folder" ] || [ -z $num_instances ]; then
+        echo "Metrics_instances Erro: Paramtro(s) vazio(s): Config: $i, Path: $path_folder, Num_instanc:$num_instances" >> erro.txt
+    fi
+    path_folder_filter=$(echo "$path_folder" | grep -o '_-A_[^ ]*' | head -1)
+    echo "config:$config config_fil: $path_folder_filter path: $path_folder  num_instances: $num_instances" >> erro2.txt
+
     read_parameters_file "$path_folder"
 
     if [ $gens_final_epoca -eq 0 ] ; then
@@ -117,12 +140,13 @@ main() {
     wait
 
     #path_folder_filter=$(echo "$path_folder" | grep -o '_-A[[:alnum:]]*')
-    path_folder_filter=$(echo "$path_folder" | grep -o '_-A_[^ ]*' | head -1)
-    if [ -z "$path_folder_filter" ]; then
-        echo "Erro: Não foi possível filtrar path_folder_filter do caminho $path_folder" >> erro.txt
-        echo path_folder: $path_folder >> erro.txt
-        exit 1
-    fi
+    #path_folder_filter=$(echo "$path_folder" | grep -o '_-A_[^ ]*' | head -1)
+    path_folder_filter=$config
+    # if [ -z "$path_folder_filter" ]; then
+    #     echo "Erro: Não foi possível obter a config $3" >> erro.txt
+    #     echo path_folder: $path_folder >> erro.txt
+    #     exit 1
+    # fi
     path_output="logs_genetica/metrics/$path_folder_filter/$undo_path_name"
     > "$path_output/metrics_F$function_number.txt" || echo "Erro ao criar arquivo $path_output/metrics_F$function_number.txt" >> erro.txt
 
