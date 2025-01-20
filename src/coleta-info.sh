@@ -211,7 +211,7 @@ checks_stopped_processes() {
 
         else
             rm -rf "$folder_name"
-            sleep 60
+            sleep 30
         fi
     done
 }
@@ -260,7 +260,7 @@ return_one_free_core() {
         fi
 
         rm -rf "$total_process_file"
-        sleep 0.4
+        sleep 0.2
     done
     echo $free
 
@@ -269,7 +269,7 @@ return_one_free_core() {
 
 free_core_file() {
     while ! mkdir "$total_process_file" 2>/dev/null; do
-    sleep 0.2
+        sleep 0.2
     done
 
     current_total_process=$(head -n 1 "$total_process_file.txt")
@@ -320,10 +320,7 @@ main() {
     mkdir -p "$colet_info"
     mkdir -p "logs_genetica/metrics/$config"
 
-    process_current="${total_process_file}PD/process_current.txt"
-    mkdir "${total_process_file}PD"
-    > "$process_current"
-    > "${total_process_file}PD/process_current2.txt"
+
 
     while (( 1 )); do
 
@@ -348,12 +345,12 @@ main() {
                 valor_atual=$(echo "$resultado" | grep Best | cut -d' ' -f2)
                 echo "$valor_atual" > "$colet_info/${i}.txt"
 
-                free_cores_m=$(echo "$(return_one_free_core)")
+                free_cores_m=$(echo "$(return_free_cores)")
                 n_cores_m=$((1 + $free_cores_m))
                 
                 a_values=$(echo "$config" | grep -oP '(?<=-A_)[^_]+') #get number of islands and population size
                 p_value=$(echo "$config" | grep -oP '(?<=-p_)[^_]+')
-                min_cores_m=3
+                min_cores_m=4
 
                 for value in $(echo "$a_values" | tr ',' ' '); do   #reserve a minimun of cores for heavy instances to run ./metrics
                     if (( value >= 25 && $p_value >= 250 && $n_cores_m < $min_cores_m )); then
@@ -361,7 +358,7 @@ main() {
                         n_cores_m=0
                         checks_stopped_processes
                         while (( $n_cores_m < $min_cores_m )); do
-                            free_cores_m=$(echo "$(return_one_free_core)")
+                            free_cores_m=$(echo "$(return_free_cores)")
                             n_cores_m=$(($n_cores_m + $free_cores_m))
                         done
                         stopped_processes_free
@@ -375,7 +372,7 @@ main() {
                     echo "Coleta-info Erro: Variavel vazia: Config: $config, Path: $path_data, Exec: $i, Func: $function_number" >> erro.txt
                 fi
 
-                nice -n 5 ./metrics_instances.sh -p "$path_data/$temporary_folder/$nova_pasta/data" -n "$n_cores_m" -c "$config/execucao_$i/F_$function_number/data"
+                nice -n 15 ./metrics_instances.sh -p "$path_data/$temporary_folder/$nova_pasta/data" -n "$n_cores_m" -c "$config/execucao_$i/F_$function_number/data"
                 wait
 
                 if [ $i -eq 1 ]; then
@@ -391,22 +388,11 @@ main() {
                 rm -rf $path_data/$temporary_folder_aux 2>/dev/null
                 rm -rf $path_data/$temporary_folder 2>/dev/null
             ) &
-            
-            sleep 0.2
 
+            sleep 0.1
 
         done
 
-
-        process_status=$(ps aux --sort=-%cpu | grep -E "metric|dire|coleta|furaaf" | grep -v grep | awk '$3 > 0.1')
-        count=$(echo "$process_status" | awk 'BEGIN {count=0} {if ($3 > 0.1) count++} END {print count}')
-        count2=$(echo "$process_status" | awk 'BEGIN {count=0} {if ($3 > 0.01) count++} END {print count}')
-        if [[ -z "$count" ]]; then
-            count=0  
-        fi
-        echo "$count $count2" >> $process_current
-
-        ps aux --sort=-%cpu >> "${total_process_file}PD/process_current2.txt"
 
         wait
 

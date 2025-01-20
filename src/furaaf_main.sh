@@ -28,7 +28,7 @@ contar_instancias() {
 
 sum_core_file() {  #Libera n cores passados por parâmetro
     while ! mkdir "$total_process_file" 2>/dev/null; do
-    sleep 0.2
+       sleep 0.2
     done
 
     current_total_process=$(head -n 1 "$total_process_file.txt")
@@ -55,7 +55,7 @@ return_free_cores() {   #Retorna o total de cores livres
 
 free_core_file() {  #Libera n cores passados por parâmetro
     while ! mkdir "$total_process_file" 2>/dev/null; do
-    sleep 0.2
+        sleep 0.2
     done
 
     current_total_process=$(head -n 1 "$total_process_file.txt")
@@ -132,7 +132,6 @@ while [ $current_function -le $last_function ]; do
     for ((i = 0; i < $function_n_cores; i++));do
         run_function $current_function  &
         current_function=$(($current_function + 1))
-        sleep 0.1
     done
 
     wait
@@ -146,7 +145,7 @@ done
 echo $config END  $(date +"%Y-%m-%d %H:%M:%S.%3N")
 
 while ! mkdir "${total_process_file}TR" 2>/dev/null; do
-            sleep 0.2
+    sleep 0.2
 done
 
 process_TR=$(head -n 1 "${total_process_file}TR.txt")

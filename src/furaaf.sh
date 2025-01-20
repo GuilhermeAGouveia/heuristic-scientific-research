@@ -20,67 +20,122 @@ free_core_file() {  #Libera n cores passados por parâmetro
 
     current_total_process=$(head -n 1 "$file_processes.txt")
     current_total_process=$(echo "$current_total_process - $1" | bc)
-    sed -i '1d' $file_processes.txt
-    echo $current_total_process >> $file_processes.txt
+    echo $current_total_process > $file_processes.txt
 
     rm -r $file_processes
 
 }
 
 lock_file="paramsLock"
-cores=48
-cd /scratch/unifal-mg/simgenetic/iago.carvalho/H3/src
+cores=$1
+max_simul_instances=$2
+n_executions=$3
+#cd /scratch/unifal-mg/simgenetic/iago.carvalho/H3
 
 # Tenta obter o lock para acessar params.txt
-while ! mkdir "$lock_file" 2>/dev/null; do
-    echo "Processo $$ aguardando pelo lock."
-    sleep $(echo "scale=3; $(gerar_numero_aleatorio) / 1000" | bc)
-done
-
-echo "Processo $$ obteve o lock $(date +"%Y-%m-%d %H:%M:%S.%3N")."
 
 echo "Data e hora atual: $(date +"%Y-%m-%d %H:%M:%S.%3N")"
 
 file_input=params.txt
-mkdir -p control_n_process
+mkdir control_n_process
 number=$(echo "scale=0; $(gerar_numero_aleatorio) / 1000 " | bc)
-file_processes=control_n_process/params_${number}_$$
-echo $cores >> $file_processes.txt
+file_processes="control_n_process/params_${number}_$$"
 
-for (( i = 0; i < $cores; i++)); do
-    line=$(head -n 1 "$file_input")
+#echo $cores >> $file_processes.txt
+echo "0" > "${file_processes}TR.txt"
+> erro.txt
+> erro2.txt
 
-    read config numeros <<< "$line"
+num_instances_to_run=$max_simul_instances
+echo $max_simul_instances > "$file_processes.txt"
+instances_in_execution=0
+run=1
 
-    #config=$(echo "$config" | sed "s/ /_/g")
-    echo $config
-    numeros=$(echo "$numeros" | tr '_' ' ' | awk '{$1=$1;print}')
+process_current="${file_processes}PD/process_current.txt"
+mkdir "${file_processes}PD"
+> "$process_current"
+> "${file_processes}PD/process_current2.txt"
 
-    first_function=$(echo "$numeros" | awk '{print $1}')
-    last_function=$(echo "$numeros" | awk '{print $NF}')
+while :; do
+    total_instances_in_file=$(wc -l < "$file_input")
+    diff=$(( $max_simul_instances - ($total_instances_in_file + $instances_in_execution)))
+    if (($diff > 0));then
+        free_core_file $diff
+        max_simul_instances=$(($max_simul_instances - $diff))
+        num_instances_to_run=$total_instances_in_file
+    fi    
 
-    if [ ! -n "$numeros" ]; then
-        first_function=1
-        last_function=5
-    fi
+    for (( i = 0; i < $num_instances_to_run && "$run" == 1; i++)); do
+        while ! mkdir "$lock_file" 2>/dev/null; do
+            echo "Processo $$ aguardando pelo lock."
+            sleep 0.2
+        done
 
-    echo "Config: $config  First: $first_function, Last: $last_function"
+        line=$(head -n 1 "$file_input")
+        sed -i '1d' "$file_input"
+        rm -rf $lock_file
+        if [ -z "$line" ]; then
+            run=0
+            break
+        fi
+        read config numeros <<< "$line"
 
-    sed -i '1d' "$file_input"
-    if [[ ! $config =~ -A ]]; then
-        free_core_file $(( $cores - $i ))
-        echo "Liberou $(( $cores - $i )) cores"
+        #config=$(echo "$config" | sed "s/ /_/g")
+        echo $config
+        numeros=$(echo "$numeros" | tr '_' ' ' | awk '{$1=$1;print}')
+
+        first_function=$(echo "$numeros" | awk '{print $1}')
+        last_function=$(echo "$numeros" | awk '{print $NF}')
+
+        if [ -z "$numeros" ]; then
+            first_function=1
+            last_function=15
+        fi
+
+        echo "Config: $config  First: $first_function, Last: $last_function"
+
+        #if [[ ! $config =~ -A ]]; then 
+        ./furaaf_main.sh "$config" "$file_processes" "$cores" "$first_function" "$last_function" "$n_executions" &
+        wait
+        ((total_instances_in_file--))
+        ((instances_in_execution++))
+    done
+    
+    #sleep 0.5
+
+    # process_status=$(ps aux --sort=-%cpu | grep -E "metric|dire|coleta|furaaf" | grep -v grep | awk '$3 > 0.1')
+    # cpu_usage=$(echo "$process_status" | awk '$11 ~ /dire/ {print $3, $8}' | sort -n | head -n 1)
+    # count=$(echo "$process_status" | wc -l)
+    # count2=$(ps aux --sort=-%cpu | awk '$3 > 0.01 {count++} END {print count}')
+    # if [[ -z "$count" ]]; then
+    #     count=0  
+    # fi
+    # echo "$count $count2 $cpu_usage" >> $process_current
+
+
+    # ps aux --sort=-%cpu >> "${file_processes}PD/process_current2.txt"
+
+
+    while ! mkdir "${file_processes}TR" 2>/dev/null; do
+        sleep 0.2
+    done
+
+    finished_instances=$(head -n 1 "${file_processes}TR.txt") 
+
+    instances_in_execution=$(($instances_in_execution - $finished_instances))
+    num_instances_to_run=$finished_instances
+    echo "0" > "${file_processes}TR.txt"
+    rm -rf "${file_processes}TR"
+
+    if [ $total_instances_in_file -eq 0 ] && [ $instances_in_execution -eq 0 ]; then
         break
-    else
-        ./furaaf_main.sh "$config" $file_processes $cores $first_function $last_function 30 &
-       
     fi
+
 done
-
-rm -rf $lock_file
-echo "Processo $$ devolveu o lock $(date +"%Y-%m-%d %H:%M:%S.%3N")."
-
+echo "wait"
 wait
+
+free_core_file $max_simul_instances
 
 echo  "Script END $(date +"%Y-%m-%d %H:%M:%S.%3N")"
 
