@@ -1,4 +1,5 @@
 #include "commom.h"
+
 void fitness(individuo *individuo, int dimension, int function_number)
 {
     // individuo.fitness = real_function(individuo.chromosome, dimension);
@@ -234,9 +235,9 @@ double euclidian(individuo firstIndividuo, individuo secondIndividuo, int dimens
     return distance;
 }
 
-double densityPopulation(populacao **populations, int island_number)
+double densityPopulation2(populacao **populations, int island_number)
 {
-    DEBUG(printf("\ndensityPopulation\n"););
+    DEBUG(printf("\ndensityPopulation2\n"););
     double average = 0;
     double sd = 0;
     double *sum = (double *)calloc(island_number, sizeof(double));
@@ -273,15 +274,15 @@ double densityPopulation(populacao **populations, int island_number)
     // cout << average << ";" << sd << ";";
     result = average;
 
-    // DEBUG(printf("\nDensityPopulation\n"););
+    // DEBUG(printf("\nDensityPopulation2\n"););
     // DEBUG(printf("%lf;%lf;\n", average, sd););
     free(sum);
     return result;
 }
 
-double densityWorld(populacao **populations, int island_number)
+double densityWorld2(populacao **populations, int island_number)
 {
-    DEBUG(printf("\ndensityWorld\n"););
+    DEBUG(printf("\ndensityWorld2\n"););
     double total = 0;
     double **sum = (double **)calloc(island_number, sizeof(double *));
 
@@ -389,11 +390,11 @@ double convergence_calculation_islands(populacao **populations, int islands_size
     // gettimeofday(&tv_inicio, NULL);
     if (islands_size > 1)
     {
-        result = densityWorld(populations, islands_size);
+        result = densityWorld2(populations, islands_size);
         return result;
     }
 
-    result = densityPopulation(populations, islands_size);
+    result = densityPopulation2(populations, islands_size);
 
     // gettimeofday(&tv_fim, NULL);
     // long long inicio =

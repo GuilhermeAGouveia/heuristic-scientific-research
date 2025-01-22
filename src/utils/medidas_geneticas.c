@@ -1,6 +1,8 @@
 
 #include "../libs/commom.h"
 #include <dirent.h>
+#include "../libs/gpu_codes.h"
+#include <cuda_runtime.h>
 
 #define DEBUG(x)
 int gens_final_epoca;
@@ -324,73 +326,29 @@ void read_parameters_file(int epoca, int population, char *folderPath)
     DEBUG(printf("\n[end] read_parameters_file\n"););
 }
 
-// void write_metrics_for_each_files(char *folderPath)
-// {
-//     // clean_metric_dir();
-//     DEBUG(printf("population_size: %d\n", parameters.population_size););
-//     DEBUG(printf("num_epocas: %d\n", parameters.num_epocas););
-//     DEBUG(printf("num_generations_per_epoca: %d\n", parameters.num_generations_per_epoca););
 
-//     FILE *output_metric;
-//     files_list all_files = list_all_files_in_dir("./log");
-//     char cmd[1024];
-//     for (int epoca = 0; epoca < parameters.num_epocas; epoca++)
-//     {
-//         sprintf(cmd, "mkdir -p log/metricas/epoca_%d/", epoca);
-//         system(cmd);
-//         char filename[1024];
-//         sprintf(filename, "log/metricas/epoca_%d/metrics_for_each_generation.dat", epoca);
-//         output_metric = fopen(filename, "w");
-//         int min_generations = extract_min_generations_from_epoca(all_files, epoca);
-//         printf("\nMin: %d", min_generations);
-
-//         for (int generation = 0; generation < min_generations; generation++)
-//         {
-//             files_list filtered_files = filter_file_list_by(all_files, epoca, generation, -1);
-//             // printf("\nNum_files:%d", filtered_files.num_files);
-//             DEBUG(print_string_vector(filtered_files.files, filtered_files.num_files););
-//             populacao **populations = mount_populations(filtered_files);
-//             double *densityPopulationResult = densityPopulation(populations, filtered_files.num_files);
-//             double densityWorldResult = densityWorld(populations, filtered_files.num_files);
-//             // Criar pasta
-//             DEBUG(printf("densityPopulationResult: %lf %lf\n", densityPopulationResult[0], densityPopulationResult[1]););
-//             DEBUG(printf("densityWorldResult: %lf\n", densityWorldResult););
-
-//             if (output_metric == NULL)
-//             {
-//                 DEBUG(printf("Error opening file!\n"););
-//                 exit(1);
-//             }
-//             fprintf(output_metric, "%lf ", densityPopulationResult[0]);
-//             fprintf(output_metric, "%lf ", densityPopulationResult[1]);
-//             fprintf(output_metric, "%lf\n", densityWorldResult);
-//             destroy_island(*populations, filtered_files.num_files - 1);
-//             destroy_files_list(filtered_files);
-//             free(densityPopulationResult);
-//             free(populations);
-//         }
-//         fclose(output_metric);
-//     }
-//     destroy_files_list(all_files);
-// }
 
 void write_metrics_for_each_files(populacao **populations, char *folderPath)
 {
     FILE *output_metric;
     output_metric = fopen(folderPath, "a");
-    double densityPopulationResult = densityPopulation(populations, parameters.island_size);
-    double densityWorldResult = densityWorld(populations, parameters.island_size);
-
     if (output_metric == NULL)
     {
         DEBUG(printf("Error opening file!\n"););
         exit(1);
     }
+
+    double densityPopulationResult = densityPopulation(populations, parameters.island_size);
+    double densityWorldResult = densityWorld(populations, parameters.island_size);
+
     fprintf(output_metric, "%lf ", densityPopulationResult);
     fprintf(output_metric, "%lf\n", densityWorldResult);
-    // destroy_island(*populations, parameters.island_size - 1);
+
+
     fclose(output_metric);
 }
+
+
 
 int main(int argc, char *argv[])
 {
@@ -449,17 +407,17 @@ int main(int argc, char *argv[])
             populacao **populations = mount_populations(files_gen, i);
 
             write_metrics_for_each_files(populations, filename);
-            for (int l = 0; l < files_gen.num_files; l++)
-            {
-                for (int k = 0; k < parameters.population_size; k++)
-                {
-                    free(populations[l]->individuos[k].chromosome);
-                    free(populations[l]->individuos[k].velocidade);
-                }
-                free(populations[l]->individuos);
-                free(populations[l]->neighbours);
-            }
-            free(populations);
+            // for (int l = 0; l < files_gen.num_files; l++)
+            // {
+            //     for (int k = 0; k < parameters.population_size; k++)
+            //     {
+            //         free(populations[l]->individuos[k].chromosome);
+            //         free(populations[l]->individuos[k].velocidade);
+            //     }
+            //     free(populations[l]->individuos);
+            //     free(populations[l]->neighbours);
+            // }
+            // free(populations);
             free(files_gen.files);
         }
     }
