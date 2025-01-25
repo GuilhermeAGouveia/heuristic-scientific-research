@@ -69,6 +69,7 @@ void print_combinations(Array combinations, int nAlgorithms)
     }
 }
 
+
 int write_parameters_genetic(int num_generations, int num_epocas, int gens_final_epoca)
 {
     char file_path[256];
@@ -81,6 +82,55 @@ int write_parameters_genetic(int num_generations, int num_epocas, int gens_final
     DEBUG(printf("\nwrite_parameters: end\n"););
     fclose(parameters_log_file);
 }
+
+
+PopulationMemoryNode *populationMemoryHead = NULL;
+PopulationMemoryNode *populationMemoryCurrent = NULL;
+
+void registerPopMemory(void *address) {
+    PopulationMemoryNode *newNode = (PopulationMemoryNode *)malloc(sizeof(PopulationMemoryNode));
+    newNode->address = address;
+    newNode->next = NULL;
+
+    if (populationMemoryHead == NULL) {
+        populationMemoryHead = newNode;
+        populationMemoryCurrent = newNode; 
+    } else {
+        populationMemoryCurrent->next = newNode;
+        populationMemoryCurrent = newNode;
+    }
+}
+
+void clearPopulationMemory() {
+    PopulationMemoryNode *current = populationMemoryHead;
+    PopulationMemoryNode *nextNode;
+
+    // Percorre a lista desalocando cada nó
+    while (current != NULL) {
+        nextNode = current->next; // Salva o próximo nó
+        free(current);           // Libera o nó atual
+        current = nextNode;      // Avança para o próximo nó
+    }
+
+}
+
+void write_metrics(int n_islands){
+    int current_generation = 0;
+    populacao *population;
+    PopulationMemoryNode *current_population = populationMemoryHead;
+    while (current_population){      
+        for (int i = 0; i < n_islands; i++){
+            population = current_population->address;
+            write_population_log(0, i, current_generation, *population, parameters);
+            destroy_island2(population, 1);
+            current_population = current_population->next;
+        }
+        current_generation++;
+    }
+    clearPopulationMemory();
+}
+
+
 
 int main(int argc, char *argv[])
 {
@@ -142,7 +192,10 @@ int main(int argc, char *argv[])
             {
                 copy_individuo(pbest_individuo, gbest_individuo, parameters.dimension);
             }
+             registerPopMemory(copy_population(populations[alg_pos], parameters.dimension));
         }
+
+        
 
         // gettimeofday(&tv_fim, NULL);
         // long long inicio =
@@ -225,6 +278,7 @@ int main(int argc, char *argv[])
     //     epoca++;
     // }
     //write_parameters_genetic(generations_to_calcDensity, epoca, current_gen_alg);
+    write_metrics(parameters.num_algorithms);
     write_parameters_genetic(current_generation, 1, current_generation);
 
     return 0;

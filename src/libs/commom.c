@@ -116,6 +116,22 @@ void copy_individuo(individuo *original, individuo *copia, int dimension)
     }
 }
 
+populacao *copy_population(populacao *population, int dimension)
+{
+    populacao *new_population = malloc(sizeof(populacao));
+    new_population->individuos = malloc(population->size * sizeof(individuo));
+    new_population->size = population->size;
+    for (int i = 0; i < population->size; i++)
+    {
+        new_population->individuos[i].chromosome = malloc(dimension * sizeof(double));
+        copy_individuo(&(population->individuos[i]), &(new_population->individuos[i]), dimension);
+        //new_individuo[i].velocidade = (double *)malloc(dimension * sizeof(double));
+
+    }
+    return new_population;
+}
+
+
 void destroy_population(individuo *population, int n_individuos)
 {
     DEBUG(printf("\ndestroy_population\n"););
@@ -128,6 +144,21 @@ void destroy_population(individuo *population, int n_individuos)
         }
     }
     free(population);
+
+    
+}
+
+void destroy_population2(individuo *population, int n_individuos)
+{
+    DEBUG(printf("\ndestroy_population\n"););
+    if (population != NULL)
+    {
+        for (int i = 0; i < n_individuos; i++)
+        {
+            free(population[i].chromosome);
+        }
+    }
+    free(population);
 }
 
 void destroy_island(populacao *populations, int island_size)
@@ -137,6 +168,16 @@ void destroy_island(populacao *populations, int island_size)
     {
         destroy_population(populations[i].individuos, populations[i].size);
         free(populations[i].neighbours);
+    }
+    // free(populations);
+}
+
+void destroy_island2(populacao *populations, int island_size)
+{
+    DEBUG(printf("\ndestroy_island\n"););
+    for (int i = 0; i < island_size; i++)
+    {
+        destroy_population2(populations[i].individuos, populations[i].size);
     }
     // free(populations);
 }

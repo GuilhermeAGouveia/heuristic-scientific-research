@@ -55,4 +55,9 @@ typedef struct domain
     double max;
 } domain;
 
+typedef struct PopulationMemoryNode {
+    void *address;
+    struct PopulationMemoryNode *next;
+} PopulationMemoryNode;
+
 #endif /* TYPES_H */

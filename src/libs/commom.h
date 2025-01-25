@@ -32,7 +32,7 @@
 #define NO_RECORDING
 #define STATISTICS(x)
 #define DEBUG(x) 
-#define LOG(x) x
+#define LOG(x) 
 
 
 #define COMMOM_H
@@ -59,4 +59,7 @@ double convergence_calculation(populacao *population, double best);
 double convergence_calculation_islands(populacao **populations, int islands_size);
 int minimum(int a, int b);
 int inInterval(double min, double max, double valor);
+populacao *copy_population(populacao *population, int dimension);
+void destroy_island2(populacao *populations, int island_size);
+void destroy_population2(individuo *population, int n_individuos);
 #endif /* COMMOM_H */
